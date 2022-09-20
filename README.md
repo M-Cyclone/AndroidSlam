@@ -1,7 +1,7 @@
 # AndroidSlam
 SLAM system on Android.
 
-# Log
+# 日志
 ## 2022/09/20
 ### 1. 项目结构更改
 目前的项目结构部分文件如下(app--src--main)  
