@@ -6,7 +6,8 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#include <Eigen/Eigen>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace android_slam
 {
@@ -32,29 +33,29 @@ namespace android_slam
         {
             glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
         }
-        void setVec2(const std::string& name, Eigen::Vector2f value) const noexcept
+        void setVec2(const std::string& name, glm::vec2 value) const noexcept
         {
-            glUniform2f(glGetUniformLocation(m_id, name.c_str()), value.x(), value.y());
+            glUniform2f(glGetUniformLocation(m_id, name.c_str()), value.x, value.y);
         }
-        void setVec3(const std::string& name, Eigen::Vector3f value) const noexcept
+        void setVec3(const std::string& name, glm::vec3 value) const noexcept
         {
-            glUniform3f(glGetUniformLocation(m_id, name.c_str()), value.x(), value.y(), value.z());
+            glUniform3f(glGetUniformLocation(m_id, name.c_str()), value.x, value.y, value.z);
         }
-        void setVec4(const std::string& name, Eigen::Vector4f value) const noexcept
+        void setVec4(const std::string& name, glm::vec4 value) const noexcept
         {
-            glUniform4f(glGetUniformLocation(m_id, name.c_str()), value.x(), value.y(), value.z(), value.w());
+            glUniform4f(glGetUniformLocation(m_id, name.c_str()), value.x, value.y, value.z, value.w);
         }
-        void setMat2(const std::string& name, Eigen::Matrix2f matrix) const noexcept
+        void setMat2(const std::string& name, glm::mat2 matrix) const noexcept
         {
-            glUniformMatrix2fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, (float*)(&matrix));
+            glUniformMatrix2fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
         }
-        void setMat3(const std::string& name, Eigen::Matrix3f matrix) const noexcept
+        void setMat3(const std::string& name, glm::mat3 matrix) const noexcept
         {
-            glUniformMatrix3fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, (float*)(&matrix));
+            glUniformMatrix3fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
         }
-        void setMat4(const std::string& name, Eigen::Matrix4f matrix) const noexcept
+        void setMat4(const std::string& name, glm::mat4 matrix) const noexcept
         {
-            glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, (float*)(&matrix));
+            glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
         }
 
 

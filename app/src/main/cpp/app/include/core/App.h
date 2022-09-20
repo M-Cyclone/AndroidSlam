@@ -4,9 +4,7 @@
 
 #include <android_native_app_glue.h>
 
-#include <core/System.h>
-#include <utils/Settings.h>
-#include <feature/ORBVocabulary.h>
+#include <SlamKernel.h>
 
 #include "Window.h"
 #include "utils/Timer.h"
@@ -60,9 +58,7 @@ namespace android_slam
         std::unique_ptr<SensorTexture> m_sensor_texture;
         std::shared_ptr<Shader> m_yuv2rgb_shader;
 
-        std::unique_ptr<ORB_SLAM3::System> m_slam_kernel;
-        std::unique_ptr<ORB_SLAM3::Settings> m_slam_settings;
-        std::unique_ptr<ORB_SLAM3::ORBVocabulary> m_slam_vocabulary;
+        std::unique_ptr<SlamKernel> m_slam_kernel;
 
     public:
         bool m_running = true;

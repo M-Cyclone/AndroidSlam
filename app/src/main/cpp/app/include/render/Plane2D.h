@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include <Eigen/Eigen>
+#include <glm/glm.hpp>
 
 #include "Model.h"
 
@@ -13,8 +13,8 @@ namespace android_slam
     public:
         struct Vertex
         {
-            Eigen::Vector2f position;
-            Eigen::Vector2f tex_coords;
+            glm::vec2 position;
+            glm::vec2 tex_coords;
 
             static void resolve()
             {

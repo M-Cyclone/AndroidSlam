@@ -18,6 +18,8 @@ namespace android_slam
         , m_capture_session{ nullptr, ACameraCaptureSession_close }
         , m_capture_request{nullptr, ACaptureRequest_free }
         , m_camera_output_target{ nullptr, ACameraOutputTarget_free }
+        , m_camera_device_state_callbacks{}
+        , m_capture_session_state_callbacks{}
     {
         media_status_t ms{};
 

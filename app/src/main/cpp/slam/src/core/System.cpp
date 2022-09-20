@@ -58,7 +58,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         cout << "RGB-D-Inertial" << endl;
 
     //Check settings file
-    cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);
+    cv::FileStorage fsSettings(strSettingsFile, cv::FileStorage::READ);
     if(!fsSettings.isOpened())
     {
        cerr << "Failed to open settings file at: " << strSettingsFile << endl;

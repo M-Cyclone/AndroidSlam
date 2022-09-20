@@ -3,8 +3,6 @@
 #include <chrono>
 #include <atomic>
 
-#include <opencv2/opencv.hpp>
-
 #include "utils/Log.h"
 #include "utils/AssetManager.h"
 
@@ -97,57 +95,10 @@ namespace android_slam
         }
 
 
-        // SLAM
         {
-            ORB_SLAM3::Settings::SettingDesc desc;
-            desc.sensor = ORB_SLAM3::System::eSensor::MONOCULAR;
-            desc.cameraInfo.cameraType = ORB_SLAM3::Settings::CameraType::PinHole;
-            desc.cameraInfo.fx = 458.654f;
-            desc.cameraInfo.fy = 457.296f;
-            desc.cameraInfo.cx = 367.215f;
-            desc.cameraInfo.cy = 248.375f;
-            desc.distortion->k1 = -0.28340811f;
-            desc.distortion->k2 = 0.07395907f;
-            desc.distortion->p1 = 0.00019359f;
-            desc.distortion->p2 = 1.76187114e-05f;
-            desc.imageInfo.width = k_sensor_camera_width;
-            desc.imageInfo.height = k_sensor_camera_height;
-            desc.imageInfo.newWidth = 600;
-            desc.imageInfo.newHeight = 350;
-            desc.imageInfo.fps = 60;
-            desc.imageInfo.bRGB = true;
-            desc.imuInfo.noiseGyro = 1.7e-4f;
-            desc.imuInfo.noiseAcc = 2.0000e-3f;
-            desc.imuInfo.gyroWalk = 1.9393e-05f;
-            desc.imuInfo.accWalk = 3.0000e-03f;
-            desc.imuInfo.frequency = 200.0f;
-            desc.imuInfo.cvTbc = static_cast<cv::Mat>(cv::Mat_<float>(4, 4) <<
-                0.0148655429818f, -0.999880929698f, 0.00414029679422f, -0.0216401454975f,
-                0.999557249008f, 0.0149672133247f, 0.025715529948f, -0.064676986768f,
-                -0.0257744366974f, 0.00375618835797f, 0.999660727178f, 0.00981073058949f,
-                0.0f, 0.0f, 0.0f, 1.0f
-            );
-            desc.imuInfo.bInsertKFsWhenLost = true;
-            desc.orbInfo.nFeatures = 1000;
-            desc.orbInfo.scaleFactor = 1.2f;
-            desc.orbInfo.nLevels = 8;
-            desc.orbInfo.initThFAST = 20;
-            desc.orbInfo.minThFAST = 7;
-            desc.viewerInfo.keyframeSize = 0.05f;
-            desc.viewerInfo.keyframeLineWidth = 1.0f;
-            desc.viewerInfo.graphLineWidth = 0.9f;
-            desc.viewerInfo.pointSize = 2.0f;
-            desc.viewerInfo.cameraSize = 0.08f;
-            desc.viewerInfo.cameraLineWidth = 3.0f;
-            desc.viewerInfo.viewPointX = 0.0f;
-            desc.viewerInfo.viewPointY = -0.7f;
-            desc.viewerInfo.viewPointZ = -3.5f;
-            desc.viewerInfo.viewPointF = 500.0f;
-            desc.viewerInfo.imageViewerScale = 1.0f;
-            m_slam_settings = std::make_unique<ORB_SLAM3::Settings>(desc);
+            DEBUG_INFO("[Android Slam Info] Starts to create slam kernel.");
 
-
-            auto asset = AAssetManager_open(AssetManager::get(), "vocabulary/ORBVoc.txt", AASSET_MODE_BUFFER);
+            AAsset* asset = AAssetManager_open(AssetManager::get(), "vocabulary/ORBVoc.txt", AASSET_MODE_BUFFER);
             assert(asset && "[Android Slam App Info] Failed to open ORBVoc.txt.");
 
             size_t size = AAsset_getLength(asset);
@@ -155,17 +106,9 @@ namespace android_slam
             std::string voc_buffer(buffer, buffer + size);
             AAsset_close(asset);
 
-            m_slam_vocabulary = std::make_unique<ORB_SLAM3::ORBVocabulary>();
-            DEBUG_INFO("[Android Slam App Info] Starts loading ORB Voc.");
-            m_slam_vocabulary->loadFromAndroidTextFile(voc_buffer);
-            DEBUG_INFO("[Android Slam App Info] Loading ORB Voc finished.");
+            m_slam_kernel = std::make_unique<SlamKernel>(k_sensor_camera_width, k_sensor_camera_height, std::move(voc_buffer));
 
-
-            m_slam_kernel = std::make_unique<ORB_SLAM3::System>(
-                m_slam_vocabulary.get(),
-                m_slam_settings.get(),
-                (const ORB_SLAM3::System::eSensor)(desc.sensor)
-            );
+            DEBUG_INFO("[Android Slam Info] Creates slam kernel successfully.");
         }
 
 
@@ -204,7 +147,7 @@ namespace android_slam
             m_sensor_texture->bind();
             m_yuv2rgb_shader->setInt("sensor_image", 0);
 
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void*)0);
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
             m_sensor_texture->unbind();
             m_yuv2rgb_shader->unbind();
@@ -216,26 +159,17 @@ namespace android_slam
         {
             static Timer slam_timer;
 
-            cv::Mat camera_image(k_sensor_camera_height, k_sensor_camera_width, CV_8UC4);
-            glReadPixels(
-                0,
-                0,
-                k_sensor_camera_width,
-                k_sensor_camera_height,
-                GL_RGBA,
-                GL_UNSIGNED_BYTE,
-                camera_image.data
+            Image img_left
+            {
+                std::vector<uint8_t>(4 * k_sensor_camera_width * k_sensor_camera_height)
+            };
+            glReadPixels(0, 0, k_sensor_camera_width, k_sensor_camera_height, GL_RGBA, GL_UNSIGNED_BYTE, img_left.data.data());
+
+            m_slam_kernel->handleData(
+                slam_timer.peek(),
+                { std::move(img_left) },
+                {}
             );
-
-            cv::Mat gray_image;
-            cv::cvtColor(camera_image, gray_image, cv::COLOR_RGBA2GRAY);
-
-            m_slam_kernel->TrackMonocular(gray_image, slam_timer.peek());
-
-            static size_t frame_count = 0;
-            DEBUG_INFO("[Android Slam App Info] Current FPS: %.3f.", 1.0f / dt);
-            DEBUG_INFO("[Android Slam App Info] Handled %zu frames.", frame_count);
-            DEBUG_INFO("[Android Slam App Info] Current Map Point count: %zu.", m_slam_kernel->getAtlas().GetAllMapPoints().size());
         }
 
 
