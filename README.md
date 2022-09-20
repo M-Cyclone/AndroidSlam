@@ -3,6 +3,10 @@ SLAM system on Android.
 
 # Log
 ## 2022/09/20
+### 开启android_image_test分支
+用于测试相机拍摄结果。
+
+## 2022/09/20
 ### 1. 项目结构更改
 目前的项目结构部分文件如下(app--src--main)  
 ```
