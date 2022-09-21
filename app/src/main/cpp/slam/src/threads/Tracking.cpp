@@ -2033,7 +2033,6 @@ namespace ORB_SLAM3
 
     void Tracking::MonocularInitialization()
     {
-
         if (!mbReadyToInitializate)
         {
             // Set Reference Frame
