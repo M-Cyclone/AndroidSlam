@@ -4,8 +4,6 @@
 
 #include <android_native_app_glue.h>
 
-#include <SlamKernel.h>
-
 #include "Window.h"
 #include "utils/Timer.h"
 #include "sensor/SensorCamera.h"
@@ -57,8 +55,6 @@ namespace android_slam
         std::unique_ptr<Plane2D> m_image_painter;
         std::unique_ptr<SensorTexture> m_sensor_texture;
         std::shared_ptr<Shader> m_yuv2rgb_shader;
-
-        std::unique_ptr<SlamKernel> m_slam_kernel;
 
     public:
         bool m_running = true;

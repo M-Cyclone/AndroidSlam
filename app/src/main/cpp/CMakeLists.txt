@@ -13,5 +13,4 @@ project("AndroidSlam")
 
     message("[Android Slam CMake Info] Current app is compiled with ABI Type: <${CMAKE_ANDROID_ARCH_ABI}>")
 
-    add_subdirectory(./slam)
     add_subdirectory(./app)

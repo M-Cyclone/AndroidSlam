@@ -95,23 +95,6 @@ namespace android_slam
         }
 
 
-        {
-            DEBUG_INFO("[Android Slam Info] Starts to create slam kernel.");
-
-            AAsset* asset = AAssetManager_open(AssetManager::get(), "vocabulary/ORBVoc.txt", AASSET_MODE_BUFFER);
-            assert(asset && "[Android Slam App Info] Failed to open ORBVoc.txt.");
-
-            size_t size = AAsset_getLength(asset);
-            auto buffer = (const char*) AAsset_getBuffer(asset);
-            std::string voc_buffer(buffer, buffer + size);
-            AAsset_close(asset);
-
-            m_slam_kernel = std::make_unique<SlamKernel>(k_sensor_camera_width, k_sensor_camera_height, std::move(voc_buffer));
-
-            DEBUG_INFO("[Android Slam Info] Creates slam kernel successfully.");
-        }
-
-
         m_active = true;
     }
 
@@ -152,24 +135,6 @@ namespace android_slam
             m_sensor_texture->unbind();
             m_yuv2rgb_shader->unbind();
             m_image_painter->unbind();
-        }
-
-
-        // SLAM calculation.
-        {
-            static Timer slam_timer;
-
-            Image img_left
-            {
-                std::vector<uint8_t>(4 * k_sensor_camera_width * k_sensor_camera_height)
-            };
-            glReadPixels(0, 0, k_sensor_camera_width, k_sensor_camera_height, GL_RGBA, GL_UNSIGNED_BYTE, img_left.data.data());
-
-            m_slam_kernel->handleData(
-                slam_timer.peek(),
-                { std::move(img_left) },
-                {}
-            );
         }
 
 
