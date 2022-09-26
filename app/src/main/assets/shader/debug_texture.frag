@@ -9,6 +9,5 @@ uniform sampler2D screen_shot;
 
 void main()
 {
-    vec2 uv = vec2(v_texCoords.x, 1.0f - v_texCoords.y);
-    frag_color = texture(screen_shot, uv);
+    frag_color = texture(screen_shot, v_texCoords);
 }

@@ -262,31 +262,4 @@ namespace android_slam
         return m_image_buffers[m_curr_img_idx];
     }
 
-    std::vector<uint8_t> SensorCamera::getLatestRGBImage() const
-    {
-        AImage* ndk_img = getLatestImage();
-        assert(ndk_img && "[Android Slam Sensor Info] NDK Image access nullptr.");
-
-        media_status_t ms{};
-
-        std::vector<uint8_t> rgb_image{};
-
-        uint8_t* y_pixel;
-        uint8_t* u_pixel;
-        uint8_t* v_pixel;
-        int32_t y_len;
-        int32_t u_len;
-        int32_t v_len;
-
-        ms = AImage_getPlaneData(ndk_img, 0, &y_pixel, &y_len);
-        assert((ms == AMEDIA_OK) && "[Android Slam Sensor Info] Failed to get plane data.");
-        ms = AImage_getPlaneData(ndk_img, 1, &u_pixel, &u_len);
-        assert((ms == AMEDIA_OK) && "[Android Slam Sensor Info] Failed to get plane data.");
-        ms = AImage_getPlaneData(ndk_img, 2, &v_pixel, &v_len);
-        assert((ms == AMEDIA_OK) && "[Android Slam Sensor Info] Failed to get plane data.");
-
-
-
-    }
-
 }

@@ -8,10 +8,7 @@
 #include "utils/Timer.h"
 #include "sensor/SensorCamera.h"
 
-#include "render/ImageTexture.h"
-#include "render/SensorTexture.h"
-#include "render/Shader.h"
-#include "render/Plane2D.h"
+#include "render/ImagePool.h"
 
 namespace android_slam
 {
@@ -22,6 +19,9 @@ namespace android_slam
         static constexpr const char* k_app_name = "Android_SLAM";
         static constexpr const size_t k_max_fps = 60;
         static constexpr const float k_min_frame_time_second = 1.0f / (float)k_max_fps;
+
+        static constexpr const int32_t k_sensor_camera_width = 640;
+        static constexpr const int32_t k_sensor_camera_height = 480;
 
     public:
         App(android_app* state) noexcept;
@@ -47,15 +47,8 @@ namespace android_slam
     private:
         Timer m_timer;
         std::unique_ptr<Window> m_window;
-        std::unique_ptr<SensorCamera> m_sensor_camera;
 
-        std::unique_ptr<Plane2D> m_image_painter;
-        std::unique_ptr<SensorTexture> m_sensor_texture;
-        std::shared_ptr<Shader> m_yuv2rgb_shader;
-
-        std::unique_ptr<Plane2D> m_debug_painter;
-        std::unique_ptr<ImageTexture> m_debug_texture;
-        std::shared_ptr<Shader> m_debug_shader;
+        std::unique_ptr<ImagePool> m_image_pool;
 
     public:
         bool m_running = true;

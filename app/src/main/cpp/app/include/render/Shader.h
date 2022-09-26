@@ -14,12 +14,10 @@ namespace android_slam
 
     class Shader
     {
-    private:
-        Shader(const char* vert_src, const char* frag_src);
+    public:
+        Shader(const char* vert_path, const char* frag_path);
         Shader(const Shader&) = delete;
         Shader& operator=(const Shader&) = delete;
-
-    public:
         ~Shader() noexcept;
 
         void bind() const { glUseProgram(m_id); }
@@ -57,9 +55,6 @@ namespace android_slam
         {
             glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
         }
-
-
-        static std::shared_ptr<Shader> create(const char* vert_path, const char* frag_path);
 
     private:
         static std::string readFile(const char* path);

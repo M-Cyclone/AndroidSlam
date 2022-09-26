@@ -13,31 +13,30 @@ namespace android_slam
     class ImageTexture
     {
     public:
-        ImageTexture(int32_t width, int32_t height) noexcept
+        ImageTexture(int32_t width, int32_t height, const std::vector<uint8_t>& img) noexcept
             : m_width(width)
             , m_height(height)
         {
             glGenTextures(1, &m_texture);
             assert((m_texture != 0) && "[Android Slam Render Info] Failed to create GL texture.");
+
+            glBindTexture(GL_TEXTURE_2D, m_texture);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data());
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
         ImageTexture(const ImageTexture&) = delete;
         ImageTexture& operator=(const ImageTexture&) = delete;
         ~ImageTexture() noexcept
         {
             glDeleteTextures(1, &m_texture);
-        }
-
-        void setImage(const float* data)
-        {
-            glBindTexture(GL_TEXTURE_2D, m_texture);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_FLOAT, data);
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-        void setImage(const uint8_t * data)
-        {
-            glBindTexture(GL_TEXTURE_2D, m_texture);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         void bind() const { glBindTexture(GL_TEXTURE_2D, m_texture); }
