@@ -34,6 +34,10 @@ namespace android_slam
         static constexpr size_t k_max_image_count = 2;
 
     public:
+        static constexpr const int32_t k_sensor_camera_width = 640;
+        static constexpr const int32_t k_sensor_camera_height = 480;
+
+    public:
         SensorCamera(int32_t width, int32_t height, int32_t format, uint64_t usage);
         SensorCamera(const SensorCamera&) = delete;
         SensorCamera& operator=(const SensorCamera&) = delete;
@@ -42,6 +46,7 @@ namespace android_slam
         void stopCapture();
 
         AImage* getLatestImage() const;
+        std::vector<uint8_t> getLatestRGBImage() const;
 
     private:
         mutable size_t m_curr_img_idx = 0;

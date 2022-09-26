@@ -23,9 +23,6 @@ namespace android_slam
         static constexpr const size_t k_max_fps = 60;
         static constexpr const float k_min_frame_time_second = 1.0f / (float)k_max_fps;
 
-        static constexpr const int32_t k_sensor_camera_width = 640;
-        static constexpr const int32_t k_sensor_camera_height = 480;
-
     public:
         App(android_app* state) noexcept;
         App(const App&) = delete;
@@ -55,6 +52,10 @@ namespace android_slam
         std::unique_ptr<Plane2D> m_image_painter;
         std::unique_ptr<SensorTexture> m_sensor_texture;
         std::shared_ptr<Shader> m_yuv2rgb_shader;
+
+        std::unique_ptr<Plane2D> m_debug_painter;
+        std::unique_ptr<ImageTexture> m_debug_texture;
+        std::shared_ptr<Shader> m_debug_shader;
 
     public:
         bool m_running = true;

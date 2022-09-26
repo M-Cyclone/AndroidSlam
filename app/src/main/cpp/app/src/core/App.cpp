@@ -71,10 +71,11 @@ namespace android_slam
         );
 
         m_sensor_camera = std::make_unique<SensorCamera>(
-                k_sensor_camera_width,
-                k_sensor_camera_height,
+                SensorCamera::k_sensor_camera_width,
+                SensorCamera::k_sensor_camera_height,
                 AIMAGE_FORMAT_YUV_420_888,
-                AHARDWAREBUFFER_USAGE_GPU_SAMPLED_IMAGE | AHARDWAREBUFFER_USAGE_GPU_COLOR_OUTPUT
+                //AHARDWAREBUFFER_USAGE_GPU_SAMPLED_IMAGE | AHARDWAREBUFFER_USAGE_GPU_COLOR_OUTPUT
+                AHARDWAREBUFFER_USAGE_CPU_READ_OFTEN
         );
         m_sensor_camera->startCapture();
 
@@ -84,13 +85,23 @@ namespace android_slam
             m_image_painter = std::make_unique<Plane2D>();
 
             m_sensor_texture = std::make_unique<SensorTexture>(
-                k_sensor_camera_width,
-                k_sensor_camera_height
+                SensorCamera::k_sensor_camera_width,
+                SensorCamera::k_sensor_camera_height
             );
 
             m_yuv2rgb_shader = Shader::create(
                 "shader/yuv2rgb.vert",
                 "shader/yuv2rgb.frag"
+            );
+
+
+            m_debug_painter = std::make_unique<Plane2D>();
+
+            m_debug_texture = std::make_unique<ImageTexture>(SensorCamera::k_sensor_camera_width, SensorCamera::k_sensor_camera_height);
+
+            m_debug_shader = Shader::create(
+                "shader/yuv2rgb.vert",
+                "shader/debug_texture.frag"
             );
         }
 
@@ -102,6 +113,16 @@ namespace android_slam
     {
         m_active = false;
 
+
+        {
+            m_image_painter.reset(nullptr);
+            m_sensor_texture.reset(nullptr);
+
+            m_yuv2rgb_shader = nullptr;
+            m_debug_shader = nullptr;
+        }
+
+
         m_sensor_camera->stopCapture();
         m_window.reset(nullptr);
     }
@@ -110,41 +131,37 @@ namespace android_slam
     {
         // Use GPU shader to trans YUV to RGB.
         {
-            glViewport(0, 0, k_sensor_camera_width, k_sensor_camera_height);
-
-
-            // Clear buffers.
-            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-
-            // Update Sensor Image.
-            m_sensor_texture->setImage(m_sensor_camera->getLatestImage());
-
-
-            // Do draw call.
-            m_image_painter->bind();
-            m_yuv2rgb_shader->bind();
-
-            glActiveTexture(GL_TEXTURE0);
-            m_sensor_texture->bind();
-            m_yuv2rgb_shader->setInt("sensor_image", 0);
-
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-            m_sensor_texture->unbind();
-            m_yuv2rgb_shader->unbind();
-            m_image_painter->unbind();
+            //glViewport(0, 0, k_sensor_camera_width, k_sensor_camera_height);
+//
+//
+            //// Clear buffers.
+            //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+//
+//
+            //// Update Sensor Image.
+            //m_sensor_texture->setImage(m_sensor_camera->getLatestImage());
+//
+//
+            //// Do draw call.
+            //m_image_painter->bind();
+            //m_yuv2rgb_shader->bind();
+//
+            //glActiveTexture(GL_TEXTURE0);
+            //m_sensor_texture->bind();
+            //m_yuv2rgb_shader->setInt("sensor_image", 0);
+//
+            //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+//
+            //m_sensor_texture->unbind();
+            //m_yuv2rgb_shader->unbind();
+            //m_image_painter->unbind();
         }
 
 
-        // SLAM result present.
+        // YUV 2 RGB converter.
         {
-            glViewport(0, 0, m_window->getWidth(), m_window->getHeight());
 
-            // Clear buffers.
-            //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         }
 
 

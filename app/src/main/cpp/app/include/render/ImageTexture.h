@@ -19,7 +19,6 @@ namespace android_slam
         {
             glGenTextures(1, &m_texture);
             assert((m_texture != 0) && "[Android Slam Render Info] Failed to create GL texture.");
-            glBindTexture(GL_TEXTURE_2D, m_texture);
         }
         ImageTexture(const ImageTexture&) = delete;
         ImageTexture& operator=(const ImageTexture&) = delete;
@@ -32,6 +31,13 @@ namespace android_slam
         {
             glBindTexture(GL_TEXTURE_2D, m_texture);
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_FLOAT, data);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+        void setImage(const uint8_t * data)
+        {
+            glBindTexture(GL_TEXTURE_2D, m_texture);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         void bind() const { glBindTexture(GL_TEXTURE_2D, m_texture); }
