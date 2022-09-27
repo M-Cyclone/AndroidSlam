@@ -9,7 +9,8 @@ namespace android_slam
 
     void SensorTexture::setImage(AImage* image)
     {
-        glBindTexture(GL_TEXTURE_EXTERNAL_OES, m_texture);
+        bind();
+
         AHardwareBuffer* hardware_buffer;
         media_status_t ms = AImage_getHardwareBuffer(image, &hardware_buffer);
         assert((ms == AMEDIA_OK) && "[Android Slam Render Info] Failed to get hardware buffer from AImage.");
@@ -28,6 +29,8 @@ namespace android_slam
         glEGLImageTargetTexture2DOES(GL_TEXTURE_EXTERNAL_OES, egl_image_khr);
 
         m_curr_image = image;
+
+        unbind();
     }
 
     void SensorTexture::registerFunctions()

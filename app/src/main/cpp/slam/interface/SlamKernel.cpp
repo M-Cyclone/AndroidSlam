@@ -77,11 +77,17 @@ namespace android_slam
     // unique_ptr needs to know how to delete the ptr, so the dtor should be impl with the definition of the ptr class.
     SlamKernel::~SlamKernel() = default;
 
-    void SlamKernel::handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus)
+    std::pair<size_t, size_t> SlamKernel::handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus)
     {
         cv::Mat cv_image(m_height, m_width, CV_8UC4);
         memcpy(cv_image.data, images[0].data.data(), sizeof(uint8_t) * images[0].data.size());
         Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, time);
+
+        return
+        {
+            m_orb_slam->getAtlas().GetAllKeyFrames().size(),
+            m_orb_slam->getAtlas().GetAllMapPoints().size()
+        };
     }
 
 }

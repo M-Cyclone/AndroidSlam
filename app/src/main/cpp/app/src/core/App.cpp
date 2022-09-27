@@ -6,6 +6,10 @@
 #include "utils/Log.h"
 #include "utils/AssetManager.h"
 
+#include "render/ImageTexture.h"
+#include "render/Shader.h"
+#include "render/Plane2D.h"
+
 namespace android_slam
 {
 
@@ -70,33 +74,18 @@ namespace android_slam
                 App::k_app_name
         );
 
-        m_sensor_camera = std::make_unique<SensorCamera>(
-                k_sensor_camera_width,
-                k_sensor_camera_height,
-                AIMAGE_FORMAT_YUV_420_888,
-                AHARDWAREBUFFER_USAGE_GPU_SAMPLED_IMAGE | AHARDWAREBUFFER_USAGE_GPU_COLOR_OUTPUT
-        );
-        m_sensor_camera->startCapture();
-
 
         // Camera image converter.
-        {
-            m_image_painter = std::make_unique<Plane2D>();
-
-            m_sensor_texture = std::make_unique<SensorTexture>(
-                k_sensor_camera_width,
-                k_sensor_camera_height
-            );
-
-            m_yuv2rgb_shader = Shader::create(
-                "shader/yuv2rgb.vert",
-                "shader/yuv2rgb.frag"
-            );
-        }
+        m_image_pool = std::make_unique<ImagePool>(
+            k_sensor_camera_width,
+            k_sensor_camera_height,
+            "shader/yuv2rgb.vert",
+            "shader/yuv2rgb.frag"
+        );
 
 
         {
-            DEBUG_INFO("[Android Slam Info] Starts to create slam kernel.");
+            DEBUG_INFO("[Android Slam App Info] Starts to create slam kernel.");
 
             AAsset* asset = AAssetManager_open(AssetManager::get(), "vocabulary/ORBVoc.txt", AASSET_MODE_BUFFER);
             assert(asset && "[Android Slam App Info] Failed to open ORBVoc.txt.");
@@ -108,7 +97,7 @@ namespace android_slam
 
             m_slam_kernel = std::make_unique<SlamKernel>(k_sensor_camera_width, k_sensor_camera_height, std::move(voc_buffer));
 
-            DEBUG_INFO("[Android Slam Info] Creates slam kernel successfully.");
+            DEBUG_INFO("[Android Slam App Info] Creates slam kernel successfully.");
         }
 
 
@@ -119,71 +108,55 @@ namespace android_slam
     {
         m_active = false;
 
-        m_sensor_camera->stopCapture();
+
+        m_image_pool.reset(nullptr);
+
+
         m_window.reset(nullptr);
     }
 
     void App::update(float dt)
     {
+        // Clear buffers.
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
         // Use GPU shader to trans YUV to RGB.
-        {
-            glViewport(0, 0, k_sensor_camera_width, k_sensor_camera_height);
+        //{
+        //    std::vector<uint8_t> img = m_image_pool->getImage();
+        //    Shader debug_shader("shader/yuv2rgb.vert", "shader/debug_texture.frag");
+        //    Plane2D debug_plane;
+        //    ImageTexture debug_texture(k_sensor_camera_width, k_sensor_camera_height, img);
+
+        //    debug_plane.bind();
+        //    debug_shader.bind();
+
+        //    glActiveTexture(GL_TEXTURE0);
+        //    debug_shader.setInt("screen_shot", 0);
+        //    debug_texture.bind();
+
+        //    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        //    debug_texture.unbind();
+        //    debug_shader.unbind();
+        //    debug_plane.unbind();
+        //}
 
 
-            // Clear buffers.
-            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-
-            // Update Sensor Image.
-            m_sensor_texture->setImage(m_sensor_camera->getLatestImage());
-
-
-            // Do draw call.
-            m_image_painter->bind();
-            m_yuv2rgb_shader->bind();
-
-            glActiveTexture(GL_TEXTURE0);
-            m_sensor_texture->bind();
-            m_yuv2rgb_shader->setInt("sensor_image", 0);
-
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-            m_sensor_texture->unbind();
-            m_yuv2rgb_shader->unbind();
-            m_image_painter->unbind();
-        }
-
-
-        // SLAM calculation.
+        // Slam handling.
         {
             static Timer slam_timer;
+            std::vector<Image> images;
+            images.push_back(Image{ m_image_pool->getImage() });
+            auto [kf_count, mp_count] = m_slam_kernel->handleData(slam_timer.peek(), images, {});
 
-            Image img_left
-            {
-                std::vector<uint8_t>(4 * k_sensor_camera_width * k_sensor_camera_height)
-            };
-            glReadPixels(0, 0, k_sensor_camera_width, k_sensor_camera_height, GL_RGBA, GL_UNSIGNED_BYTE, img_left.data.data());
-
-            m_slam_kernel->handleData(
-                slam_timer.peek(),
-                { std::move(img_left) },
-                {}
-            );
-        }
-
-
-        // SLAM result present.
-        {
-            glViewport(0, 0, m_window->getWidth(), m_window->getHeight());
-
-            // Clear buffers.
-            //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            DEBUG_INFO("[Android Slam App Info] For now: %lu KPs and %lu MPs.", kf_count, mp_count);
         }
 
 
         m_window->swapBuffers();
+
+        DEBUG_INFO("[Android Slam App Info] Current FPS: %.3f frame per second.", 1.0f / dt);
     }
 
     void App::onCmd(android_app *app, int32_t cmd)

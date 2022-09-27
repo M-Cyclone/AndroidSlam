@@ -10,10 +10,7 @@
 #include "utils/Timer.h"
 #include "sensor/SensorCamera.h"
 
-#include "render/ImageTexture.h"
-#include "render/SensorTexture.h"
-#include "render/Shader.h"
-#include "render/Plane2D.h"
+#include "render/ImagePool.h"
 
 namespace android_slam
 {
@@ -52,12 +49,7 @@ namespace android_slam
     private:
         Timer m_timer;
         std::unique_ptr<Window> m_window;
-        std::unique_ptr<SensorCamera> m_sensor_camera;
-
-        std::unique_ptr<Plane2D> m_image_painter;
-        std::unique_ptr<SensorTexture> m_sensor_texture;
-        std::shared_ptr<Shader> m_yuv2rgb_shader;
-
+        std::unique_ptr<ImagePool> m_image_pool;
         std::unique_ptr<SlamKernel> m_slam_kernel;
 
     public:

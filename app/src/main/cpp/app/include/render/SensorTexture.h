@@ -21,7 +21,6 @@ namespace android_slam
         {
             glGenTextures(1, &m_texture);
             assert((m_texture != 0) && "[Android Slam Render Info] Failed to create GL texture.");
-            glBindTexture(GL_TEXTURE_EXTERNAL_OES, m_texture);
         }
         SensorTexture(const SensorTexture&) = delete;
         SensorTexture& operator=(const SensorTexture&) = delete;
