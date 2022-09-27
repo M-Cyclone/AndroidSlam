@@ -187,6 +187,8 @@ public:
     Atlas& getAtlas() { return *mpAtlas; }
     const Atlas& getAtlas() const { return *mpAtlas; }
 
+    int getTrackingState() const { return mTrackingState; }
+
 private:
 
     // Input sensor

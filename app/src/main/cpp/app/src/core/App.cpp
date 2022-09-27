@@ -148,9 +148,39 @@ namespace android_slam
             static Timer slam_timer;
             std::vector<Image> images;
             images.push_back(Image{ m_image_pool->getImage() });
-            auto [kf_count, mp_count] = m_slam_kernel->handleData(slam_timer.peek(), images, {});
+            auto [kf_count, mp_count, tracking_state] = m_slam_kernel->handleData(slam_timer.peek(), images, {});
 
             DEBUG_INFO("[Android Slam App Info] For now: %lu KPs and %lu MPs.", kf_count, mp_count);
+
+            std::string state_str;
+            switch (tracking_state)
+            {
+                case -1:
+                    state_str = "SYSTEM_NOT_READY";
+                    break;
+                case 0:
+                    state_str = "NO_IMAGES_YET";
+                    break;
+                case 1:
+                    state_str = "NOT_INITIALIZED";
+                    break;
+                case 2:
+                    state_str = "OK";
+                    break;
+                case 3:
+                    state_str = "RECENTLY_LOST";
+                    break;
+                case 4:
+                    state_str = "LOST";
+                    break;
+                case 5:
+                    state_str = "OK_KLT";
+                    break;
+                default:
+                    break;
+            }
+
+            DEBUG_INFO("[Android Slam App Info] Current tracking state: %s", state_str.c_str());
         }
 
 

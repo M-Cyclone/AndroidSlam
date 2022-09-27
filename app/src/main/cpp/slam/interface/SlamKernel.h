@@ -2,6 +2,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <tuple>
 
 namespace ORB_SLAM3
 {
@@ -34,7 +35,7 @@ namespace android_slam
         SlamKernel& operator=(const SlamKernel&) = delete;
         ~SlamKernel();
 
-        std::pair<size_t, size_t> handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus);
+        std::tuple<size_t, size_t, int> handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus);
 
     private:
         int32_t m_width;
