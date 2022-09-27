@@ -137,7 +137,7 @@ public:
     // Backprojects a keypoint (if stereo/depth info available) into 3D world coordinates.
     bool UnprojectStereo(const int &i, Eigen::Vector3f &x3D);
 
-    ConstraintPoseImu* mpcpi;
+    ConstraintPoseImu* mpcpi = nullptr;
 
     bool imuIsPreintegrated();
     void setIntegrated();
@@ -187,7 +187,7 @@ private:
     Eigen::Matrix<float,3,1> mOw;
     Eigen::Matrix<float,3,3> mRcw;
     Eigen::Matrix<float,3,1> mtcw;
-    bool mbHasPose;
+    bool mbHasPose = false;
 
     //Rcw_ not necessary as Sophus has a method for extracting the rotation matrix: Tcw_.rotationMatrix()
     //tcw_ not necessary as Sophus has a method for extracting the translation vector: Tcw_.translation()
@@ -200,7 +200,7 @@ private:
 
     // IMU linear velocity
     Eigen::Vector3f mVw;
-    bool mbHasVelocity;
+    bool mbHasVelocity = false;
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -209,7 +209,8 @@ public:
     ORBVocabulary* mpORBvocabulary;
 
     // Feature extractor. The right is used only in the stereo case.
-    ORBextractor* mpORBextractorLeft, *mpORBextractorRight;
+    ORBextractor* mpORBextractorLeft = nullptr;
+    ORBextractor* mpORBextractorRight = nullptr;
 
     // Frame timestamp.
     double mTimeStamp;
@@ -277,19 +278,19 @@ public:
     IMU::Calib mImuCalib;
 
     // Imu preintegration from last keyframe
-    IMU::Preintegrated* mpImuPreintegrated;
+    IMU::Preintegrated* mpImuPreintegrated = nullptr;
     KeyFrame* mpLastKeyFrame;
 
     // Pointer to previous frame
     Frame* mpPrevFrame;
-    IMU::Preintegrated* mpImuPreintegratedFrame;
+    IMU::Preintegrated* mpImuPreintegratedFrame = nullptr;
 
     // Current and Next Frame id.
     static long unsigned int nNextId;
     long unsigned int mnId;
 
     // Reference Keyframe.
-    KeyFrame* mpReferenceKF;
+    KeyFrame* mpReferenceKF = nullptr;
 
     // Scale pyramid info.
     int mnScaleLevels;
@@ -328,14 +329,15 @@ private:
     // Assign keypoints to the grid for speed up feature matching (called in the constructor).
     void AssignFeaturesToGrid();
 
-    bool mbIsSet;
+    bool mbIsSet = false;
 
-    bool mbImuPreintegrated;
+    bool mbImuPreintegrated = false;
 
     std::mutex *mpMutexImu;
 
 public:
-    GeometricCamera* mpCamera, *mpCamera2;
+    GeometricCamera* mpCamera = nullptr;
+    GeometricCamera* mpCamera2;
 
     //Number of KeyPoints extracted in the left and right images
     int Nleft, Nright;

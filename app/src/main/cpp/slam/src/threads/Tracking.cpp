@@ -3472,10 +3472,12 @@ namespace ORB_SLAM3
         int num_lost = 0;
         cout << "mnInitialFrameId = " << mnInitialFrameId << endl;
 
-        for (list<bool>::iterator ilbL = mlbLost.begin(); ilbL != mlbLost.end(); ilbL++)
+        for (bool ilbL : mlbLost)
         {
             if (index < mnInitialFrameId)
-                lbLost.push_back(*ilbL);
+            {
+                lbLost.push_back(ilbL);
+            }
             else
             {
                 lbLost.push_back(true);

@@ -12,7 +12,7 @@ void main()
     vec2 uv = vec2(v_texCoords.x, 1.0f - v_texCoords.y);
     vec4 color = texture(screen_shot, uv);
 
-    if(gl_FragCoord.x < 320)
+    if(gl_FragCoord.x < 320.0f)
     {
         frag_color = color;
     }

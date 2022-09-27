@@ -79,7 +79,7 @@ namespace android_slam
 
     std::pair<size_t, size_t> SlamKernel::handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus)
     {
-        cv::Mat cv_image(m_height, m_width, CV_8UC4);
+        cv::Mat cv_image(m_height, m_width, CV_8UC3);
         memcpy(cv_image.data, images[0].data.data(), sizeof(uint8_t) * images[0].data.size());
         Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, time);
 
