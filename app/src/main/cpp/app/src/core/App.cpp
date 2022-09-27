@@ -6,6 +6,10 @@
 #include "utils/Log.h"
 #include "utils/AssetManager.h"
 
+#include "render/ImageTexture.h"
+#include "render/Shader.h"
+#include "render/Plane2D.h"
+
 namespace android_slam
 {
 
@@ -101,11 +105,29 @@ namespace android_slam
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         // Use GPU shader to trans YUV to RGB.
-        glViewport(0, 0, k_sensor_camera_width, k_sensor_camera_height);
-        auto img = m_image_pool->getImage();
+        {
+            std::vector<uint8_t> img = m_image_pool->getImage();
+            Shader debug_shader("shader/yuv2rgb.vert", "shader/debug_texture.frag");
+            Plane2D debug_plane;
+            ImageTexture debug_texture(k_sensor_camera_width, k_sensor_camera_height, img);
 
+            debug_plane.bind();
+            debug_shader.bind();
+
+            glActiveTexture(GL_TEXTURE0);
+            debug_shader.setInt("screen_shot", 0);
+            debug_texture.bind();
+
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+            debug_texture.unbind();
+            debug_shader.unbind();
+            debug_plane.unbind();
+        }
 
         m_window->swapBuffers();
+
+        DEBUG_INFO("[Android Slam App Info] Current FPS: %.3f frame per second.", dt);
     }
 
     void App::onCmd(android_app *app, int32_t cmd)

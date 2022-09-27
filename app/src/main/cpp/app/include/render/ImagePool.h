@@ -24,6 +24,10 @@ namespace android_slam
         int32_t m_width;
         int32_t m_height;
 
+        uint32_t m_fbo;
+        uint32_t m_color_attachment;
+        uint32_t m_depth_stencil_attachment;
+
         Plane2D m_transform_painter;
         Shader m_transform_shader;
         SensorTexture m_transform_texture;

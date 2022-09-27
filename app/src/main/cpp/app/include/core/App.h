@@ -47,7 +47,6 @@ namespace android_slam
     private:
         Timer m_timer;
         std::unique_ptr<Window> m_window;
-
         std::unique_ptr<ImagePool> m_image_pool;
 
     public:
