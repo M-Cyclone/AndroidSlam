@@ -9,5 +9,14 @@ uniform sampler2D screen_shot;
 
 void main()
 {
-    frag_color = texture(screen_shot, v_texCoords);
+    vec4 color = texture(screen_shot, v_texCoords);
+
+    if(gl_FragCoord.x < 320.0f)
+    {
+        frag_color = color;
+    }
+    else
+    {
+        frag_color = vec4(color.x, color.y, 1.0f, 1.0f);
+    }
 }
