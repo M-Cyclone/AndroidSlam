@@ -8,15 +8,7 @@ namespace android_slam
         , m_aspect_ratio(aspect_ratio)
         , m_z_near(z_near)
         , m_z_far(z_far)
-        , m_view{}
-        , m_proj{}
         , m_mvp_shader("shader/mvp.vert", "shader/mvp.frag")
-        , m_mp_vao{}
-        , m_kf_vao{}
-        , m_mp_vbo{}
-        , m_kf_vbo{}
-        , m_mp_count{}
-        , m_kf_count{}
     {
         updateProj();
 
@@ -73,11 +65,15 @@ namespace android_slam
 
     void SlamRenderer::draw() const
     {
+        glClearColor(m_clear_color.r, m_clear_color.g, m_clear_color.b, m_clear_color.a);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
         m_mvp_shader.bind();
         m_mvp_shader.setMat4("u_mat_mvp", m_proj * m_view);
 
+        if(m_show_mappoints)
         {
-            m_mvp_shader.setVec3("u_color", glm::vec3{ 1.0f, 1.0f, 1.0f });
+            m_mvp_shader.setVec3("u_color", m_mp_color);
             m_mvp_shader.setFloat("u_point_size", 1.0f);
 
             glBindVertexArray(m_mp_vao);
@@ -86,10 +82,11 @@ namespace android_slam
             glBindVertexArray(0);
         }
 
+        if(m_show_keyframes)
         {
             glLineWidth(2.0f);
 
-            m_mvp_shader.setVec3("u_color", glm::vec3{ 0.0f, 1.0f, 0.0f });
+            m_mvp_shader.setVec3("u_color", m_kf_color);
 
             glBindVertexArray(m_kf_vao);
             glDrawArrays(GL_LINE_STRIP, 0, (GLsizei)m_kf_count);

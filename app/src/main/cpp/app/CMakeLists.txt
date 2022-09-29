@@ -26,7 +26,7 @@ project(android_slam)
         mediandk
         EGL
         GLESv3
-
+        imgui
         slam_kernel
     )
     target_compile_definitions(${PROJECT_NAME}

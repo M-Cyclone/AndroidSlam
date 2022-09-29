@@ -4,6 +4,10 @@
 
 #include <android_native_app_glue.h>
 
+#include <imgui.h>
+#include <imgui_impl_android.h>
+#include <imgui_impl_opengl3.h>
+
 #include <SlamKernel.h>
 
 #include "Window.h"
@@ -39,11 +43,6 @@ namespace android_slam
         void update(float dt);
         void exit();
 
-        void onMotionDown(float x_pos, float y_pos);
-        void onMotionUp(float x_pos, float y_pos);
-        void onMotionMove(float x_pos, float y_pos);
-        void onMotionCancel(float x_pos, float y_pos);
-
         static void onCmd(android_app* app, int32_t cmd);
         static int32_t onInput(android_app* app, AInputEvent* ie);
 
@@ -55,7 +54,6 @@ namespace android_slam
 
         std::unique_ptr<SlamKernel> m_slam_kernel;
 
-    public:
         bool m_running = true;
         bool m_active = false;
     };

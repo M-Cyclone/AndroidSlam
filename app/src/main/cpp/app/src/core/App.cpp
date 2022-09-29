@@ -86,7 +86,7 @@ namespace android_slam
         );
 
 
-        m_slam_renderer = std::make_unique<SlamRenderer>(45.0f, m_window->getAspectRatio(), 0.1f, 100.0f);
+        m_slam_renderer = std::make_unique<SlamRenderer>(45.0f, m_window->getAspectRatio(), 0.1f, 1000.0f);
 
 
         {
@@ -106,12 +106,36 @@ namespace android_slam
         }
 
 
+        // ImGui
+        {
+            IMGUI_CHECKVERSION();
+
+            ImGui::CreateContext();
+            ImGui::StyleColorsDark();
+
+            ImFontConfig font_config{};
+            font_config.SizePixels = 40.0f;
+
+            ImGuiIO& io = ImGui::GetIO();
+            io.IniFilename = nullptr;
+            io.Fonts->AddFontDefault(&font_config);
+
+            ImGui_ImplAndroid_Init(g_state->window);
+            ImGui_ImplOpenGL3_Init("#version 300 es");
+        }
+
+
         m_active = true;
     }
 
     void App::exit()
     {
         m_active = false;
+
+
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplAndroid_Shutdown();
+        ImGui::DestroyContext();
 
 
         m_image_pool.reset(nullptr);
@@ -122,9 +146,7 @@ namespace android_slam
 
     void App::update(float dt)
     {
-        // Clear buffers.
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        ImGuiIO& io = ImGui::GetIO();
 
         // Use GPU shader to trans YUV to RGB.
         //{
@@ -163,6 +185,50 @@ namespace android_slam
 
             m_slam_renderer->setData(tracking_res);
             m_slam_renderer->draw();
+        }
+
+
+        // UI handling.
+        {
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplAndroid_NewFrame();
+            ImGui::NewFrame();
+
+            if(ImGui::CollapsingHeader("Android Slam"))
+            {
+                if(ImGui::TreeNode("Render Options"))
+                {
+                    if(ImGui::Button("Show / Hide Map Points"))
+                    {
+                        m_slam_renderer->m_show_mappoints = !m_slam_renderer->m_show_mappoints;
+                    }
+
+                    if(ImGui::Button("Show / Hide Key Frames"))
+                    {
+                        m_slam_renderer->m_show_keyframes = !m_slam_renderer->m_show_keyframes;
+                    }
+
+                    ImGui::ColorEdit3("Map Point Color", reinterpret_cast<float*>(&m_slam_renderer->m_mp_color));
+                    ImGui::ColorEdit3("Key Frame Color", reinterpret_cast<float*>(&m_slam_renderer->m_kf_color));
+                    ImGui::ColorEdit3("Screen Clear Color", reinterpret_cast<float*>(&m_slam_renderer->m_clear_color));
+
+                    ImGui::TreePop();
+                }
+
+                if(ImGui::TreeNode("App Options"))
+                {
+                    if(ImGui::Button("Exit App"))
+                    {
+                        m_active = false;
+                        m_running = false;
+                    }
+
+                    ImGui::TreePop();
+                }
+            }
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
 
 
@@ -237,94 +303,8 @@ namespace android_slam
 
     int32_t App::onInput(android_app* app, AInputEvent* ie)
     {
-        App& instance = *static_cast<App*>(app->userData);
-
-        int32_t event_type = AInputEvent_getType(ie);
-        switch (event_type)
-        {
-        case AINPUT_EVENT_TYPE_KEY:
-        case AINPUT_EVENT_TYPE_FOCUS:
-        {
-            break;
-        }
-        case AINPUT_EVENT_TYPE_MOTION:
-        {
-            int32_t action = AMotionEvent_getAction(ie);
-            int32_t ptr_idx = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-            action &= AMOTION_EVENT_ACTION_MASK;
-
-            int32_t tool_type = AMotionEvent_getToolType(ie, ptr_idx);
-
-            const float x_value = AMotionEvent_getX(ie, ptr_idx);
-            const float y_value = AMotionEvent_getY(ie, ptr_idx);
-
-            switch (action)
-            {
-            case AMOTION_EVENT_ACTION_DOWN:
-            {
-                if (tool_type == AMOTION_EVENT_TOOL_TYPE_FINGER ||
-                    tool_type == AMOTION_EVENT_TOOL_TYPE_UNKNOWN)
-                {
-                    instance.onMotionDown(x_value, y_value);
-                }
-                break;
-            }
-            case AMOTION_EVENT_ACTION_UP:
-            {
-                if (tool_type == AMOTION_EVENT_TOOL_TYPE_FINGER ||
-                    tool_type == AMOTION_EVENT_TOOL_TYPE_UNKNOWN)
-                {
-                    instance.onMotionUp(x_value, y_value);
-                }
-                break;
-            }
-            case AMOTION_EVENT_ACTION_MOVE:
-            {
-                instance.onMotionMove(x_value, y_value);
-                break;
-            }
-            case AMOTION_EVENT_ACTION_CANCEL:
-            {
-                instance.onMotionCancel(x_value, y_value);
-                break;
-            }
-            default:
-            {
-                break;
-            }
-            }
-        }
-        default:
-        {
-            break;
-        }
-        }
-
-        if(event_type == AINPUT_EVENT_TYPE_MOTION)
-        {
-            return 1;
-        }
-        return 0;
-    }
-
-    void App::onMotionDown(float x_pos, float y_pos)
-    {
-        DEBUG_INFO("Motion Down Event: [%.3f, %.3f]", x_pos, y_pos);
-    }
-
-    void App::onMotionUp(float x_pos, float y_pos)
-    {
-        DEBUG_INFO("Motion Up Event: [%.3f, %.3f]", x_pos, y_pos);
-    }
-
-    void App::onMotionMove(float x_pos, float y_pos)
-    {
-        DEBUG_INFO("Motion Move Event: [%.3f, %.3f]", x_pos, y_pos);
-    }
-
-    void App::onMotionCancel(float x_pos, float y_pos)
-    {
-        DEBUG_INFO("Motion Cancel Event: [%.3f, %.3f]", x_pos, y_pos);
+        (void)app;
+        return ImGui_ImplAndroid_HandleInputEvent(ie);
     }
 
 }

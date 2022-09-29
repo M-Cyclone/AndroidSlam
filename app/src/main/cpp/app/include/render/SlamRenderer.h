@@ -13,6 +13,8 @@ namespace android_slam
 
     class SlamRenderer
     {
+        friend class App;
+
     public:
         SlamRenderer(float fov, float aspect_ratio, float z_near, float z_far);
         SlamRenderer(const SlamRenderer&) = delete;
@@ -47,24 +49,30 @@ namespace android_slam
         }
 
     private:
-        float m_fov;
-        float m_aspect_ratio;
-        float m_z_near;
-        float m_z_far;
+        glm::vec4 m_clear_color = { 0.1f, 0.1f, 0.1f, 1.0f };
+        glm::vec3 m_mp_color = { 1.0f, 1.0f, 1.0f };
+        glm::vec3 m_kf_color = { 0.0f, 1.0f, 1.0f };
+        bool m_show_mappoints = true;
+        bool m_show_keyframes = true;
 
-        glm::mat4 m_view;
-        glm::mat4 m_proj;
+        float m_fov = 45.0f;
+        float m_aspect_ratio = 1.0f;
+        float m_z_near = 0.1f;
+        float m_z_far = 100.0f;
+
+        glm::mat4 m_view = glm::mat4(1.0f);
+        glm::mat4 m_proj = glm::mat4(1.0f);
 
         Shader m_mvp_shader;
 
-        uint32_t m_mp_vao;
-        uint32_t m_kf_vao;
+        uint32_t m_mp_vao{};
+        uint32_t m_mp_vbo{};
+        uint32_t m_mp_count{};
 
-        uint32_t m_mp_vbo;
-        uint32_t m_kf_vbo;
+        uint32_t m_kf_vao{};
+        uint32_t m_kf_vbo{};
+        uint32_t m_kf_count{};
 
-        uint32_t m_mp_count;
-        uint32_t m_kf_count;
     };
 
 }
