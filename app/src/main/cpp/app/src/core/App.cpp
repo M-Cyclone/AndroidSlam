@@ -146,43 +146,20 @@ namespace android_slam
 
     void App::update(float dt)
     {
-        ImGuiIO& io = ImGui::GetIO();
-
-        // Use GPU shader to trans YUV to RGB.
-        //{
-        //    std::vector<uint8_t> img = m_image_pool->getImage();
-        //    Shader debug_shader("shader/yuv2rgb.vert", "shader/debug_texture.frag");
-        //    Plane2D debug_plane;
-        //    ImageTexture debug_texture(k_sensor_camera_width, k_sensor_camera_height, img);
-
-        //    debug_plane.bind();
-        //    debug_shader.bind();
-
-        //    glActiveTexture(GL_TEXTURE0);
-        //    debug_shader.setInt("screen_shot", 0);
-        //    debug_texture.bind();
-
-        //    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        //    debug_texture.unbind();
-        //    debug_shader.unbind();
-        //    debug_plane.unbind();
-        //}
-
-
         // Slam handling.
         {
             static Timer slam_timer;
             std::vector<Image> images;
             images.push_back(Image{ m_image_pool->getImage() });
+
             TrackingResult tracking_res = m_slam_kernel->handleData(slam_timer.peek(), images, {});
 
             DEBUG_INFO("[Android Slam App Info] Current tracking state: %s", tracking_res.tracking_status.c_str());
 
-
             // Draw trajectory.
             glViewport(0, 0, m_window->getWidth(), m_window->getHeight());
 
+            m_slam_renderer->setImage(k_sensor_camera_width, k_sensor_camera_height, images[0]);
             m_slam_renderer->setData(tracking_res);
             m_slam_renderer->draw();
         }
@@ -190,6 +167,8 @@ namespace android_slam
 
         // UI handling.
         {
+            glViewport(0, 0, m_window->getWidth(), m_window->getHeight());
+
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplAndroid_NewFrame();
             ImGui::NewFrame();
@@ -208,6 +187,11 @@ namespace android_slam
                         m_slam_renderer->m_show_keyframes = !m_slam_renderer->m_show_keyframes;
                     }
 
+                    if(ImGui::Button("Show / Hide Image"))
+                    {
+                        m_slam_renderer->m_show_image = !m_slam_renderer->m_show_image;
+                    }
+
                     ImGui::ColorEdit3("Map Point Color", reinterpret_cast<float*>(&m_slam_renderer->m_mp_color));
                     ImGui::ColorEdit3("Key Frame Color", reinterpret_cast<float*>(&m_slam_renderer->m_kf_color));
                     ImGui::ColorEdit3("Screen Clear Color", reinterpret_cast<float*>(&m_slam_renderer->m_clear_color));
@@ -217,6 +201,7 @@ namespace android_slam
 
                 if(ImGui::TreeNode("App Options"))
                 {
+                    ImGui::Text("Current FPS %.2f.", 1.0f / dt);
                     if(ImGui::Button("Exit App"))
                     {
                         m_active = false;

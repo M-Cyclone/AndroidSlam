@@ -9,6 +9,7 @@ namespace android_slam
         , m_z_near(z_near)
         , m_z_far(z_far)
         , m_mvp_shader("shader/mvp.vert", "shader/mvp.frag")
+        , m_image_shader("shader/image.vert", "shader/image.frag")
     {
         updateProj();
 
@@ -26,6 +27,11 @@ namespace android_slam
 
         glDeleteVertexArrays(1, &m_mp_vao);
         glDeleteVertexArrays(1, &m_kf_vao);
+    }
+
+    void SlamRenderer::setImage(int32_t width, int32_t height, const Image& img)
+    {
+        m_image_texture = std::make_unique<ImageTexture>(width, height, img.data);
     }
 
     void SlamRenderer::setData(const TrackingResult& tracking_result)
@@ -96,6 +102,24 @@ namespace android_slam
         }
 
         m_mvp_shader.unbind();
+
+
+        if(m_show_image)
+        {
+            glViewport(0, 0, m_image_texture->getWidth(), m_image_texture->getHeight());
+
+            m_image_painter.bind();
+            m_image_shader.bind();
+
+            glActiveTexture(GL_TEXTURE0);
+            m_image_shader.setInt("screen_shot", 0);
+            m_image_texture->bind();
+
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            m_image_texture->unbind();
+            m_image_shader.unbind();
+            m_image_painter.unbind();
+        }
     }
 
 }

@@ -7,6 +7,8 @@
 #include <SlamKernel.h>
 
 #include "render/Shader.h"
+#include "render/Plane2D.h"
+#include "render/ImageTexture.h"
 
 namespace android_slam
 {
@@ -21,6 +23,7 @@ namespace android_slam
         SlamRenderer& operator=(const SlamRenderer&) = delete;
         ~SlamRenderer();
 
+        void setImage(int32_t width, int32_t height, const Image& img);
         void setData(const TrackingResult& tracking_result);
 
         void draw() const;
@@ -49,12 +52,6 @@ namespace android_slam
         }
 
     private:
-        glm::vec4 m_clear_color = { 0.1f, 0.1f, 0.1f, 1.0f };
-        glm::vec3 m_mp_color = { 1.0f, 1.0f, 1.0f };
-        glm::vec3 m_kf_color = { 0.0f, 1.0f, 1.0f };
-        bool m_show_mappoints = true;
-        bool m_show_keyframes = true;
-
         float m_fov = 45.0f;
         float m_aspect_ratio = 1.0f;
         float m_z_near = 0.1f;
@@ -73,6 +70,16 @@ namespace android_slam
         uint32_t m_kf_vbo{};
         uint32_t m_kf_count{};
 
+        Plane2D m_image_painter;
+        Shader m_image_shader;
+        std::unique_ptr<ImageTexture> m_image_texture;
+
+        glm::vec4 m_clear_color = { 0.1f, 0.1f, 0.1f, 1.0f };
+        glm::vec3 m_mp_color = { 1.0f, 1.0f, 1.0f };
+        glm::vec3 m_kf_color = { 0.0f, 1.0f, 1.0f };
+        bool m_show_mappoints = true;
+        bool m_show_keyframes = true;
+        bool m_show_image = false;
     };
 
 }
