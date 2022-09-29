@@ -1,5 +1,7 @@
 #include "SlamKernel.h"
 #include <iostream>
+#include <set>
+#include <unordered_set>
 
 #include <opencv2/opencv.hpp>
 #include <sophus/se3.hpp>
@@ -42,7 +44,7 @@ namespace android_slam
             0.999557249008f, 0.0149672133247f, 0.025715529948f, -0.064676986768f,
             -0.0257744366974f, 0.00375618835797f, 0.999660727178f, 0.00981073058949f,
             0.0f, 0.0f, 0.0f, 1.0f
-            );
+        );
         desc.imuInfo.bInsertKFsWhenLost = true;
         desc.orbInfo.nFeatures = 1000;
         desc.orbInfo.scaleFactor = 1.2f;
@@ -70,25 +72,91 @@ namespace android_slam
         m_orb_slam = std::make_unique<::ORB_SLAM3::System>(
             vocabulary,
             slam_settings,
-            (const ORB_SLAM3::System::eSensor)(desc.sensor)
+            static_cast<const ORB_SLAM3::System::eSensor>(desc.sensor)
         );
     }
 
     // unique_ptr needs to know how to delete the ptr, so the dtor should be impl with the definition of the ptr class.
     SlamKernel::~SlamKernel() = default;
 
-    std::tuple<size_t, size_t, int> SlamKernel::handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus)
+    TrackingResult SlamKernel::handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus)
     {
         cv::Mat cv_image(m_height, m_width, CV_8UC3);
         memcpy(cv_image.data, images[0].data.data(), sizeof(uint8_t) * images[0].data.size());
-        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, time);
 
-        return
+        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, time);
+        Eigen::Matrix4f mat_pose = pose.matrix();
+
+        TrackingResult res;
         {
-            m_orb_slam->getAtlas().GetAllKeyFrames().size(),
-            m_orb_slam->getAtlas().GetAllMapPoints().size(),
-            m_orb_slam->getTrackingState()
-        };
+            res.last_pose[+0] = mat_pose(0, 0);
+            res.last_pose[+1] = mat_pose(1, 0);
+            res.last_pose[+2] = mat_pose(2, 0);
+            res.last_pose[+3] = mat_pose(3, 0);
+            res.last_pose[+4] = mat_pose(0, 1);
+            res.last_pose[+5] = mat_pose(1, 1);
+            res.last_pose[+6] = mat_pose(2, 1);
+            res.last_pose[+7] = mat_pose(3, 1);
+            res.last_pose[+8] = mat_pose(0, 2);
+            res.last_pose[+9] = mat_pose(1, 2);
+            res.last_pose[10] = mat_pose(2, 2);
+            res.last_pose[11] = mat_pose(3, 2);
+            res.last_pose[12] = mat_pose(0, 3);
+            res.last_pose[13] = mat_pose(1, 3);
+            res.last_pose[14] = mat_pose(2, 3);
+            res.last_pose[15] = mat_pose(3, 3);
+        }
+
+        {
+            std::vector<ORB_SLAM3::KeyFrame*> key_frames = m_orb_slam->getAtlas().GetAllKeyFrames();
+
+            static auto key_frame_cmp = [](const ORB_SLAM3::KeyFrame* kf1, const ORB_SLAM3::KeyFrame* kf2)
+            {
+                return kf1->mnFrameId < kf2->mnFrameId;
+            };
+            std::set<ORB_SLAM3::KeyFrame*, decltype(key_frame_cmp)> kf_set(key_frame_cmp);
+            for(ORB_SLAM3::KeyFrame* kf : key_frames)
+            {
+                if(!kf || kf->isBad()) continue;
+                kf_set.insert(kf);
+            }
+
+            for(ORB_SLAM3::KeyFrame* kf : kf_set)
+            {
+                if(!kf || kf->isBad()) continue;
+
+                Eigen::Vector3f position = kf->GetPoseInverse().translation();
+                res.trajectory.push_back({ position.x(), position.y(), position.z() });
+            }
+        }
+
+        {
+            std::vector<ORB_SLAM3::MapPoint*> local_mps = m_orb_slam->getAtlas().GetReferenceMapPoints();
+            std::unordered_set<ORB_SLAM3::MapPoint*> local_mp_ust(local_mps.begin(), local_mps.end());
+
+            for(ORB_SLAM3::MapPoint* mp : local_mps)
+            {
+                if(!mp || mp->isBad()) continue;
+
+                Eigen::Vector3f position = mp->GetWorldPos();
+                res.map_points.push_back({ position.x(), position.y(), position.z() });
+            }
+
+            std::vector<ORB_SLAM3::MapPoint*> all_mps = m_orb_slam->getAtlas().GetAllMapPoints();
+            for(ORB_SLAM3::MapPoint* mp : all_mps)
+            {
+                if(!mp || mp->isBad() || local_mp_ust.find(mp) != local_mp_ust.end()) continue;
+
+                Eigen::Vector3f position = mp->GetWorldPos();
+                res.map_points.push_back({ position.x(), position.y(), position.z() });
+            }
+        }
+
+        {
+            res.tracking_status = m_orb_slam->getTrackingState();
+        }
+
+        return res;
     }
 
 }

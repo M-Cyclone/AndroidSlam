@@ -19,7 +19,7 @@ namespace android_slam
     {
     private:
         static constexpr const char* k_app_name = "Android_SLAM";
-        static constexpr const size_t k_max_fps = 60;
+        static constexpr const size_t k_max_fps = 20;
         static constexpr const float k_min_frame_time_second = 1.0f / (float)k_max_fps;
 
         static constexpr const int32_t k_sensor_camera_width = 640;

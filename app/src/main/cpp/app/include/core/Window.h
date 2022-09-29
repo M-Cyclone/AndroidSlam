@@ -33,6 +33,7 @@ namespace android_slam
         int32_t getWidth() const { return m_width; }
         int32_t getHeight() const { return m_height; }
         const std::string& getTitle() const { return m_title; }
+        float getAspectRatio() const { return (float)m_width / (float)m_height; }
 
         void setWidth(int32_t value) { m_width = value; }
         void setHeight(int32_t value) { m_height = value; }

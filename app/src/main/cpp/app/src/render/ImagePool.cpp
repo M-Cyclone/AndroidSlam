@@ -9,8 +9,8 @@ namespace android_slam
         , m_height(image_height)
         , m_fbo{}
         , m_color_attachment{}
-        , m_transform_painter{}
         , m_depth_stencil_attachment{}
+        , m_transform_painter{}
         , m_transform_shader(vert_path, frag_path)
         , m_transform_texture(image_width, image_height)
     {

@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <tuple>
+#include <array>
 
 namespace ORB_SLAM3
 {
@@ -27,6 +28,21 @@ namespace android_slam
         float wz;
     };
 
+    struct TrackingResult
+    {
+        struct Pos
+        {
+            float x;
+            float y;
+            float z;
+        };
+
+        std::array<float, 16> last_pose;
+        std::vector<Pos> trajectory;
+        std::vector<Pos> map_points;
+        int tracking_status;
+    };
+
     class SlamKernel
     {
     public:
@@ -35,7 +51,7 @@ namespace android_slam
         SlamKernel& operator=(const SlamKernel&) = delete;
         ~SlamKernel();
 
-        std::tuple<size_t, size_t, int> handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus);
+        TrackingResult handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus);
 
     private:
         int32_t m_width;

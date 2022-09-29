@@ -3,6 +3,8 @@
 #include <chrono>
 #include <atomic>
 
+#include <glm/glm.hpp>
+
 #include "utils/Log.h"
 #include "utils/AssetManager.h"
 
@@ -148,9 +150,9 @@ namespace android_slam
             static Timer slam_timer;
             std::vector<Image> images;
             images.push_back(Image{ m_image_pool->getImage() });
-            auto [kf_count, mp_count, tracking_state] = m_slam_kernel->handleData(slam_timer.peek(), images, {});
+            TrackingResult tracking_res = m_slam_kernel->handleData(slam_timer.peek(), images, {});
 
-            DEBUG_INFO("[Android Slam App Info] For now: %lu KPs and %lu MPs.", kf_count, mp_count);
+            const auto& [last_pose, trajectory, map_points, tracking_state] = tracking_res;
 
             std::string state_str;
             switch (tracking_state)
@@ -181,12 +183,64 @@ namespace android_slam
             }
 
             DEBUG_INFO("[Android Slam App Info] Current tracking state: %s", state_str.c_str());
+
+
+            // Draw trajectory.
+            glViewport(0, 0, m_window->getWidth(), m_window->getHeight());
+
+            // glm's ctor is col major.
+            glm::mat4 mat_view(
+                last_pose[+0], last_pose[+1], last_pose[+2], last_pose[+3],
+                last_pose[+4], last_pose[+5], last_pose[+6], last_pose[+7],
+                last_pose[+8], last_pose[+9], last_pose[10], last_pose[11],
+                last_pose[12], last_pose[13], last_pose[14], last_pose[15]
+            );
+            static const glm::mat4 k_mat_change(
+                1.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, -1.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f
+            );
+            mat_view = k_mat_change * mat_view;
+
+            glm::mat4 mat_proj = glm::perspective(glm::radians(45.0f), m_window->getAspectRatio(), 0.1f, 100.0f);
+
+
+            uint32_t map_point_vao{};
+            glGenVertexArrays(1, &map_point_vao);
+            glBindVertexArray(map_point_vao);
+
+            uint32_t map_point_vbo{};
+            glGenBuffers(1, &map_point_vbo);
+            glBindBuffer(GL_ARRAY_BUFFER, map_point_vbo);
+            glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(sizeof(decltype(map_points)::value_type) * map_points.size()), map_points.data(), GL_STATIC_DRAW);
+
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (const void*)0);
+            glEnableVertexAttribArray(0);
+
+
+            Shader mvp_shader("shader/mvp.vert", "shader/mvp.frag");
+            mvp_shader.bind();
+            mvp_shader.setMat4("u_mat_view", mat_view);
+            mvp_shader.setMat4("u_mat_proj", mat_proj);
+            mvp_shader.setVec3("u_color", glm::vec3{ 1.0f, 1.0f, 1.0f });
+
+
+            glDrawArrays(GL_POINTS, 0, (GLsizei)map_points.size());
+            DEBUG_INFO("[Android Slam App Info] Draw %ld points.", map_points.size());
+
+            mvp_shader.unbind();
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
+
+            glDeleteBuffers(1, &map_point_vbo);
+            glDeleteVertexArrays(1, &map_point_vao);
         }
 
 
         m_window->swapBuffers();
 
-        DEBUG_INFO("[Android Slam App Info] Current FPS: %.3f frame per second.", 1.0f / dt);
+        DEBUG_INFO("[Android Slam App Info] Current FPS: %.2f frame per second.", 1.0f / dt);
     }
 
     void App::onCmd(android_app *app, int32_t cmd)
