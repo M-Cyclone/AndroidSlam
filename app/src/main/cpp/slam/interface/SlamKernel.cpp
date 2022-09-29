@@ -128,6 +128,9 @@ namespace android_slam
                 Eigen::Vector3f position = kf->GetPoseInverse().translation();
                 res.trajectory.push_back({ position.x(), position.y(), position.z() });
             }
+
+            Eigen::Vector3f last_position = pose.inverse().translation();
+            res.trajectory.push_back({ last_position.x(), last_position.y(), last_position.z() });
         }
 
         {
@@ -153,7 +156,33 @@ namespace android_slam
         }
 
         {
-            res.tracking_status = m_orb_slam->getTrackingState();
+            int status = m_orb_slam->getTrackingState();
+            switch (status)
+            {
+                case -1:
+                    res.tracking_status = "SYSTEM_NOT_READY";
+                    break;
+                case 0:
+                    res.tracking_status = "NO_IMAGES_YET";
+                    break;
+                case 1:
+                    res.tracking_status = "NOT_INITIALIZED";
+                    break;
+                case 2:
+                    res.tracking_status = "OK";
+                    break;
+                case 3:
+                    res.tracking_status = "RECENTLY_LOST";
+                    break;
+                case 4:
+                    res.tracking_status = "LOST";
+                    break;
+                case 5:
+                    res.tracking_status = "OK_KLT";
+                    break;
+                default:
+                    break;
+            }
         }
 
         return res;

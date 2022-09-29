@@ -11,6 +11,7 @@
 #include "sensor/SensorCamera.h"
 
 #include "render/ImagePool.h"
+#include "render/SlamRenderer.h"
 
 namespace android_slam
 {
@@ -50,6 +51,8 @@ namespace android_slam
         Timer m_timer;
         std::unique_ptr<Window> m_window;
         std::unique_ptr<ImagePool> m_image_pool;
+        std::unique_ptr<SlamRenderer> m_slam_renderer;
+
         std::unique_ptr<SlamKernel> m_slam_kernel;
 
     public:

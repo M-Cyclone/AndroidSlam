@@ -40,7 +40,7 @@ namespace android_slam
         std::array<float, 16> last_pose;
         std::vector<Pos> trajectory;
         std::vector<Pos> map_points;
-        int tracking_status;
+        std::string tracking_status;
     };
 
     class SlamKernel
