@@ -140,7 +140,7 @@ namespace android_slam
 
     void App::update(float dt)
     {
-        auto active_scene = m_scene_map[m_active_scene];
+        auto active_scene = m_scene_map.at(m_active_scene);
         active_scene->update(dt);
 
 

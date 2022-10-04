@@ -44,7 +44,7 @@ namespace android_slam
         std::unique_ptr<SlamKernel> m_slam_kernel;
         Timer m_slam_timer;
 
-        bool m_is_running = false;
+        bool m_is_running = true;
     };
 
 }
