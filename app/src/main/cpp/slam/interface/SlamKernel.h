@@ -53,6 +53,8 @@ namespace android_slam
 
         TrackingResult handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus);
 
+        void reset();
+
     private:
         int32_t m_width;
         int32_t m_height;

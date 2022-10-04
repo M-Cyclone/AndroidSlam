@@ -77,7 +77,15 @@ namespace android_slam
     }
 
     // unique_ptr needs to know how to delete the ptr, so the dtor should be impl with the definition of the ptr class.
-    SlamKernel::~SlamKernel() = default;
+    SlamKernel::~SlamKernel()
+    {
+        m_orb_slam->Shutdown();
+    }
+
+    void SlamKernel::reset()
+    {
+        m_orb_slam->Reset();
+    }
 
     TrackingResult SlamKernel::handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus)
     {

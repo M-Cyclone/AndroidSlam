@@ -15,8 +15,6 @@ namespace android_slam
 
     class SlamRenderer
     {
-        friend class App;
-
     public:
         SlamRenderer(float fov, float aspect_ratio, float z_near, float z_far);
         SlamRenderer(const SlamRenderer&) = delete;
@@ -51,6 +49,18 @@ namespace android_slam
             m_proj = glm::perspective(glm::radians(m_fov), m_aspect_ratio, m_z_near, m_z_far);
         }
 
+    public:
+        glm::vec4 m_clear_color = { 0.1f, 0.1f, 0.1f, 1.0f };
+        glm::vec3 m_mp_color = { 1.0f, 1.0f, 1.0f };
+        glm::vec3 m_kf_color = { 0.0f, 1.0f, 1.0f };
+
+        float m_point_size = 2.0f;
+        float m_line_width = 2.0f;
+
+        bool m_show_mappoints = true;
+        bool m_show_keyframes = true;
+        bool m_show_image = false;
+
     private:
         float m_fov = 45.0f;
         float m_aspect_ratio = 1.0f;
@@ -73,13 +83,6 @@ namespace android_slam
         Plane2D m_image_painter;
         Shader m_image_shader;
         std::unique_ptr<ImageTexture> m_image_texture;
-
-        glm::vec4 m_clear_color = { 0.1f, 0.1f, 0.1f, 1.0f };
-        glm::vec3 m_mp_color = { 1.0f, 1.0f, 1.0f };
-        glm::vec3 m_kf_color = { 0.0f, 1.0f, 1.0f };
-        bool m_show_mappoints = true;
-        bool m_show_keyframes = true;
-        bool m_show_image = false;
     };
 
 }

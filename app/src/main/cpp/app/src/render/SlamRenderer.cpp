@@ -80,7 +80,7 @@ namespace android_slam
         if(m_show_mappoints)
         {
             m_mvp_shader.setVec3("u_color", m_mp_color);
-            m_mvp_shader.setFloat("u_point_size", 1.0f);
+            m_mvp_shader.setFloat("u_point_size", m_point_size);
 
             glBindVertexArray(m_mp_vao);
             glDrawArrays(GL_POINTS, 0, (GLsizei)m_mp_count);
@@ -90,7 +90,7 @@ namespace android_slam
 
         if(m_show_keyframes)
         {
-            glLineWidth(2.0f);
+            glLineWidth(m_line_width);
 
             m_mvp_shader.setVec3("u_color", m_kf_color);
 
