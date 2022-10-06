@@ -14,8 +14,8 @@ namespace android_slam
     class InitScene : public Scene
     {
     public:
-        explicit InitScene(App& app) noexcept
-            : Scene(app)
+        explicit InitScene(App& app, const char* name) noexcept
+            : Scene(app, name)
         {}
         InitScene(const InitScene&) = delete;
         InitScene& operator=(const InitScene&) = delete;

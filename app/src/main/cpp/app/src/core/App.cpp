@@ -74,24 +74,51 @@ namespace android_slam
     {
         AssetManager::set(g_state->activity->assetManager);
 
-        m_window = std::make_unique<Window>(
-        g_state->window, ANativeWindow_getWidth(g_state->window), ANativeWindow_getHeight(g_state->window), App::k_app_name
-        );
+        int32_t wnd_width = ANativeWindow_getWidth(g_state->window);
+        int32_t wnd_height = ANativeWindow_getHeight(g_state->window);
+        m_window = std::make_unique<Window>( g_state->window
+                                           , wnd_width
+                                           , wnd_height
+                                           , App::k_app_name
+                                           );
 
 
         // ImGui
         {
+            float font_size = (float)wnd_height * (1.0f / 20);
+
+
+            char* ttf_data;
+            size_t ttf_size;
+            {
+                AAsset* asset = AAssetManager_open(AssetManager::get(), "fonts/simhei.ttf", AASSET_MODE_BUFFER);
+                assert(asset && "[Android Slam Shader Info] Failed to open shader file.");
+
+                ttf_size = AAsset_getLength(asset);
+                auto data = (const char*)AAsset_getBuffer(asset);
+
+                // Don't need to free this memory because ImGui will release it when its context being destroyed.
+                ttf_data = (char*)malloc(ttf_size);
+                memcpy(ttf_data, data, ttf_size);
+
+                AAsset_close(asset);
+            }
+
             IMGUI_CHECKVERSION();
 
             ImGui::CreateContext();
             ImGui::StyleColorsDark();
 
-            ImFontConfig font_config{};
-            font_config.SizePixels = 50.0f;
-
             ImGuiIO& io = ImGui::GetIO();
             io.IniFilename = nullptr;
-            io.Fonts->AddFontDefault(&font_config);
+
+            auto fonts = io.Fonts;
+            fonts->AddFontFromMemoryTTF( ttf_data
+                                       , (int)ttf_size
+                                       , font_size
+                                       , nullptr
+                                       , fonts->GetGlyphRangesChineseSimplifiedCommon()
+                                       );
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
             ImGui_ImplAndroid_Init(g_state->window);
@@ -101,13 +128,13 @@ namespace android_slam
 
         // Init all scenes.
         {
-            m_scene_map.emplace(std::string("Init"), std::make_shared<InitScene>(*this));
-            m_scene_map.emplace(std::string("Slam"), std::make_shared<SlamScene>(*this));
+            m_scene_map.emplace(std::string("Init"), std::make_shared<InitScene>(*this, u8"系统"));
+            m_scene_map.emplace(std::string("Slam"), std::make_shared<SlamScene>(*this, u8"SLAM内核"));
 
             m_scene_map.at("Init")->init();
             m_scene_map.at("Slam")->init();
 
-            m_active_scene = "Init";
+            setActiveScene("Init");
         }
 
 
@@ -136,8 +163,7 @@ namespace android_slam
 
     void App::update(float dt)
     {
-        auto active_scene = m_scene_map.at(m_active_scene);
-        active_scene->update(dt);
+        m_active_scene->update(dt);
 
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -145,18 +171,22 @@ namespace android_slam
         ImGui::NewFrame();
 
 
+        ImGui::DockSpaceOverViewport( ImGui::GetMainViewport()
+                                    , ImGuiDockNodeFlags_PassthruCentralNode
+                                    );
+
         if (ImGui::BeginMainMenuBar())
         {
-            if (ImGui::BeginMenu("Widget"))
+            if (ImGui::BeginMenu(u8"组件"))
             {
-                if (ImGui::MenuItem("App"))
+                if (ImGui::MenuItem(u8"应用"))
                 {
                     m_show_app_ui = true;
                 }
 
-                if (ImGui::MenuItem(m_active_scene.c_str()))
+                if (ImGui::MenuItem(m_active_scene->getName().c_str()))
                 {
-                    active_scene->m_show_ui = true;
+                    m_active_scene->m_show_ui = true;
                 }
 
                 ImGui::EndMenu();
@@ -167,18 +197,18 @@ namespace android_slam
 
         if (m_show_app_ui)
         {
-            if (ImGui::Begin("App", &m_show_app_ui))
+            if (ImGui::Begin(u8"应用", &m_show_app_ui))
             {
                 ImGui::Text("Current FPS %.2f.", 1.0f / dt);
             }
             ImGui::End();
         }
 
-        if (active_scene->m_show_ui)
+        if (m_active_scene->m_show_ui)
         {
-            ImGui::Begin(m_active_scene.c_str(), &active_scene->m_show_ui);
+            ImGui::Begin(m_active_scene->getName().c_str(), &m_active_scene->m_show_ui);
             {
-                active_scene->drawGui(dt);
+                m_active_scene->drawGui(dt);
             }
             ImGui::End();
         }

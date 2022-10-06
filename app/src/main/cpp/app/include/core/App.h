@@ -32,7 +32,7 @@ namespace android_slam
         void setActiveScene(const std::string& name)
         {
             if(m_scene_map.find(name) == m_scene_map.end()) return;
-            m_active_scene = name;
+            m_active_scene = m_scene_map.at(name);
         }
 
     private:
@@ -48,7 +48,7 @@ namespace android_slam
         std::unique_ptr<Window> m_window;
 
         std::unordered_map<std::string, std::shared_ptr<Scene>> m_scene_map;
-        std::string m_active_scene;
+        std::shared_ptr<Scene> m_active_scene;
 
         bool m_show_app_ui = true;
 

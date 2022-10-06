@@ -58,9 +58,9 @@ namespace android_slam
 
     void InitScene::drawGui(float dt)
     {
-        if(ImGui::TreeNode("Options"))
+        if(ImGui::TreeNode(u8"系统选项"))
         {
-            if(ImGui::Button(m_initialized ? "Resume Tracking" :"Start Tracking"))
+            if(ImGui::Button(m_initialized ? u8"继续SLAM跟踪" : "开始SLAM跟踪"))
             {
                 m_initialized = true;
                 m_app.setActiveScene("Slam");

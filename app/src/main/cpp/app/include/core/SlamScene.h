@@ -22,8 +22,8 @@ namespace android_slam
         static constexpr const int32_t k_sensor_camera_height = 480;
 
     public:
-        explicit SlamScene(App& app) noexcept
-            : Scene(app)
+        explicit SlamScene(App& app, const char* name) noexcept
+            : Scene(app, name)
         {}
         SlamScene(const SlamScene&) = delete;
         SlamScene& operator=(const SlamScene&) = delete;

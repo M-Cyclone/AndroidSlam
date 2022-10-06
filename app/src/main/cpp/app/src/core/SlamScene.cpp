@@ -74,21 +74,21 @@ namespace android_slam
 
     void SlamScene::drawGui(float dt)
     {
-        if(ImGui::TreeNode("Slam Options"))
+        if(ImGui::TreeNode(u8"SLAM选项"))
         {
-            if(ImGui::TreeNode("Runtime Operation"))
+            if(ImGui::TreeNode(u8"SLAM控制"))
             {
-                if(ImGui::Button(m_is_running_slam ? "Pause" : "Resume"))
+                if(ImGui::Button(m_is_running_slam ? u8"暂停" : u8"继续"))
                 {
                     m_is_running_slam = !m_is_running_slam;
                 }
 
-                if(ImGui::Button("Reset"))
+                if(ImGui::Button(u8"重置"))
                 {
                     m_slam_kernel->reset();
                 }
 
-                if(ImGui::Button("Exit"))
+                if(ImGui::Button(u8"退出"))
                 {
                     m_app.setActiveScene("Init");
                 }
@@ -96,39 +96,39 @@ namespace android_slam
                 ImGui::TreePop();
             }
 
-            if(ImGui::TreeNode("Render Options"))
+            if(ImGui::TreeNode(u8"绘制选项"))
             {
-                if(ImGui::TreeNode("Map Points"))
+                if(ImGui::TreeNode(u8"地图点"))
                 {
-                    if(ImGui::Button(m_slam_renderer->m_show_mappoints ? "Hide" : "Show"))
+                    if(ImGui::Button(m_slam_renderer->m_show_mappoints ? u8"隐藏" : u8"显示"))
                     {
                         m_slam_renderer->m_show_mappoints = !m_slam_renderer->m_show_mappoints;
                     }
 
-                    ImGui::SliderFloat("Point Size", &m_slam_renderer->m_point_size, 1.0f, 5.0f);
+                    ImGui::SliderFloat(u8"地图点大小", &m_slam_renderer->m_point_size, 1.0f, 5.0f);
 
-                    ImGui::ColorEdit3("Map Point Color", reinterpret_cast<float*>(&m_slam_renderer->m_mp_color));
+                    ImGui::ColorEdit3(u8"地图点颜色", reinterpret_cast<float*>(&m_slam_renderer->m_mp_color));
 
                     ImGui::TreePop();
                 }
 
-                if(ImGui::TreeNode("Key Frames"))
+                if(ImGui::TreeNode(u8"相机轨迹"))
                 {
-                    if(ImGui::Button(m_slam_renderer->m_show_keyframes ? "Hide" : "Show"))
+                    if(ImGui::Button(m_slam_renderer->m_show_keyframes ? u8"隐藏" : u8"显示"))
                     {
                         m_slam_renderer->m_show_keyframes = !m_slam_renderer->m_show_keyframes;
                     }
 
-                    ImGui::SliderFloat("Line Width", &m_slam_renderer->m_line_width, 1.0f, 5.0f);
+                    ImGui::SliderFloat(u8"轨迹线粗细", &m_slam_renderer->m_line_width, 1.0f, 5.0f);
 
-                    ImGui::ColorEdit3("Key Frame Color", reinterpret_cast<float*>(&m_slam_renderer->m_kf_color));
+                    ImGui::ColorEdit3(u8"轨迹线颜色", reinterpret_cast<float*>(&m_slam_renderer->m_kf_color));
 
                     ImGui::TreePop();
                 }
 
-                if(ImGui::TreeNode("Image Preview"))
+                if(ImGui::TreeNode(u8"相机图像"))
                 {
-                    if(ImGui::Button(m_slam_renderer->m_show_image ? "Hide" : "Show"))
+                    if(ImGui::Button(m_slam_renderer->m_show_image ? u8"隐藏" : u8"显示"))
                     {
                         m_slam_renderer->m_show_image = !m_slam_renderer->m_show_image;
                     }
@@ -136,9 +136,9 @@ namespace android_slam
                     ImGui::TreePop();
                 }
 
-                if(ImGui::TreeNode("Others"))
+                if(ImGui::TreeNode(u8"其他"))
                 {
-                    ImGui::ColorEdit3("Screen Clear Color", reinterpret_cast<float*>(&m_slam_renderer->m_clear_color));
+                    ImGui::ColorEdit3(u8"清屏颜色", reinterpret_cast<float*>(&m_slam_renderer->m_clear_color));
 
                     ImGui::TreePop();
                 }

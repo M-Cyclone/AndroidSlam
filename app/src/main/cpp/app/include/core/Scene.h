@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 #include <imgui.h>
 #include <imgui_impl_android.h>
@@ -14,12 +15,15 @@ namespace android_slam
         friend class App;
 
     public:
-        explicit Scene(App& app) noexcept
+        explicit Scene(App& app, const char* name) noexcept
             : m_app(app)
+            , m_name(name)
         {}
         Scene(const Scene&) = delete;
         Scene& operator=(const Scene&) = delete;
         virtual ~Scene() noexcept = default;
+
+        const std::string& getName() const { return m_name; }
 
         virtual void init() = 0;
         virtual void exit() = 0;
@@ -32,6 +36,7 @@ namespace android_slam
 
     protected:
         App& m_app;
+        std::string m_name;
     };
 
 }
