@@ -9,7 +9,7 @@ namespace android_slam
         , m_z_near(z_near)
         , m_z_far(z_far)
         , m_mvp_shader("shader/mvp.vert", "shader/mvp.frag")
-        , m_image_shader("shader/image.vert", "shader/image.frag")
+        , m_image_shader("shader/image2d.vert", "shader/image2d.frag")
     {
         updateProj();
 
@@ -116,6 +116,7 @@ namespace android_slam
             m_image_texture->bind();
 
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
             m_image_texture->unbind();
             m_image_shader.unbind();
             m_image_painter.unbind();

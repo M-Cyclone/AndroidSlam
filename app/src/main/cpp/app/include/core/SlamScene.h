@@ -36,15 +36,12 @@ namespace android_slam
         void drawGui(float dt) override;
 
     private:
-
-
-    private:
         std::unique_ptr<ImagePool> m_image_pool;
         std::unique_ptr<SlamRenderer> m_slam_renderer;
         std::unique_ptr<SlamKernel> m_slam_kernel;
         Timer m_slam_timer;
 
-        bool m_is_running = true;
+        bool m_is_running_slam = true;
     };
 
 }

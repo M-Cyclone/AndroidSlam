@@ -101,15 +101,13 @@ namespace android_slam
 
         // Init all scenes.
         {
-            m_scene_map.emplace(std::string("init"), std::make_shared<InitScene>(*this));
-            m_scene_map.emplace(std::string("slam"), std::make_shared<SlamScene>(*this));
+            m_scene_map.emplace(std::string("Init"), std::make_shared<InitScene>(*this));
+            m_scene_map.emplace(std::string("Slam"), std::make_shared<SlamScene>(*this));
 
-            for (auto&&[name, scene]: m_scene_map)
-            {
-                scene->init();
-            }
+            m_scene_map.at("Init")->init();
+            m_scene_map.at("Slam")->init();
 
-            m_active_scene = "init";
+            m_active_scene = "Init";
         }
 
 
@@ -121,10 +119,8 @@ namespace android_slam
         m_active = false;
 
 
-        for (auto&&[name, scene]: m_scene_map)
-        {
-            scene->exit();
-        }
+        m_scene_map.at("Slam")->exit();
+        m_scene_map.at("Init")->exit();
 
 
         // ImGui
@@ -143,8 +139,6 @@ namespace android_slam
         auto active_scene = m_scene_map.at(m_active_scene);
         active_scene->update(dt);
 
-
-        glViewport(0, 0, m_window->getWidth(), m_window->getHeight());
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplAndroid_NewFrame();
@@ -266,7 +260,6 @@ namespace android_slam
 
     int32_t App::onInput(android_app* app, AInputEvent* ie)
     {
-        (void) app;
         return ImGui_ImplAndroid_HandleInputEvent(ie);
     }
 

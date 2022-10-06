@@ -71,6 +71,8 @@ namespace android_slam
         size_t size = AAsset_getLength(asset);
         auto data = (const char*) AAsset_getBuffer(asset);
 
+        AAsset_close(asset);
+
         return { data, data + size };
     }
 

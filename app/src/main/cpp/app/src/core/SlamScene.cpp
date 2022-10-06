@@ -52,7 +52,7 @@ namespace android_slam
 
     void SlamScene::update(float dt)
     {
-        if (m_is_running)
+        if (m_is_running_slam)
         {
             // Slam handling.
             std::vector<Image> images;
@@ -78,9 +78,9 @@ namespace android_slam
         {
             if(ImGui::TreeNode("Runtime Operation"))
             {
-                if(ImGui::Button(m_is_running ? "Pause" : "Resume"))
+                if(ImGui::Button(m_is_running_slam ? "Pause" : "Resume"))
                 {
-                    m_is_running = !m_is_running;
+                    m_is_running_slam = !m_is_running_slam;
                 }
 
                 if(ImGui::Button("Reset"))
@@ -90,7 +90,7 @@ namespace android_slam
 
                 if(ImGui::Button("Exit"))
                 {
-                    m_app.setActiveScene("init");
+                    m_app.setActiveScene("Init");
                 }
 
                 ImGui::TreePop();
