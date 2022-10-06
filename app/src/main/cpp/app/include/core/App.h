@@ -33,6 +33,7 @@ namespace android_slam
         {
             if(m_scene_map.find(name) == m_scene_map.end()) return;
             m_active_scene = m_scene_map.at(name);
+            m_active_scene->m_show_ui = true;
         }
 
     private:

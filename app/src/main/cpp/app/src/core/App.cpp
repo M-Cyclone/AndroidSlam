@@ -177,11 +177,13 @@ namespace android_slam
                                     , ImGuiDockNodeFlags_PassthruCentralNode
                                     );
 
+        const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+
         if (ImGui::BeginMainMenuBar())
         {
             if (ImGui::BeginMenu(u8"组件"))
             {
-                if (ImGui::MenuItem(u8"应用"))
+                if (ImGui::MenuItem(u8"状态"))
                 {
                     m_show_app_ui = true;
                 }

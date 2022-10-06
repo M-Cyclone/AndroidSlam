@@ -138,7 +138,7 @@ namespace android_slam
 
                 if(ImGui::TreeNode(u8"其他"))
                 {
-                    ImGui::ColorEdit3(u8"清屏颜色", reinterpret_cast<float*>(&m_slam_renderer->m_clear_color));
+                    ImGui::ColorEdit3(u8"背景颜色", reinterpret_cast<float*>(&m_slam_renderer->m_clear_color));
 
                     ImGui::TreePop();
                 }
