@@ -109,6 +109,9 @@ namespace android_slam
             ImGui::CreateContext();
             ImGui::StyleColorsDark();
 
+            ImGui_ImplAndroid_Init(g_state->window);
+            ImGui_ImplOpenGL3_Init("#version 300 es");
+
             ImGuiIO& io = ImGui::GetIO();
             io.IniFilename = nullptr;
 
@@ -121,8 +124,7 @@ namespace android_slam
                                        );
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-            ImGui_ImplAndroid_Init(g_state->window);
-            ImGui_ImplOpenGL3_Init("#version 300 es");
+            ImGui::GetStyle().ScaleAllSizes(3.0f);
         }
 
 
