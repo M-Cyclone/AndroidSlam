@@ -260,6 +260,11 @@ System::System(ORBVocabulary* vocabulary, Settings* settings, const eSensor sens
     }
 }
 
+Tracking& System::getTracker() const
+{
+    return *mpTracker;
+}
+
 Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timestamp, const vector<IMU::Point>& vImuMeas, string filename)
 {
     if(mSensor!=STEREO && mSensor!=IMU_STEREO)

@@ -115,51 +115,59 @@ namespace android_slam
             res.last_pose[15] = mat_pose(3, 3);
         }
 
+        ORB_SLAM3::Map* active_map = m_orb_slam->getAtlas().GetCurrentMap();
+        if(active_map)
         {
-            std::vector<ORB_SLAM3::KeyFrame*> key_frames = m_orb_slam->getAtlas().GetAllKeyFrames();
+            {
+                std::vector<ORB_SLAM3::KeyFrame*> key_frames = active_map->GetAllKeyFrames();
 
-            static auto key_frame_cmp = [](const ORB_SLAM3::KeyFrame* kf1, const ORB_SLAM3::KeyFrame* kf2)
-            {
-                return kf1->mnFrameId < kf2->mnFrameId;
-            };
-            std::set<ORB_SLAM3::KeyFrame*, decltype(key_frame_cmp)> kf_set(key_frame_cmp);
-            for(ORB_SLAM3::KeyFrame* kf : key_frames)
-            {
-                if(!kf || kf->isBad()) continue;
-                kf_set.insert(kf);
+                static auto key_frame_cmp = [](const ORB_SLAM3::KeyFrame* kf1, const ORB_SLAM3::KeyFrame* kf2)
+                {
+                    return kf1->mnFrameId < kf2->mnFrameId;
+                };
+                std::set<ORB_SLAM3::KeyFrame*, decltype(key_frame_cmp)> kf_set(key_frame_cmp);
+                for (ORB_SLAM3::KeyFrame* kf: key_frames)
+                {
+                    if (!kf || kf->isBad())
+                        continue;
+                    kf_set.insert(kf);
+                }
+
+                for (ORB_SLAM3::KeyFrame* kf: kf_set)
+                {
+                    if (!kf || kf->isBad())
+                        continue;
+
+                    Eigen::Vector3f position = kf->GetPoseInverse().translation();
+                    res.trajectory.push_back({ position.x(), position.y(), position.z() });
+                }
+
+                Eigen::Vector3f last_position = pose.inverse().translation();
+                res.trajectory.push_back({ last_position.x(), last_position.y(), last_position.z() });
             }
 
-            for(ORB_SLAM3::KeyFrame* kf : kf_set)
             {
-                if(!kf || kf->isBad()) continue;
+                std::vector<ORB_SLAM3::MapPoint*> local_mps = active_map->GetReferenceMapPoints();
+                std::unordered_set<ORB_SLAM3::MapPoint*> local_mp_ust(local_mps.begin(), local_mps.end());
 
-                Eigen::Vector3f position = kf->GetPoseInverse().translation();
-                res.trajectory.push_back({ position.x(), position.y(), position.z() });
-            }
+                for (ORB_SLAM3::MapPoint* mp: local_mps)
+                {
+                    if (!mp || mp->isBad())
+                        continue;
 
-            Eigen::Vector3f last_position = pose.inverse().translation();
-            res.trajectory.push_back({ last_position.x(), last_position.y(), last_position.z() });
-        }
+                    Eigen::Vector3f position = mp->GetWorldPos();
+                    res.map_points.push_back({ position.x(), position.y(), position.z() });
+                }
 
-        {
-            std::vector<ORB_SLAM3::MapPoint*> local_mps = m_orb_slam->getAtlas().GetReferenceMapPoints();
-            std::unordered_set<ORB_SLAM3::MapPoint*> local_mp_ust(local_mps.begin(), local_mps.end());
+                std::vector<ORB_SLAM3::MapPoint*> all_mps = active_map->GetAllMapPoints();
+                for (ORB_SLAM3::MapPoint* mp: all_mps)
+                {
+                    if (!mp || mp->isBad() || local_mp_ust.find(mp) != local_mp_ust.end())
+                        continue;
 
-            for(ORB_SLAM3::MapPoint* mp : local_mps)
-            {
-                if(!mp || mp->isBad()) continue;
-
-                Eigen::Vector3f position = mp->GetWorldPos();
-                res.map_points.push_back({ position.x(), position.y(), position.z() });
-            }
-
-            std::vector<ORB_SLAM3::MapPoint*> all_mps = m_orb_slam->getAtlas().GetAllMapPoints();
-            for(ORB_SLAM3::MapPoint* mp : all_mps)
-            {
-                if(!mp || mp->isBad() || local_mp_ust.find(mp) != local_mp_ust.end()) continue;
-
-                Eigen::Vector3f position = mp->GetWorldPos();
-                res.map_points.push_back({ position.x(), position.y(), position.z() });
+                    Eigen::Vector3f position = mp->GetWorldPos();
+                    res.map_points.push_back({ position.x(), position.y(), position.z() });
+                }
             }
         }
 

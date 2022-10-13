@@ -184,8 +184,8 @@ public:
 
     float GetImageScale();
 
-    Atlas& getAtlas() { return *mpAtlas; }
-    const Atlas& getAtlas() const { return *mpAtlas; }
+    Atlas& getAtlas() const { return *mpAtlas; }
+    Tracking& getTracker() const;
 
     int getTrackingState() const { return mTrackingState; }
 

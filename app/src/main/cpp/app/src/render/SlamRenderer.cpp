@@ -1,5 +1,7 @@
 #include "render/SlamRenderer.h"
 
+#include "utils/Log.h"
+
 namespace android_slam
 {
 
@@ -9,6 +11,8 @@ namespace android_slam
         , m_z_near(z_near)
         , m_z_far(z_far)
         , m_mvp_shader("shader/mvp.vert", "shader/mvp.frag")
+        , m_pure_color_shader("shader/pure_color.vert", "shader/pure_color.frag")
+        , m_global_shader("shader/global_mvp.vert", "shader/global_mvp.frag")
         , m_image_shader("shader/image2d.vert", "shader/image2d.frag")
     {
         updateProj();
@@ -44,8 +48,15 @@ namespace android_slam
                           , last_pose[12], last_pose[13], -last_pose[14], last_pose[15]
         );
 
+        m_global_aabb = AABB{};
+
+        // map points
         {
             m_mp_count = (uint32_t)map_points.size();
+            for(const auto [x, y, z] : map_points)
+            {
+                m_global_aabb.addPoint({x, y, z});
+            }
 
             glBindVertexArray(m_mp_vao);
             glBindBuffer(GL_ARRAY_BUFFER, m_mp_vbo);
@@ -55,8 +66,13 @@ namespace android_slam
             glEnableVertexAttribArray(0);
         }
 
+        // key frames
         {
             m_kf_count = (uint32_t)trajectory.size();
+            for(const auto [x, y, z] : trajectory)
+            {
+                m_global_aabb.addPoint({x, y, z});
+            }
 
             glBindVertexArray(m_kf_vao);
             glBindBuffer(GL_ARRAY_BUFFER, m_kf_vbo);
@@ -64,34 +80,48 @@ namespace android_slam
 
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TrackingResult::Pos), (const void*) 0);
             glEnableVertexAttribArray(0);
+
+            glBindVertexArray(0);
         }
 
         glBindVertexArray(0);
     }
 
-    void SlamRenderer::draw() const
+    void SlamRenderer::clearColor() const
     {
         glClearColor(m_clear_color.r, m_clear_color.g, m_clear_color.b, m_clear_color.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
 
-        m_mvp_shader.bind();
-        m_mvp_shader.setMat4("u_mat_mvp", m_proj * m_view);
+    void SlamRenderer::drawMapPoints(int32_t x_offset, int32_t y_offset, int32_t width, int32_t height) const
+    {
+        glViewport(x_offset, y_offset, width, height);
 
-        if(m_show_mappoints)
+        if (m_show_mappoints)
         {
+            m_mvp_shader.bind();
+            m_mvp_shader.setMat4("u_mat_mvp", m_proj * m_view);
             m_mvp_shader.setVec3("u_color", m_mp_color);
             m_mvp_shader.setFloat("u_point_size", m_point_size);
 
             glBindVertexArray(m_mp_vao);
-            glDrawArrays(GL_POINTS, 0, (GLsizei)m_mp_count);
+            glDrawArrays(GL_POINTS, 0, (GLsizei) m_mp_count);
 
             glBindVertexArray(0);
+            m_mvp_shader.unbind();
         }
+    }
+
+    void SlamRenderer::drawKeyFrames(int32_t x_offset, int32_t y_offset, int32_t width, int32_t height) const
+    {
+        glViewport(x_offset, y_offset, width, height);
 
         if(m_show_keyframes)
         {
             glLineWidth(m_line_width);
 
+            m_mvp_shader.bind();
+            m_mvp_shader.setMat4("u_mat_mvp", m_proj * m_view);
             m_mvp_shader.setVec3("u_color", m_kf_color);
 
             glBindVertexArray(m_kf_vao);
@@ -99,15 +129,16 @@ namespace android_slam
 
             glBindVertexArray(0);
             glLineWidth(1.0f);
+            m_mvp_shader.unbind();
         }
+    }
 
-        m_mvp_shader.unbind();
-
+    void SlamRenderer::drawImage(int32_t x_offset, int32_t y_offset, int32_t width, int32_t height) const
+    {
+        glViewport(x_offset, y_offset, width, height);
 
         if(m_show_image)
         {
-            glViewport(0, 0, m_image_texture->getWidth(), m_image_texture->getHeight());
-
             m_image_painter.bind();
             m_image_shader.bind();
 
@@ -120,6 +151,41 @@ namespace android_slam
             m_image_texture->unbind();
             m_image_shader.unbind();
             m_image_painter.unbind();
+        }
+    }
+
+    void SlamRenderer::drawTotalTrajectory(int32_t x_offset, int32_t y_offset, int32_t width, int32_t height) const
+    {
+        glViewport(x_offset, y_offset, width, height);
+
+        if(m_show_total_trajectory)
+        {
+            {
+                m_image_painter.bind();
+                m_pure_color_shader.bind();
+
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+                m_pure_color_shader.unbind();
+                m_image_painter.unbind();
+            }
+
+            {
+                glLineWidth(m_line_width);
+
+
+                m_global_shader.bind();
+                m_global_shader.setVec3("u_center", m_global_aabb.getCenter());
+                m_global_shader.setFloat("u_scale", 1.0f / m_global_aabb.getCubeMaxHalfLength());
+                m_global_shader.setVec3("u_color", m_kf_color);
+
+                glBindVertexArray(m_kf_vao);
+                glDrawArrays(GL_LINE_STRIP, 0, (GLsizei)m_kf_count);
+
+                glBindVertexArray(0);
+                glLineWidth(1.0f);
+                m_global_shader.unbind();
+            }
         }
     }
 

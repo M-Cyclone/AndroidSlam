@@ -9,6 +9,7 @@
 #include "render/Shader.h"
 #include "render/Plane2D.h"
 #include "render/ImageTexture.h"
+#include "render/AABB.h"
 
 namespace android_slam
 {
@@ -24,7 +25,11 @@ namespace android_slam
         void setImage(int32_t width, int32_t height, const Image& img);
         void setData(const TrackingResult& tracking_result);
 
-        void draw() const;
+        void clearColor() const;
+        void drawMapPoints(int32_t x_offset, int32_t y_offset, int32_t width, int32_t height) const;
+        void drawKeyFrames(int32_t x_offset, int32_t y_offset, int32_t width, int32_t height) const;
+        void drawImage(int32_t x_offset, int32_t y_offset, int32_t width, int32_t height) const;
+        void drawTotalTrajectory(int32_t x_offset, int32_t y_offset, int32_t width, int32_t height) const;
 
         void setFov(float fov)
         {
@@ -60,6 +65,7 @@ namespace android_slam
         bool m_show_mappoints = true;
         bool m_show_keyframes = true;
         bool m_show_image = false;
+        bool m_show_total_trajectory = false;
 
     private:
         float m_fov = 45.0f;
@@ -79,6 +85,10 @@ namespace android_slam
         uint32_t m_kf_vao{};
         uint32_t m_kf_vbo{};
         uint32_t m_kf_count{};
+
+        AABB m_global_aabb;
+        Shader m_pure_color_shader;
+        Shader m_global_shader;
 
         Plane2D m_image_painter;
         Shader m_image_shader;

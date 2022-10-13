@@ -177,7 +177,7 @@ namespace android_slam
                                     , ImGuiDockNodeFlags_PassthruCentralNode
                                     );
 
-        const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+        //const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
 
         if (ImGui::BeginMainMenuBar())
         {
