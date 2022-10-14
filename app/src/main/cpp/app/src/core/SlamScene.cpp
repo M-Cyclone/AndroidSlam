@@ -40,11 +40,42 @@ namespace android_slam
             DEBUG_INFO("[Android Slam App Info] Creates slam kernel successfully.");
         }
 
+        m_slam_has_new_image = false;
+        m_is_running_slam = true;
+
+        m_slam_thread = std::make_unique<std::thread>([this]()
+        {
+            while(m_is_running_slam)
+            {
+                if (m_slam_has_new_image)
+                {
+                    std::vector<Image> images;
+                    {
+                        std::unique_lock<std::mutex> lock(m_image_mutex);
+                        images = std::move(m_images);
+                    }
+
+                    auto res = m_slam_kernel->handleData(m_slam_timer.peek(), images, {});
+                    m_slam_has_new_image = false;
+
+                    {
+                        std::unique_lock<std::mutex> lock(m_tracking_res_mutex);
+                        m_tracking_result = std::move(res);
+                    }
+                }
+            }
+        });
+
         (void)m_slam_timer.mark();
     }
 
     void SlamScene::exit()
     {
+        m_is_running_slam = false;
+        m_need_update_image = false;
+        m_slam_thread->join();
+        m_slam_thread.reset(nullptr);
+
         m_slam_kernel.reset(nullptr);
         m_slam_renderer.reset(nullptr);
         m_image_pool.reset(nullptr);
@@ -52,13 +83,22 @@ namespace android_slam
 
     void SlamScene::update(float dt)
     {
-        if (m_is_running_slam)
+        if (m_need_update_image && !m_slam_has_new_image)
         {
             // Slam handling.
             std::vector<Image> images;
             images.push_back(Image{ m_image_pool->getImage() });
+            {
+                std::unique_lock<std::mutex> lock(m_image_mutex);
+                m_images = images;
+            }
+            m_slam_has_new_image = true;
 
-            TrackingResult tracking_res = m_slam_kernel->handleData(m_slam_timer.peek(), images, {});
+            TrackingResult tracking_res;
+            {
+                std::unique_lock<std::mutex> lock(m_tracking_res_mutex);
+                tracking_res = std::move(m_tracking_result);
+            }
 
             DEBUG_INFO("[Android Slam App Info] Current tracking state: %s", tracking_res.tracking_status.c_str());
 
@@ -80,16 +120,16 @@ namespace android_slam
         int32_t img_height = screen_height * 3 / 7;
         m_slam_renderer->drawImage(0, 0, img_width, img_height);
 
-        m_slam_renderer->drawTotalTrajectory(0, img_height + 1, img_width, screen_height);
+        m_slam_renderer->drawTotalTrajectory(0, img_height, img_width, screen_height);
     }
 
     void SlamScene::drawGui(float dt)
     {
         if(ImGui::TreeNode(u8"SLAM控制"))
         {
-            if(ImGui::Button(m_is_running_slam ? u8"暂停" : u8"继续"))
+            if(ImGui::Button(m_need_update_image ? u8"暂停" : u8"继续"))
             {
-                m_is_running_slam = !m_is_running_slam;
+                m_need_update_image = !m_need_update_image;
             }
 
             if(ImGui::Button(u8"重置"))

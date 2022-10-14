@@ -1,5 +1,8 @@
 #pragma once
 #include <memory>
+#include <atomic>
+#include <mutex>
+#include <thread>
 
 #include <SlamKernel.h>
 
@@ -41,7 +44,15 @@ namespace android_slam
         std::unique_ptr<SlamKernel> m_slam_kernel;
         Timer m_slam_timer;
 
-        bool m_is_running_slam = true;
+        std::atomic_bool m_slam_has_new_image;
+        std::mutex m_image_mutex;
+        std::mutex m_tracking_res_mutex;
+        std::vector<Image> m_images;
+        std::unique_ptr<std::thread> m_slam_thread;
+        TrackingResult m_tracking_result;
+        std::atomic_bool m_is_running_slam = true;
+
+        bool m_need_update_image = true;
     };
 
 }
