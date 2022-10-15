@@ -22,8 +22,12 @@ namespace android_slam
             "shader/yuv2rgb.frag"
         );
 
-        m_slam_renderer = std::make_unique<SlamRenderer>(45.0f, m_app.getWindow().getAspectRatio(), 0.1f, 1000.0f);
+        m_slam_renderer = std::make_unique<SlamRenderer>(k_fps_camera_fov,
+                                                         m_app.getWindow().getAspectRatio(),
+                                                         k_fps_camera_z_min,
+                                                         k_fps_camera_z_max);
 
+        // Create slam kernel.
         {
             DEBUG_INFO("[Android Slam App Info] Starts to create slam kernel.");
 
@@ -40,24 +44,29 @@ namespace android_slam
             DEBUG_INFO("[Android Slam App Info] Creates slam kernel successfully.");
         }
 
-        m_slam_has_new_image = false;
-        m_is_running_slam = true;
+        m_slam_has_new_image = false; // Whether the main thread generates new image for slam thread.
+        m_is_running_slam = true;     // Whether the slam scene is running, also indicates the slam thread is running.
 
+        // Create slam thread.
         m_slam_thread = std::make_unique<std::thread>([this]()
         {
+            Timer slam_timer;
             while(m_is_running_slam)
             {
                 if (m_slam_has_new_image)
                 {
+                    // Acquire new images.
                     std::vector<Image> images;
                     {
                         std::unique_lock<std::mutex> lock(m_image_mutex);
                         images = std::move(m_images);
                     }
 
-                    auto res = m_slam_kernel->handleData(m_slam_timer.peek(), images, {});
-                    m_slam_has_new_image = false;
+                    // Call slam tracking function.
+                    auto res = m_slam_kernel->handleData(slam_timer.peek(), images, {});
+                    m_slam_has_new_image = false; // This image is processed and this thread needs new image.
 
+                    // Synchronize tracking result to main thread, move the data because this thread doesn't need it.
                     {
                         std::unique_lock<std::mutex> lock(m_tracking_res_mutex);
                         m_tracking_result = std::move(res);
@@ -65,8 +74,6 @@ namespace android_slam
                 }
             }
         });
-
-        (void)m_slam_timer.mark();
     }
 
     void SlamScene::exit()
@@ -83,6 +90,7 @@ namespace android_slam
 
     void SlamScene::update(float dt)
     {
+        // Update image data if not paused and slam thread needs new image. Render data will be set at the same time.
         if (m_need_update_image && !m_slam_has_new_image)
         {
             // Slam handling.
@@ -118,9 +126,9 @@ namespace android_slam
 
         int32_t img_width = screen_height * 4 / 7;
         int32_t img_height = screen_height * 3 / 7;
-        m_slam_renderer->drawImage(0, 0, img_width, img_height);
+        m_slam_renderer->drawImage(0, 0, img_width, img_height); // Aspect ratio: 4 : 3
 
-        m_slam_renderer->drawTotalTrajectory(0, img_height, img_width, screen_height);
+        m_slam_renderer->drawTotalTrajectory(0, img_height, img_width, screen_height); // Aspect ratio: 1 : 1
     }
 
     void SlamScene::drawGui(float dt)
