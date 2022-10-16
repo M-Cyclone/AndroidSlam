@@ -26,6 +26,7 @@ namespace android_slam
         float wx;
         float wy;
         float wz;
+        float time_stamp;
     };
 
     struct TrackingResult

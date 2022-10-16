@@ -9,6 +9,8 @@
 #include "utils/Log.h"
 #include "utils/AssetManager.h"
 
+#include "sensor/SensorIMU.h"
+
 namespace android_slam
 {
 
@@ -50,11 +52,25 @@ namespace android_slam
         // Create slam thread.
         m_slam_thread = std::make_unique<std::thread>([this]()
         {
+            SensorIMU sensor_imu;
             Timer slam_timer;
+            float last_time = slam_timer.peek();
             while(m_is_running_slam)
             {
+                float curr_time = slam_timer.peek();
+
                 if (m_slam_has_new_image)
                 {
+                    std::vector<ImuPoint> imu_data = sensor_imu.getImuData();
+                    {
+                        size_t count = imu_data.size();
+                        float imu_data_delta_time = (curr_time - last_time) / (float) (count);
+                        for (size_t i = 0; i < count; ++i)
+                        {
+                            imu_data[i].time_stamp = last_time + (float) (i + 1) * imu_data_delta_time;
+                        }
+                    }
+
                     // Acquire new images.
                     std::vector<Image> images;
                     {
@@ -63,7 +79,7 @@ namespace android_slam
                     }
 
                     // Call slam tracking function.
-                    auto res = m_slam_kernel->handleData(slam_timer.peek(), images, {});
+                    auto res = m_slam_kernel->handleData(curr_time, images, imu_data);
                     m_slam_has_new_image = false; // This image is processed and this thread needs new image.
 
                     // Synchronize tracking result to main thread, move the data because this thread doesn't need it.
@@ -72,6 +88,8 @@ namespace android_slam
                         m_tracking_result = std::move(res);
                     }
                 }
+
+                last_time = curr_time;
             }
         });
     }

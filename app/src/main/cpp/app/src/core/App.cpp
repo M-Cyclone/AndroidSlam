@@ -223,8 +223,6 @@ namespace android_slam
 
 
         m_window->swapBuffers();
-
-        DEBUG_INFO("[Android Slam App Info] Current FPS: %.2f frame per second.", 1.0f / dt);
     }
 
     void App::onCmd(android_app* app, int32_t cmd)

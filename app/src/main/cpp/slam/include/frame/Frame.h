@@ -22,6 +22,7 @@
 #include <array>
 #include <vector>
 #include <mutex>
+#include <memory>
 
 #include <DBoW2/BowVector.h>
 #include <DBoW2/FeatureVector.h>
@@ -333,7 +334,7 @@ private:
 
     bool mbImuPreintegrated = false;
 
-    std::mutex *mpMutexImu;
+    std::shared_ptr<std::mutex> mpMutexImu;
 
 public:
     GeometricCamera* mpCamera = nullptr;

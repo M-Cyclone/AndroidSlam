@@ -18,7 +18,7 @@ namespace android_slam
         , m_height(img_height)
     {
         ORB_SLAM3::Settings::SettingDesc desc{};
-        desc.sensor = ORB_SLAM3::System::eSensor::MONOCULAR;
+        desc.sensor = ORB_SLAM3::System::eSensor::IMU_MONOCULAR;
         desc.cameraInfo.cameraType = ORB_SLAM3::Settings::CameraType::PinHole;
         desc.cameraInfo.fx = 458.654f;
         desc.cameraInfo.fy = 457.296f;
@@ -32,7 +32,7 @@ namespace android_slam
         desc.imageInfo.height = img_height;
         desc.imageInfo.newWidth = 640;
         desc.imageInfo.newHeight = 480;
-        desc.imageInfo.fps = 60;
+        desc.imageInfo.fps = 20;
         desc.imageInfo.bRGB = true;
         desc.imuInfo.noiseGyro = 1.7e-4f;
         desc.imuInfo.noiseAcc = 2.0000e-3f;
@@ -40,9 +40,9 @@ namespace android_slam
         desc.imuInfo.accWalk = 3.0000e-03f;
         desc.imuInfo.frequency = 200.0f;
         desc.imuInfo.cvTbc = static_cast<cv::Mat>(cv::Mat_<float>(4, 4)
-        <<  0.0148655429818f, -0.999880929698f, 0.00414029679422f, -0.0216401454975f,
-            0.999557249008f, 0.0149672133247f, 0.025715529948f, -0.064676986768f,
-            -0.0257744366974f, 0.00375618835797f, 0.999660727178f, 0.00981073058949f,
+        <<  +0.0148655429818f, -0.99988092969800f, +0.00414029679422f, -0.02164014549750f,
+            +0.9995572490080f, +0.01496721332470f, +0.02571552994800f, -0.06467698676800f,
+            -0.0257744366974f, +0.00375618835797f, +0.99966072717800f, +0.00981073058949f,
             0.0f, 0.0f, 0.0f, 1.0f
         );
         desc.imuInfo.bInsertKFsWhenLost = true;
@@ -92,7 +92,18 @@ namespace android_slam
         cv::Mat cv_image(m_height, m_width, CV_8UC3);
         memcpy(cv_image.data, images[0].data.data(), sizeof(uint8_t) * images[0].data.size());
 
-        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, time);
+        size_t imu_count = imus.size();
+        std::vector<ORB_SLAM3::IMU::Point> orb_slam3_imu_data;
+        orb_slam3_imu_data.reserve(imu_count);
+        {
+            for(size_t i = 0; i < imu_count; ++i)
+            {
+                auto [ax, ay, az, wx, wy, wz, time_stamp] = imus[i];
+                orb_slam3_imu_data.emplace_back(-ax, ay, az, -wx, wy, wz, (double)time_stamp);
+            }
+        }
+
+        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, time, orb_slam3_imu_data);
         Eigen::Matrix4f mat_pose = pose.matrix();
 
         TrackingResult res;
