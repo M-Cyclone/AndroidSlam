@@ -76,7 +76,7 @@ namespace android_slam
             m_acce_data_que.pop();
             m_gyro_data_que.pop();
 
-            imu_data.push_back({ ax, ay, az, wx, wy, wz });
+            imu_data.push_back({ ax, ay, az, wx, wy, wz, 0.0f });
         }
 
         return imu_data;
