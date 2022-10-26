@@ -1233,7 +1233,6 @@ namespace ORB_SLAM3
 
     void Tracking::PreintegrateIMU()
     {
-
         if (!mCurrentFrame.mpPrevFrame)
         {
             Verbose::PrintMess("non prev frame ", Verbose::VERBOSITY_NORMAL);
@@ -1285,7 +1284,8 @@ namespace ORB_SLAM3
         }
 
         const int n = mvImuFromLastFrame.size() - 1;
-        if (n == 0) {
+        if (n == 0)
+        {
             cout << "Empty IMU measurements vector!!!\n";
             return;
         }
@@ -1300,10 +1300,8 @@ namespace ORB_SLAM3
             {
                 float tab = mvImuFromLastFrame[i + 1].t - mvImuFromLastFrame[i].t;
                 float tini = mvImuFromLastFrame[i].t - mCurrentFrame.mpPrevFrame->mTimeStamp;
-                acc = (mvImuFromLastFrame[i].a + mvImuFromLastFrame[i + 1].a -
-                    (mvImuFromLastFrame[i + 1].a - mvImuFromLastFrame[i].a) * (tini / tab)) * 0.5f;
-                angVel = (mvImuFromLastFrame[i].w + mvImuFromLastFrame[i + 1].w -
-                    (mvImuFromLastFrame[i + 1].w - mvImuFromLastFrame[i].w) * (tini / tab)) * 0.5f;
+                acc = (mvImuFromLastFrame[i].a + mvImuFromLastFrame[i + 1].a - (mvImuFromLastFrame[i + 1].a - mvImuFromLastFrame[i].a) * (tini / tab)) * 0.5f;
+                angVel = (mvImuFromLastFrame[i].w + mvImuFromLastFrame[i + 1].w - (mvImuFromLastFrame[i + 1].w - mvImuFromLastFrame[i].w) * (tini / tab)) * 0.5f;
                 tstep = mvImuFromLastFrame[i + 1].t - mCurrentFrame.mpPrevFrame->mTimeStamp;
             }
             else if (i < (n - 1))
@@ -1316,10 +1314,8 @@ namespace ORB_SLAM3
             {
                 float tab = mvImuFromLastFrame[i + 1].t - mvImuFromLastFrame[i].t;
                 float tend = mvImuFromLastFrame[i + 1].t - mCurrentFrame.mTimeStamp;
-                acc = (mvImuFromLastFrame[i].a + mvImuFromLastFrame[i + 1].a -
-                    (mvImuFromLastFrame[i + 1].a - mvImuFromLastFrame[i].a) * (tend / tab)) * 0.5f;
-                angVel = (mvImuFromLastFrame[i].w + mvImuFromLastFrame[i + 1].w -
-                    (mvImuFromLastFrame[i + 1].w - mvImuFromLastFrame[i].w) * (tend / tab)) * 0.5f;
+                acc = (mvImuFromLastFrame[i].a + mvImuFromLastFrame[i + 1].a - (mvImuFromLastFrame[i + 1].a - mvImuFromLastFrame[i].a) * (tend / tab)) * 0.5f;
+                angVel = (mvImuFromLastFrame[i].w + mvImuFromLastFrame[i + 1].w - (mvImuFromLastFrame[i + 1].w - mvImuFromLastFrame[i].w) * (tend / tab)) * 0.5f;
                 tstep = mCurrentFrame.mTimeStamp - mvImuFromLastFrame[i].t;
             }
             else if ((i == 0) && (i == (n - 1)))

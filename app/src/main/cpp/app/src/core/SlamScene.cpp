@@ -9,6 +9,8 @@
 #include "utils/Log.h"
 #include "utils/AssetManager.h"
 
+#include "sensor/SensorIMU.h"
+
 namespace android_slam
 {
 

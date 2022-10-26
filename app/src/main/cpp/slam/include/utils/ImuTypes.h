@@ -43,9 +43,17 @@ const float GRAVITY_VALUE=9.81;
 class Point
 {
 public:
-    Point(const float &acc_x, const float &acc_y, const float &acc_z,
-             const float &ang_vel_x, const float &ang_vel_y, const float &ang_vel_z,
-             const double &timestamp): a(acc_x,acc_y,acc_z), w(ang_vel_x,ang_vel_y,ang_vel_z), t(timestamp){}
+    Point(float acc_x,
+          float acc_y,
+          float acc_z,
+          float ang_vel_x,
+          float ang_vel_y,
+          float ang_vel_z,
+          double timestamp)
+        : a(acc_x,acc_y,acc_z)
+        , w(ang_vel_x,ang_vel_y,ang_vel_z)
+        , t(timestamp)
+    {}
     Point(const cv::Point3f Acc, const cv::Point3f Gyro, const double &timestamp):
         a(Acc.x,Acc.y,Acc.z), w(Gyro.x,Gyro.y,Gyro.z), t(timestamp){}
 public:

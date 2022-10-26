@@ -35,7 +35,6 @@ namespace android_slam
         {}
         SlamScene(const SlamScene&) = delete;
         SlamScene& operator=(const SlamScene&) = delete;
-        virtual ~SlamScene() noexcept = default;
 
         void init() override;
         void exit() override;
