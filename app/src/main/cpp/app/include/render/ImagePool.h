@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 
+#include <SlamKernel.h>
+
 #include "sensor/SensorCamera.h"
 #include "render/Plane2D.h"
 #include "render/Shader.h"
@@ -17,7 +19,7 @@ namespace android_slam
         ImagePool& operator=(const ImagePool&) = delete;
         ~ImagePool();
 
-        std::vector<uint8_t> getImage();
+        Image getImage();
 
     private:
         SensorCamera m_sensor_camera;

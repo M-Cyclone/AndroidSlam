@@ -21,15 +21,17 @@ namespace android_slam
     class SlamScene : public Scene
     {
     private:
-        static constexpr const int32_t k_sensor_camera_width = 640;
-        static constexpr const int32_t k_sensor_camera_height = 480;
-        static constexpr const float   k_fps_camera_fov = 45.0f;
-        static constexpr const float   k_fps_camera_z_min = 0.1f;
-        static constexpr const float   k_fps_camera_z_max = 1000.0f;
+        static constexpr int32_t k_sensor_camera_width = 640;
+        static constexpr int32_t k_sensor_camera_height = 480;
+
+        static constexpr float   k_fps_camera_fov = 45.0f;
+        static constexpr float   k_fps_camera_z_min = 0.1f;
+        static constexpr float   k_fps_camera_z_max = 1000.0f;
 
     public:
         explicit SlamScene(App& app, const char* name) noexcept
             : Scene(app, name)
+            , m_app_ref(app)
         {}
         SlamScene(const SlamScene&) = delete;
         SlamScene& operator=(const SlamScene&) = delete;
@@ -42,6 +44,8 @@ namespace android_slam
         void drawGui(float dt) override;
 
     private:
+        App& m_app_ref;
+
         std::unique_ptr<ImagePool>    m_image_pool;
         std::unique_ptr<SlamRenderer> m_slam_renderer;
         std::unique_ptr<SlamKernel>   m_slam_kernel;

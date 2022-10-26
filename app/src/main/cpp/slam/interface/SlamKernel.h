@@ -16,6 +16,7 @@ namespace android_slam
     struct Image
     {
         std::vector<uint8_t> data;
+        int64_t time_stamp;
     };
 
     struct ImuPoint
@@ -26,6 +27,7 @@ namespace android_slam
         float wx;
         float wy;
         float wz;
+        int64_t time_stamp;
     };
 
     struct TrackingResult
@@ -41,24 +43,34 @@ namespace android_slam
         std::vector<Pos> trajectory;
         std::vector<Pos> map_points;
         std::string tracking_status;
+
+        float processing_delta_time;
     };
 
     class SlamKernel
     {
+    private:
+        static constexpr int64_t k_nano_second_in_one_second = 1000000000;
+        static constexpr double k_nano_sec_to_sec_radio = 1.0 / (double)(k_nano_second_in_one_second);
+
     public:
-        SlamKernel(int32_t img_width, int32_t img_height, std::string vocabulary_data);
+        SlamKernel(int32_t img_width, int32_t img_height, std::string vocabulary_data, int64_t begin_time_stamp);
         SlamKernel(const SlamKernel&) = delete;
         SlamKernel& operator=(const SlamKernel&) = delete;
         ~SlamKernel();
 
-        TrackingResult handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus);
+        TrackingResult handleData(const std::vector<Image>& images, const std::vector<ImuPoint>& imus);
 
         void reset();
 
     private:
         int32_t m_width;
         int32_t m_height;
+        const int64_t m_begin_time_stamp;
+
         std::unique_ptr<::ORB_SLAM3::System> m_orb_slam;
+
+        std::chrono::steady_clock::time_point m_last_time;
     };
 
 }

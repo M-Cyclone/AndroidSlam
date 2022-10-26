@@ -203,7 +203,8 @@ namespace android_slam
         {
             if (ImGui::Begin(u8"应用", &m_show_app_ui))
             {
-                ImGui::Text("Current FPS %.2f.", 1.0f / dt);
+                ImGui::Text("App  FPS %.2f.", 1.0f / dt);
+                ImGui::Text("SLAM FPS %.2f.", 1.0f / m_last_process_delta_time);
             }
             ImGui::End();
         }

@@ -44,6 +44,9 @@ namespace android_slam
         static void onCmd(android_app* app, int32_t cmd);
         static int32_t onInput(android_app* app, AInputEvent* ie);
 
+    public:
+        float m_last_process_delta_time = 1.0f;
+
     private:
         Timer m_timer;
         std::unique_ptr<Window> m_window;
@@ -51,10 +54,10 @@ namespace android_slam
         std::unordered_map<std::string, std::shared_ptr<Scene>> m_scene_map;
         std::shared_ptr<Scene> m_active_scene;
 
-        bool m_show_app_ui = true;
+        bool  m_show_app_ui = true;
 
-        bool m_running = true;
-        bool m_active = false;
+        bool  m_running = true;
+        bool  m_active = false;
     };
 
 }

@@ -55,15 +55,16 @@ namespace android_slam
         m_sensor_camera.stopCapture();
     }
 
-    std::vector<uint8_t> ImagePool::getImage()
+    Image ImagePool::getImage()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
         glViewport(0, 0, m_width, m_height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         // Paint to framebuffer
+        AImage* a_image = m_sensor_camera.getLatestImage();
         {
-            m_transform_texture.setImage(m_sensor_camera.getLatestImage());
+            m_transform_texture.setImage(a_image);
 
             m_transform_painter.bind();
             m_transform_shader.bind();
@@ -86,7 +87,11 @@ namespace android_slam
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        return img;
+
+        int64_t time_stamp;
+        assert(AImage_getTimestamp(a_image, &time_stamp) == AMEDIA_OK);
+
+        return Image{ std::move(img), time_stamp };
     }
 
 }

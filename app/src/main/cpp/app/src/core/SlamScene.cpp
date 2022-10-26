@@ -21,6 +21,7 @@ namespace android_slam
             "shader/yuv2rgb.vert",
             "shader/yuv2rgb.frag"
         );
+        Image first_image = m_image_pool->getImage();
 
         m_slam_renderer = std::make_unique<SlamRenderer>(k_fps_camera_fov,
                                                          m_app.getWindow().getAspectRatio(),
@@ -39,7 +40,10 @@ namespace android_slam
             std::string voc_buffer(buffer, buffer + size);
             AAsset_close(asset);
 
-            m_slam_kernel = std::make_unique<SlamKernel>(k_sensor_camera_width, k_sensor_camera_height, std::move(voc_buffer));
+            m_slam_kernel = std::make_unique<SlamKernel>(k_sensor_camera_width,
+                                                         k_sensor_camera_height,
+                                                         std::move(voc_buffer),
+                                                         first_image.time_stamp);
 
             DEBUG_INFO("[Android Slam App Info] Creates slam kernel successfully.");
         }
@@ -50,7 +54,6 @@ namespace android_slam
         // Create slam thread.
         m_slam_thread = std::make_unique<std::thread>([this]()
         {
-            Timer slam_timer;
             while(m_is_running_slam)
             {
                 if (m_slam_has_new_image)
@@ -63,7 +66,7 @@ namespace android_slam
                     }
 
                     // Call slam tracking function.
-                    auto res = m_slam_kernel->handleData(slam_timer.peek(), images, {});
+                    auto res = m_slam_kernel->handleData(images, {});
                     m_slam_has_new_image = false; // This image is processed and this thread needs new image.
 
                     // Synchronize tracking result to main thread, move the data because this thread doesn't need it.
@@ -95,7 +98,7 @@ namespace android_slam
         {
             // Slam handling.
             std::vector<Image> images;
-            images.push_back(Image{ m_image_pool->getImage() });
+            images.push_back(m_image_pool->getImage());
             {
                 std::unique_lock<std::mutex> lock(m_image_mutex);
                 m_images = images;
@@ -113,6 +116,8 @@ namespace android_slam
             // Set slam data.
             m_slam_renderer->setImage(k_sensor_camera_width, k_sensor_camera_height, images[0]);
             m_slam_renderer->setData(tracking_res);
+
+            m_app_ref.m_last_process_delta_time = tracking_res.processing_delta_time;
         }
 
         // Draw trajectory.

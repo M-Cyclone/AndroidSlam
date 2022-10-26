@@ -13,9 +13,11 @@
 namespace android_slam
 {
 
-    SlamKernel::SlamKernel(int32_t img_width, int32_t img_height, std::string vocabulary_data)
+    SlamKernel::SlamKernel(int32_t img_width, int32_t img_height, std::string vocabulary_data, int64_t begin_time_stamp)
         : m_width(img_width)
         , m_height(img_height)
+        , m_begin_time_stamp(begin_time_stamp)
+        , m_last_time(std::chrono::steady_clock::now())
     {
         ORB_SLAM3::Settings::SettingDesc desc{};
         desc.sensor = ORB_SLAM3::System::eSensor::MONOCULAR;
@@ -87,14 +89,20 @@ namespace android_slam
         m_orb_slam->Reset();
     }
 
-    TrackingResult SlamKernel::handleData(float time, const std::vector<Image>& images, const std::vector<ImuPoint>& imus)
+    TrackingResult SlamKernel::handleData(const std::vector<Image>& images, const std::vector<ImuPoint>& imus)
     {
+        const Image& image = images[0];
+        assert((image.time_stamp >= m_begin_time_stamp) && "Invalid time stamp.");
+
         cv::Mat cv_image(m_height, m_width, CV_8UC3);
-        memcpy(cv_image.data, images[0].data.data(), sizeof(uint8_t) * images[0].data.size());
+        memcpy(cv_image.data, image.data.data(), sizeof(uint8_t) * image.data.size());
 
-        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, time);
+        double image_time_stamp = (double)(image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
+
+        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp);
+
+
         Eigen::Matrix4f mat_pose = pose.matrix();
-
         TrackingResult res;
         {
             res.last_pose[+0] = mat_pose(0, 0);
@@ -199,6 +207,13 @@ namespace android_slam
                 default:
                     break;
             }
+        }
+
+        {
+            const std::chrono::steady_clock::time_point curr_time = m_last_time;
+            m_last_time = std::chrono::steady_clock::now();
+
+            res.processing_delta_time = std::chrono::duration<float>(m_last_time - curr_time).count();
         }
 
         return res;
