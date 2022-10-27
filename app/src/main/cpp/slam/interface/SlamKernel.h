@@ -17,6 +17,12 @@ namespace android_slam
     {
         std::vector<uint8_t> data;
         int64_t time_stamp;
+
+        Image() noexcept = default;
+        Image(std::vector<uint8_t> data, int64_t time_stamp) noexcept
+            : data(std::move(data))
+            , time_stamp(time_stamp)
+        {}
     };
 
     struct ImuPoint
@@ -28,6 +34,17 @@ namespace android_slam
         float wy;
         float wz;
         int64_t time_stamp;
+
+        ImuPoint() noexcept = default;
+        ImuPoint(float ax, float ay, float az, float wx, float wy, float wz, int64_t time_stamp) noexcept
+            : ax(ax)
+            , ay(ay)
+            , az(az)
+            , wx(wx)
+            , wy(wy)
+            , wz(wz)
+            , time_stamp(time_stamp)
+        {}
     };
 
     struct TrackingResult

@@ -10,6 +10,38 @@
 namespace android_slam
 {
 
+    struct AcceData
+    {
+        float ax;
+        float ay;
+        float az;
+        int64_t time_stamp;
+
+        AcceData() noexcept = default;
+        AcceData(float ax, float ay, float az, int64_t time_stamp) noexcept
+            : ax(ax)
+            , ay(ay)
+            , az(az)
+            , time_stamp(time_stamp)
+        {}
+    };
+
+    struct GyroData
+    {
+        float wx;
+        float wy;
+        float wz;
+        int64_t time_stamp;
+
+        GyroData() noexcept = default;
+        GyroData(float wx, float wy, float wz, int64_t time_stamp) noexcept
+        : wx(wx)
+        , wy(wy)
+        , wz(wz)
+        , time_stamp(time_stamp)
+        {}
+    };
+
     class SensorIMU
     {
     private:
@@ -35,8 +67,8 @@ namespace android_slam
         const ASensor* m_gyroscope = nullptr;
         ASensorEventQueue* m_gyroscope_event_queue = nullptr;
 
-        mutable std::queue<std::tuple<float, float, float>> m_acce_data_que;
-        mutable std::queue<std::tuple<float, float, float>> m_gyro_data_que;
+        mutable std::queue<AcceData> m_acce_data_que;
+        mutable std::queue<GyroData> m_gyro_data_que;
     };
 
 }

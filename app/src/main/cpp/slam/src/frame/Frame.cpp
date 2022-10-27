@@ -478,29 +478,29 @@ Frame::Frame( const cv::Mat &imGray
 void Frame::AssignFeaturesToGrid()
 {
     // Fill matrix with points
-    const int nCells = FRAME_GRID_COLS*FRAME_GRID_ROWS;
+    const int nCells = FRAME_GRID_COLS * FRAME_GRID_ROWS;
 
-    int nReserve = 0.5f*N/(nCells);
+    int nReserve = 0.5f * N / (nCells);
 
-    for(unsigned int i=0; i<FRAME_GRID_COLS;i++)
-        for (unsigned int j=0; j<FRAME_GRID_ROWS;j++){
+    for (unsigned int i = 0; i < FRAME_GRID_COLS; i++)
+        for (unsigned int j = 0; j < FRAME_GRID_ROWS; j++)
+        {
             mGrid[i][j].reserve(nReserve);
-            if(Nleft != -1){
+            if (Nleft != -1)
+            {
                 mGridRight[i][j].reserve(nReserve);
             }
         }
 
 
-
-    for(int i=0;i<N;i++)
+    for (int i = 0; i < N; i++)
     {
-        const cv::KeyPoint &kp = (Nleft == -1) ? mvKeysUn[i]
-                                                 : (i < Nleft) ? mvKeys[i]
-                                                                 : mvKeysRight[i - Nleft];
+        const cv::KeyPoint& kp = (Nleft == -1) ? mvKeysUn[i] : (i < Nleft) ? mvKeys[i] : mvKeysRight[i - Nleft];
 
         int nGridPosX, nGridPosY;
-        if(PosInGrid(kp,nGridPosX,nGridPosY)){
-            if(Nleft == -1 || i < Nleft)
+        if (PosInGrid(kp, nGridPosX, nGridPosY))
+        {
+            if (Nleft == -1 || i < Nleft)
                 mGrid[nGridPosX][nGridPosY].push_back(i);
             else
                 mGridRight[nGridPosX][nGridPosY].push_back(i - Nleft);
@@ -1100,7 +1100,8 @@ void Frame::ComputeStereoFromRGBD(const cv::Mat &imDepth)
 bool Frame::UnprojectStereo(const int &i, Eigen::Vector3f &x3D)
 {
     const float z = mvDepth[i];
-    if(z>0) {
+    if(z>0)
+    {
         const float u = mvKeysUn[i].pt.x;
         const float v = mvKeysUn[i].pt.y;
         const float x = (u-cx)*z*invfx;
@@ -1108,18 +1109,23 @@ bool Frame::UnprojectStereo(const int &i, Eigen::Vector3f &x3D)
         Eigen::Vector3f x3Dc(x, y, z);
         x3D = mRwc * x3Dc + mOw;
         return true;
-    } else
+    }
+    else
+    {
         return false;
+    }
 }
 
 bool Frame::imuIsPreintegrated()
 {
+    assert(mpMutexImu);
     unique_lock<std::mutex> lock(*mpMutexImu);
     return mbImuPreintegrated;
 }
 
 void Frame::setIntegrated()
 {
+    assert(mpMutexImu);
     unique_lock<std::mutex> lock(*mpMutexImu);
     mbImuPreintegrated = true;
 }

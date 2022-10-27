@@ -14,10 +14,10 @@ namespace android_slam
 {
 
     SlamKernel::SlamKernel(int32_t img_width, int32_t img_height, std::string vocabulary_data, int64_t begin_time_stamp)
-        : m_width(img_width)
-        , m_height(img_height)
-        , m_begin_time_stamp(begin_time_stamp)
-        , m_last_time(std::chrono::steady_clock::now())
+    : m_width(img_width)
+    , m_height(img_height)
+    , m_begin_time_stamp(begin_time_stamp)
+    , m_last_time(std::chrono::steady_clock::now())
     {
         ORB_SLAM3::Settings::SettingDesc desc{};
         desc.sensor = ORB_SLAM3::System::eSensor::IMU_MONOCULAR;
@@ -41,11 +41,7 @@ namespace android_slam
         desc.imuInfo.gyroWalk = 1.9393e-05f;
         desc.imuInfo.accWalk = 3.0000e-03f;
         desc.imuInfo.frequency = 200.0f;
-        desc.imuInfo.cvTbc = static_cast<cv::Mat>(cv::Mat_<float>(4, 4)
-        <<  +0.0148655429818f, -0.99988092969800f, +0.00414029679422f, -0.02164014549750f,
-            +0.9995572490080f, +0.01496721332470f, +0.02571552994800f, -0.06467698676800f,
-            -0.0257744366974f, +0.00375618835797f, +0.99966072717800f, +0.00981073058949f,
-            0.0f, 0.0f, 0.0f, 1.0f
+        desc.imuInfo.cvTbc = static_cast<cv::Mat>(cv::Mat_<float>(4, 4) << +0.0148655429818f, -0.99988092969800f, +0.00414029679422f, -0.02164014549750f, +0.9995572490080f, +0.01496721332470f, +0.02571552994800f, -0.06467698676800f, -0.0257744366974f, +0.00375618835797f, +0.99966072717800f, +0.00981073058949f, 0.0f, 0.0f, 0.0f, 1.0f
         );
         desc.imuInfo.bInsertKFsWhenLost = true;
         desc.orbInfo.nFeatures = 1000;
@@ -72,10 +68,7 @@ namespace android_slam
 
 
         m_orb_slam = std::make_unique<::ORB_SLAM3::System>(
-            vocabulary,
-            slam_settings,
-            static_cast<const ORB_SLAM3::System::eSensor>(desc.sensor)
-        );
+        vocabulary, slam_settings, static_cast<const ORB_SLAM3::System::eSensor>(desc.sensor));
     }
 
     // unique_ptr needs to know how to delete the ptr, so the dtor should be impl with the definition of the ptr class.
@@ -91,20 +84,38 @@ namespace android_slam
 
     TrackingResult SlamKernel::handleData(const std::vector<Image>& images, const std::vector<ImuPoint>& imus)
     {
+        // Image assertion.
         const Image& image = images[0];
         assert((image.time_stamp >= m_begin_time_stamp) && "Invalid time stamp.");
 
+
+        // Create OpenCV image.
         cv::Mat cv_image(m_height, m_width, CV_8UC3);
         memcpy(cv_image.data, image.data.data(), sizeof(uint8_t) * image.data.size());
 
 
-        double image_time_stamp = (double)(image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
-        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp);
-
-
-        Eigen::Matrix4f mat_pose = pose.matrix();
-        TrackingResult res;
+        // Convert imu data.
+        std::vector<ORB_SLAM3::IMU::Point> orb_imus;
+        orb_imus.reserve(imus.size());
+        for(auto [ax, ay, az, wx, wy, wz, ts] : imus)
         {
+            orb_imus.emplace_back(-ax, ay, az, -wx, wy, wz, (double)(ts - m_begin_time_stamp) * k_nano_sec_to_sec_radio);
+        }
+
+
+        // Get time stamp from android time stamp.
+        double image_time_stamp = (double)(image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
+        // Tracking.
+        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp, orb_imus);
+
+
+        // Set tracking result.
+        TrackingResult res;
+
+        // Pose.
+        {
+            Eigen::Matrix4f mat_pose = pose.matrix();
+
             res.last_pose[+0] = mat_pose(0, 0);
             res.last_pose[+1] = mat_pose(1, 0);
             res.last_pose[+2] = mat_pose(2, 0);
@@ -123,28 +134,30 @@ namespace android_slam
             res.last_pose[15] = mat_pose(3, 3);
         }
 
-        ORB_SLAM3::Map* active_map = m_orb_slam->getAtlas().GetCurrentMap();
-        if(active_map)
+
+        // Key frames and map points.
+        if (ORB_SLAM3::Map* active_map = m_orb_slam->getAtlas().GetCurrentMap())
         {
             {
                 std::vector<ORB_SLAM3::KeyFrame*> key_frames = active_map->GetAllKeyFrames();
 
-                static auto key_frame_cmp = [](const ORB_SLAM3::KeyFrame* kf1, const ORB_SLAM3::KeyFrame* kf2)
+                static auto key_frame_cmp = [](const ORB_SLAM3::KeyFrame* kf1, const ORB_SLAM3::KeyFrame* kf2) -> bool
                 {
+                    if (!kf1 || !kf2) return true;
+
                     return kf1->mnFrameId < kf2->mnFrameId;
                 };
                 std::set<ORB_SLAM3::KeyFrame*, decltype(key_frame_cmp)> kf_set(key_frame_cmp);
                 for (ORB_SLAM3::KeyFrame* kf: key_frames)
                 {
-                    if (!kf || kf->isBad())
-                        continue;
+                    if (!kf || kf->isBad()) continue;
+
                     kf_set.insert(kf);
                 }
 
                 for (ORB_SLAM3::KeyFrame* kf: kf_set)
                 {
-                    if (!kf || kf->isBad())
-                        continue;
+                    if (!kf || kf->isBad()) continue;
 
                     Eigen::Vector3f position = kf->GetPoseInverse().translation();
                     res.trajectory.push_back({ position.x(), position.y(), position.z() });
@@ -160,8 +173,7 @@ namespace android_slam
 
                 for (ORB_SLAM3::MapPoint* mp: local_mps)
                 {
-                    if (!mp || mp->isBad())
-                        continue;
+                    if (!mp || mp->isBad()) continue;
 
                     Eigen::Vector3f position = mp->GetWorldPos();
                     res.map_points.push_back({ position.x(), position.y(), position.z() });
@@ -179,6 +191,8 @@ namespace android_slam
             }
         }
 
+
+        // Tracking status string.
         {
             int status = m_orb_slam->getTrackingState();
             switch (status)
@@ -209,6 +223,8 @@ namespace android_slam
             }
         }
 
+
+        // Processing time cost.
         {
             const std::chrono::steady_clock::time_point curr_time = m_last_time;
             m_last_time = std::chrono::steady_clock::now();

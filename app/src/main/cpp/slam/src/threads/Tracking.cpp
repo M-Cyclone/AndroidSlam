@@ -1283,14 +1283,14 @@ namespace ORB_SLAM3
                 usleep(500);
         }
 
-        const int n = mvImuFromLastFrame.size() - 1;
+        const int n = (int)mvImuFromLastFrame.size() - 1;
         if (n == 0)
         {
             cout << "Empty IMU measurements vector!!!\n";
             return;
         }
 
-        IMU::Preintegrated* pImuPreintegratedFromLastFrame = new IMU::Preintegrated(mLastFrame.mImuBias, mCurrentFrame.mImuCalib);
+        auto* pImuPreintegratedFromLastFrame = new IMU::Preintegrated(mLastFrame.mImuBias, mCurrentFrame.mImuCalib);
 
         for (int i = 0; i < n; i++)
         {
@@ -1336,8 +1336,6 @@ namespace ORB_SLAM3
         mCurrentFrame.mpLastKeyFrame = mpLastKeyFrame;
 
         mCurrentFrame.setIntegrated();
-
-        //Verbose::PrintMess("Preintegration is finished!! ", Verbose::VERBOSITY_DEBUG);
     }
 
 
@@ -1369,15 +1367,18 @@ namespace ORB_SLAM3
         }
         else if (!mbMapUpdated)
         {
+            auto imu_preintegrated_frame = mCurrentFrame.mpImuPreintegratedFrame;
+            assert(imu_preintegrated_frame);
+
             const Eigen::Vector3f twb1 = mLastFrame.GetImuPosition();
             const Eigen::Matrix3f Rwb1 = mLastFrame.GetImuRotation();
             const Eigen::Vector3f Vwb1 = mLastFrame.GetVelocity();
             const Eigen::Vector3f Gz(0, 0, -IMU::GRAVITY_VALUE);
-            const float t12 = mCurrentFrame.mpImuPreintegratedFrame->dT;
+            const float t12 = imu_preintegrated_frame->dT;
 
-            Eigen::Matrix3f Rwb2 = IMU::NormalizeRotation(Rwb1 * mCurrentFrame.mpImuPreintegratedFrame->GetDeltaRotation(mLastFrame.mImuBias));
-            Eigen::Vector3f twb2 = twb1 + Vwb1 * t12 + 0.5f * t12 * t12 * Gz + Rwb1 * mCurrentFrame.mpImuPreintegratedFrame->GetDeltaPosition(mLastFrame.mImuBias);
-            Eigen::Vector3f Vwb2 = Vwb1 + t12 * Gz + Rwb1 * mCurrentFrame.mpImuPreintegratedFrame->GetDeltaVelocity(mLastFrame.mImuBias);
+            Eigen::Matrix3f Rwb2 = IMU::NormalizeRotation(Rwb1 * imu_preintegrated_frame->GetDeltaRotation(mLastFrame.mImuBias));
+            Eigen::Vector3f twb2 = twb1 + Vwb1 * t12 + 0.5f * t12 * t12 * Gz + Rwb1 * imu_preintegrated_frame->GetDeltaPosition(mLastFrame.mImuBias);
+            Eigen::Vector3f Vwb2 = Vwb1 + t12 * Gz + Rwb1 * imu_preintegrated_frame->GetDeltaVelocity(mLastFrame.mImuBias);
 
             mCurrentFrame.SetImuPoseVelocity(Rwb2, twb2, Vwb2);
 
@@ -1386,7 +1387,9 @@ namespace ORB_SLAM3
             return true;
         }
         else
+        {
             cout << "not IMU prediction!!" << endl;
+        }
 
         return false;
     }
@@ -1510,10 +1513,6 @@ namespace ORB_SLAM3
             // System is initialized. Track Frame.
             bool bOK;
 
-#ifdef REGISTER_TIMES
-            std::chrono::steady_clock::time_point time_StartPosePred = std::chrono::steady_clock::now();
-#endif
-
             // Initial camera pose estimation using motion model or relocalization (if tracking is lost)
             if (!mbOnlyTracking)
             {
@@ -1571,9 +1570,13 @@ namespace ORB_SLAM3
                         if ((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD))
                         {
                             if (pCurrentMap->isImuInitialized())
+                            {
                                 PredictStateIMU();
+                            }
                             else
+                            {
                                 bOK = false;
+                            }
 
                             if (mCurrentFrame.mTimeStamp - mTimeStampLost > time_recently_lost)
                             {
@@ -1694,17 +1697,6 @@ namespace ORB_SLAM3
             if (!mCurrentFrame.mpReferenceKF)
                 mCurrentFrame.mpReferenceKF = mpReferenceKF;
 
-#ifdef REGISTER_TIMES
-            std::chrono::steady_clock::time_point time_EndPosePred = std::chrono::steady_clock::now();
-
-            double timePosePred = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(time_EndPosePred - time_StartPosePred).count();
-            vdPosePred_ms.push_back(timePosePred);
-#endif
-
-
-#ifdef REGISTER_TIMES
-            std::chrono::steady_clock::time_point time_StartLMTrack = std::chrono::steady_clock::now();
-#endif
             // If we have an initial estimation of the camera pose and matching. Track the local map.
             if (!mbOnlyTracking)
             {
@@ -1750,10 +1742,11 @@ namespace ORB_SLAM3
             }
 
             // Save frame if recent relocalization, since they are used for IMU reset (as we are making copy, it shluld be once mCurrFrame is completely modified)
-            if ((mCurrentFrame.mnId < (mnLastRelocFrameId + mnFramesToResetIMU)) && (mCurrentFrame.mnId > mnFramesToResetIMU) &&
-                (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) && pCurrentMap->isImuInitialized())
+            if ((mCurrentFrame.mnId < (mnLastRelocFrameId + mnFramesToResetIMU)) &&
+                (mCurrentFrame.mnId > mnFramesToResetIMU) &&
+                (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) &&
+                 pCurrentMap->isImuInitialized())
             {
-                // TODO check this situation
                 Verbose::PrintMess("Saving pointer to frame. imu needs reset...", Verbose::VERBOSITY_NORMAL);
                 auto pF = new Frame;
                 pF->copyFrom(mCurrentFrame);
@@ -1761,6 +1754,7 @@ namespace ORB_SLAM3
                 pF->mpPrevFrame->copyFrom(mLastFrame);
 
                 // Load preintegration
+                assert(mCurrentFrame.mpImuPreintegratedFrame);
                 pF->mpImuPreintegratedFrame = new IMU::Preintegrated(mCurrentFrame.mpImuPreintegratedFrame);
             }
 
@@ -1777,13 +1771,6 @@ namespace ORB_SLAM3
                         mLastBias = mCurrentFrame.mImuBias;
                 }
             }
-
-#ifdef REGISTER_TIMES
-            std::chrono::steady_clock::time_point time_EndLMTrack = std::chrono::steady_clock::now();
-
-            double timeLMTrack = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(time_EndLMTrack - time_StartLMTrack).count();
-            vdLMTrack_ms.push_back(timeLMTrack);
-#endif
 
             // Update drawer
             if (bOK || mState == RECENTLY_LOST)
@@ -1812,9 +1799,8 @@ namespace ORB_SLAM3
                 }
 
                 // Delete temporal MapPoints
-                for (list<MapPoint*>::iterator lit = mlpTemporalPoints.begin(), lend = mlpTemporalPoints.end(); lit != lend; lit++)
+                for (auto pMP : mlpTemporalPoints)
                 {
-                    MapPoint* pMP = *lit;
                     delete pMP;
                 }
                 mlpTemporalPoints.clear();
@@ -2167,7 +2153,7 @@ namespace ORB_SLAM3
         else
             invMedianDepth = 1.0f / medianDepth;
 
-        if (medianDepth < 0 || pKFcur->TrackedMapPoints(1) < 50) // TODO Check, originally 100 tracks
+        if (medianDepth < 0 || pKFcur->TrackedMapPoints(1) < 50)
         {
             Verbose::PrintMess("Wrong initialization, reseting...", Verbose::VERBOSITY_QUIET);
             mpSystem->ResetActiveMap();
@@ -3551,14 +3537,17 @@ namespace ORB_SLAM3
 
     void Tracking::UpdateFrameIMU(const float s, const IMU::Bias& b, KeyFrame* pCurrentKeyFrame)
     {
+        assert(pCurrentKeyFrame);
+
         Map* pMap = pCurrentKeyFrame->GetMap();
+        assert(pMap);
+
         unsigned int index = mnFirstFrameId;
-        list<ORB_SLAM3::KeyFrame*>::iterator lRit = mlpReferences.begin();
-        list<bool>::iterator lbL = mlbLost.begin();
-        for (auto lit = mlRelativeFramePoses.begin(), lend = mlRelativeFramePoses.end();lit != lend;lit++, lRit++, lbL++)
+        auto lRit = mlpReferences.begin();
+        auto lbL = mlbLost.begin();
+        for (auto& relative_frame_pose : mlRelativeFramePoses)
         {
-            if (*lbL)
-                continue;
+            if (*lbL) continue;
 
             KeyFrame* pKF = *lRit;
 
@@ -3569,8 +3558,11 @@ namespace ORB_SLAM3
 
             if (pKF->GetMap() == pMap)
             {
-                (*lit).translation() *= s;
+                relative_frame_pose.translation() *= s;
             }
+
+            ++lRit;
+            ++lbL;
         }
 
         mLastBias = b;

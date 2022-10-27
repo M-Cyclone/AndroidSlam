@@ -56,6 +56,8 @@ namespace android_slam
         // Create slam thread.
         m_slam_thread = std::make_unique<std::thread>([this]()
         {
+            SensorIMU sensor_imu;
+
             while(m_is_running_slam)
             {
                 if (m_slam_has_new_image)
@@ -67,8 +69,10 @@ namespace android_slam
                         images = std::move(m_images);
                     }
 
+                    std::vector<ImuPoint> imus = sensor_imu.getImuData();
+
                     // Call slam tracking function.
-                    auto res = m_slam_kernel->handleData(images, {});
+                    auto res = m_slam_kernel->handleData(images, imus);
                     m_slam_has_new_image = false; // This image is processed and this thread needs new image.
 
                     // Synchronize tracking result to main thread, move the data because this thread doesn't need it.

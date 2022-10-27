@@ -40,7 +40,7 @@ namespace android_slam
 
     void SlamRenderer::setData(const TrackingResult& tracking_result)
     {
-        const auto& [last_pose, trajectory, map_points, _, __] = tracking_result;
+        const auto& [last_pose, trajectory, map_points, _0, _1] = tracking_result;
 
         m_view = glm::mat4( last_pose[+0], last_pose[+1], -last_pose[+2], last_pose[+3]
                           , last_pose[+4], last_pose[+5], -last_pose[+6], last_pose[+7]
@@ -53,10 +53,6 @@ namespace android_slam
         // map points
         {
             m_mp_count = (uint32_t)map_points.size();
-            for(const auto [x, y, z] : map_points)
-            {
-                m_global_aabb.addPoint({x, y, z});
-            }
 
             glBindVertexArray(m_mp_vao);
             glBindBuffer(GL_ARRAY_BUFFER, m_mp_vbo);
