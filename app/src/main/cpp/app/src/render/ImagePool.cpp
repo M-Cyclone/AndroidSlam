@@ -88,7 +88,7 @@ namespace android_slam
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
-        int64_t time_stamp;
+        int64_t time_stamp{};
         assert(AImage_getTimestamp(a_image, &time_stamp) == AMEDIA_OK);
 
         return Image{ std::move(img), time_stamp };

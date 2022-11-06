@@ -30,5 +30,4 @@ project("AndroidSlam")
 
 
     add_subdirectory(./external)
-    add_subdirectory(./slam)
     add_subdirectory(./app)

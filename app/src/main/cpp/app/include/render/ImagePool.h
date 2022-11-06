@@ -1,8 +1,6 @@
 #pragma once
 #include <vector>
 
-#include <SlamKernel.h>
-
 #include "sensor/SensorCamera.h"
 #include "render/Plane2D.h"
 #include "render/Shader.h"
@@ -10,6 +8,18 @@
 
 namespace android_slam
 {
+
+    struct Image
+    {
+        std::vector<uint8_t> data;
+        int64_t time_stamp;
+
+        Image() noexcept = default;
+        Image(std::vector<uint8_t> data, int64_t time_stamp) noexcept
+        : data(std::move(data))
+        , time_stamp(time_stamp)
+        {}
+    };
 
     class ImagePool
     {

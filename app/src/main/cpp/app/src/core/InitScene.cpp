@@ -61,7 +61,7 @@ namespace android_slam
         if(ImGui::Button(m_initialized ? u8"继续SLAM跟踪" : "开始SLAM跟踪"))
         {
             m_initialized = true;
-            m_app.setActiveScene("Slam");
+            //m_app.setActiveScene("Slam");
         }
     }
 

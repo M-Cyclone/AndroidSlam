@@ -5,10 +5,30 @@
 
 #include <android/sensor.h>
 
-#include <SlamKernel.h>
-
 namespace android_slam
 {
+
+    struct ImuPoint
+    {
+        float ax;
+        float ay;
+        float az;
+        float wx;
+        float wy;
+        float wz;
+        int64_t time_stamp;
+
+        ImuPoint() noexcept = default;
+        ImuPoint(float ax, float ay, float az, float wx, float wy, float wz, int64_t time_stamp) noexcept
+        : ax(ax)
+        , ay(ay)
+        , az(az)
+        , wx(wx)
+        , wy(wy)
+        , wz(wz)
+        , time_stamp(time_stamp)
+        {}
+    };
 
     struct AcceData
     {
