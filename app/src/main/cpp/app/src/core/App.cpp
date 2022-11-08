@@ -2,6 +2,7 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
+#include <fstream>
 
 #include <glm/glm.hpp>
 
@@ -10,6 +11,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include "core/InitScene.h"
+#include "core/CalibScene.h"
 
 #include "utils/Log.h"
 #include "utils/AssetManager.h"
@@ -130,8 +132,10 @@ namespace android_slam
         // Init all scenes.
         {
             m_scene_map.emplace(std::string("Init"), std::make_shared<InitScene>(*this, u8"系统"));
+            m_scene_map.emplace(std::string("Calib"), std::make_shared<CalibScene>(*this, u8"标定"));
 
             m_scene_map.at("Init")->init();
+            m_scene_map.at("Calib")->init();
 
             setActiveScene("Init");
         }
@@ -145,6 +149,7 @@ namespace android_slam
         m_active = false;
 
 
+        m_scene_map.at("Calib")->exit();
         m_scene_map.at("Init")->exit();
 
 

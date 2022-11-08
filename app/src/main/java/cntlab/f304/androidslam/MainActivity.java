@@ -15,12 +15,24 @@ public class MainActivity extends NativeActivity
     {
         super.onCreate(state);
 
-        int check = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if(check == PackageManager.PERMISSION_DENIED)
+        String[] check_list = new String[]
         {
-            String[] required_list = new String[] { Manifest.permission.CAMERA };
-            ActivityCompat.requestPermissions(this, required_list, 5);
+                Manifest.permission.CAMERA,
+                //Manifest.permission.MANAGE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        };
+
+        for (String s : check_list)
+        {
+            int check = ContextCompat.checkSelfPermission(this, s);
+            if (check == PackageManager.PERMISSION_DENIED)
+            {
+                String[] required_list = new String[]{s};
+                ActivityCompat.requestPermissions(this, required_list, 5);
+            }
         }
+
 
         setContentView(R.layout.activity_main);
     }

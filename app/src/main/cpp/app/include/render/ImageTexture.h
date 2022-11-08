@@ -39,6 +39,8 @@ namespace android_slam
             glDeleteTextures(1, &m_texture);
         }
 
+        uint32_t getId() const { return m_texture; }
+
         void bind() const { glBindTexture(GL_TEXTURE_2D, m_texture); }
         void unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
 

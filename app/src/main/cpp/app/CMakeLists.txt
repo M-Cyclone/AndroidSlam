@@ -16,6 +16,7 @@ project(android_slam)
     target_include_directories(${PROJECT_NAME}
         PRIVATE ./include
         PRIVATE ${GLM_INCLUDE_DIRS}
+        PRIVATE ${OpenCV_INCLUDE_DIRS}
     )
     target_link_libraries(${PROJECT_NAME}
         -landroid
@@ -27,6 +28,7 @@ project(android_slam)
         EGL
         GLESv3
         imgui
+        ${OpenCV_LIBS}
     )
     target_compile_definitions(${PROJECT_NAME}
         PRIVATE -DLOG

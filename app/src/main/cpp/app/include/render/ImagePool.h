@@ -16,8 +16,8 @@ namespace android_slam
 
         Image() noexcept = default;
         Image(std::vector<uint8_t> data, int64_t time_stamp) noexcept
-        : data(std::move(data))
-        , time_stamp(time_stamp)
+            : data(std::move(data))
+            , time_stamp(time_stamp)
         {}
     };
 

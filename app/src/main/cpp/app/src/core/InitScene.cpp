@@ -58,10 +58,10 @@ namespace android_slam
 
     void InitScene::drawGui(float dt)
     {
-        if(ImGui::Button(m_initialized ? u8"继续SLAM跟踪" : "开始SLAM跟踪"))
+        if (ImGui::Button(m_initialized ? u8"继续标定" : "开始标定"))
         {
             m_initialized = true;
-            //m_app.setActiveScene("Slam");
+            m_app.setActiveScene("Calib");
         }
     }
 
