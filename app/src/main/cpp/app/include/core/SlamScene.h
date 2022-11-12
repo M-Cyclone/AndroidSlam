@@ -31,7 +31,6 @@ namespace android_slam
     public:
         explicit SlamScene(App& app, const char* name) noexcept
             : Scene(app, name)
-            , m_app_ref(app)
         {}
         SlamScene(const SlamScene&) = delete;
         SlamScene& operator=(const SlamScene&) = delete;
@@ -43,8 +42,6 @@ namespace android_slam
         void drawGui(float dt) override;
 
     private:
-        App& m_app_ref;
-
         std::unique_ptr<ImagePool>    m_image_pool;
         std::unique_ptr<SlamRenderer> m_slam_renderer;
         std::unique_ptr<SlamKernel>   m_slam_kernel;

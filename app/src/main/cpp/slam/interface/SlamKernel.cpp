@@ -14,13 +14,13 @@ namespace android_slam
 {
 
     SlamKernel::SlamKernel(int32_t img_width, int32_t img_height, std::string vocabulary_data, int64_t begin_time_stamp)
-        : m_width(img_width)
-        , m_height(img_height)
-        , m_begin_time_stamp(begin_time_stamp)
-        , m_last_time(std::chrono::steady_clock::now())
+    : m_width(img_width)
+    , m_height(img_height)
+    , m_begin_time_stamp(begin_time_stamp)
+    , m_last_time(std::chrono::steady_clock::now())
     {
         ORB_SLAM3::Settings::SettingDesc desc{};
-        desc.sensor = ORB_SLAM3::System::eSensor::IMU_MONOCULAR;
+        desc.sensor = ORB_SLAM3::System::eSensor::MONOCULAR;
         desc.cameraInfo.cameraType = ORB_SLAM3::Settings::CameraType::PinHole;
         desc.cameraInfo.fx = 458.654f;
         desc.cameraInfo.fy = 457.296f;
@@ -41,11 +41,7 @@ namespace android_slam
         desc.imuInfo.gyroWalk = 1.9393e-05f;
         desc.imuInfo.accWalk = 3.0000e-03f;
         desc.imuInfo.frequency = 200.0f;
-        desc.imuInfo.cvTbc = static_cast<cv::Mat>(cv::Mat_<float>(4, 4)
-        <<  +0.0148655429818f, -0.99988092969800f, +0.00414029679422f, -0.02164014549750f,
-            +0.9995572490080f, +0.01496721332470f, +0.02571552994800f, -0.06467698676800f,
-            -0.0257744366974f, +0.00375618835797f, +0.99966072717800f, +0.00981073058949f,
-            0.0f, 0.0f, 0.0f, 1.0f
+        desc.imuInfo.cvTbc = static_cast<cv::Mat>(cv::Mat_<float>(4, 4) << +0.0148655429818f, -0.99988092969800f, +0.00414029679422f, -0.02164014549750f, +0.9995572490080f, +0.01496721332470f, +0.02571552994800f, -0.06467698676800f, -0.0257744366974f, +0.00375618835797f, +0.99966072717800f, +0.00981073058949f, 0.0f, 0.0f, 0.0f, 1.0f
         );
         desc.imuInfo.bInsertKFsWhenLost = true;
         desc.orbInfo.nFeatures = 1000;
@@ -72,10 +68,7 @@ namespace android_slam
 
 
         m_orb_slam = std::make_unique<::ORB_SLAM3::System>(
-            vocabulary,
-            slam_settings,
-            static_cast<const ORB_SLAM3::System::eSensor>(desc.sensor)
-        );
+        vocabulary, slam_settings, static_cast<const ORB_SLAM3::System::eSensor>(desc.sensor));
     }
 
     // unique_ptr needs to know how to delete the ptr, so the dtor should be impl with the definition of the ptr class.
@@ -98,7 +91,7 @@ namespace android_slam
         memcpy(cv_image.data, image.data.data(), sizeof(uint8_t) * image.data.size());
 
 
-        double image_time_stamp = (double)(image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
+        double image_time_stamp = (double) (image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
         Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp);
 
 
@@ -124,7 +117,7 @@ namespace android_slam
         }
 
         ORB_SLAM3::Map* active_map = m_orb_slam->getAtlas().GetCurrentMap();
-        if(active_map)
+        if (active_map)
         {
             {
                 std::vector<ORB_SLAM3::KeyFrame*> key_frames = active_map->GetAllKeyFrames();
