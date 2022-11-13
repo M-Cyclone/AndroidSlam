@@ -52,11 +52,12 @@ namespace android_slam
 
         // map points
         {
-            m_mp_count = (uint32_t)map_points.size();
             for(const auto [x, y, z] : map_points)
             {
                 m_global_aabb.addPoint({x, y, z});
             }
+
+            m_mp_count = (uint32_t)map_points.size();
 
             glBindVertexArray(m_mp_vao);
             glBindBuffer(GL_ARRAY_BUFFER, m_mp_vbo);
