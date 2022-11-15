@@ -67,6 +67,8 @@ namespace android_slam
         bool m_show_image = false;
         bool m_show_total_trajectory = false;
 
+        //glm::vec3 temp_last_kf_position = glm::vec3(0.0f, 0.0f, 0.0f);
+
     private:
         float m_fov = 45.0f;
         float m_aspect_ratio = 1.0f;

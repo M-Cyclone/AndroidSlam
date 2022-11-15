@@ -19,6 +19,8 @@ namespace android_slam
             : min_conner(k_float_max, k_float_max, k_float_max)
             , max_conner(k_float_min, k_float_min, k_float_min)
         {}
+        AABB(const AABB&) noexcept = default;
+        AABB& operator=(const AABB&) noexcept = default;
 
         void addPoint(glm::vec3 point) noexcept
         {

@@ -48,13 +48,37 @@ namespace android_slam
                           , last_pose[12], last_pose[13], -last_pose[14], last_pose[15]
         );
 
-        m_global_aabb = AABB{};
+        AABB global_aabb;
+
+        // key frames
+        {
+            //if(!trajectory.empty())
+            //{
+            //    temp_last_kf_position = glm::vec3(trajectory.back().x, trajectory.back().y, trajectory.back().z);
+            //}
+
+            for(const auto [x, y, z] : trajectory)
+            {
+                global_aabb.addPoint({x, y, z});
+            }
+
+            m_kf_count = (uint32_t)trajectory.size();
+
+            glBindVertexArray(m_kf_vao);
+            glBindBuffer(GL_ARRAY_BUFFER, m_kf_vbo);
+            glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(sizeof(TrackingResult::Pos) * m_kf_count), trajectory.data(), GL_DYNAMIC_DRAW);
+
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TrackingResult::Pos), (const void*) 0);
+            glEnableVertexAttribArray(0);
+
+            glBindVertexArray(0);
+        }
 
         // map points
         {
             for(const auto [x, y, z] : map_points)
             {
-                m_global_aabb.addPoint({x, y, z});
+                global_aabb.addPoint({x, y, z});
             }
 
             m_mp_count = (uint32_t)map_points.size();
@@ -67,23 +91,7 @@ namespace android_slam
             glEnableVertexAttribArray(0);
         }
 
-        // key frames
-        {
-            m_kf_count = (uint32_t)trajectory.size();
-            for(const auto [x, y, z] : trajectory)
-            {
-                m_global_aabb.addPoint({x, y, z});
-            }
-
-            glBindVertexArray(m_kf_vao);
-            glBindBuffer(GL_ARRAY_BUFFER, m_kf_vbo);
-            glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(sizeof(TrackingResult::Pos) * m_kf_count), trajectory.data(), GL_DYNAMIC_DRAW);
-
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TrackingResult::Pos), (const void*) 0);
-            glEnableVertexAttribArray(0);
-
-            glBindVertexArray(0);
-        }
+        m_global_aabb = global_aabb;
 
         glBindVertexArray(0);
     }

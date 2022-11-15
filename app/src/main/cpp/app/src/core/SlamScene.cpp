@@ -132,22 +132,25 @@ namespace android_slam
         int32_t img_height = screen_height * 3 / 7;
         m_slam_renderer->drawImage(0, 0, img_width, img_height); // Aspect ratio: 4 : 3
 
-        m_slam_renderer->drawTotalTrajectory(0, img_height, img_width, screen_height); // Aspect ratio: 1 : 1
+        m_slam_renderer->drawTotalTrajectory(0, img_height, img_width, screen_height - img_height); // Aspect ratio: 1 : 1
     }
 
     void SlamScene::drawGui(float dt)
     {
         if (ImGui::TreeNode(u8"SLAM控制"))
         {
+            //auto pos = m_slam_renderer->temp_last_kf_position;
+            //ImGui::Text("Position: (%f, %f, %f)", pos.x, pos.y, pos.z);
+
             if (ImGui::Button(m_need_update_image ? u8"暂停" : u8"继续"))
             {
                 m_need_update_image = !m_need_update_image;
             }
 
-            if (ImGui::Button(u8"重置"))
-            {
-                m_slam_kernel->reset();
-            }
+            //if (ImGui::Button(u8"重置"))
+            //{
+            //    m_slam_kernel->reset();
+            //}
 
             if (ImGui::Button(u8"退出"))
             {
