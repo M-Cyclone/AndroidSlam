@@ -20,7 +20,7 @@ namespace android_slam
     , m_last_time(std::chrono::steady_clock::now())
     {
         ORB_SLAM3::Settings::SettingDesc desc{};
-        desc.sensor = ORB_SLAM3::System::eSensor::IMU_MONOCULAR;
+        desc.sensor = ORB_SLAM3::System::eSensor::MONOCULAR;
         desc.cameraInfo.cameraType = ORB_SLAM3::Settings::CameraType::PinHole;
         desc.cameraInfo.fx = 458.654f;
         desc.cameraInfo.fy = 457.296f;
@@ -94,19 +94,22 @@ namespace android_slam
         memcpy(cv_image.data, image.data.data(), sizeof(uint8_t) * image.data.size());
 
 
-        // Convert imu data.
-        std::vector<ORB_SLAM3::IMU::Point> orb_imus;
-        orb_imus.reserve(imus.size());
-        for(auto [ax, ay, az, wx, wy, wz, ts] : imus)
-        {
-            orb_imus.emplace_back(-ax, ay, az, -wx, wy, wz, (double)(ts - m_begin_time_stamp) * k_nano_sec_to_sec_radio);
-        }
 
+        // Convert imu data.
+        //std::vector<ORB_SLAM3::IMU::Point> orb_imus;
+        //orb_imus.reserve(imus.size());
+        //for(auto [ax, ay, az, wx, wy, wz, ts] : imus)
+        //{
+        //    orb_imus.emplace_back(-ax, ay, az, -wx, wy, wz, (double)(ts - m_begin_time_stamp) * k_nano_sec_to_sec_radio);
+        //}
 
         // Get time stamp from android time stamp.
-        double image_time_stamp = (double)(image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
+        //double image_time_stamp = (double)(image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
         // Tracking.
-        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp, orb_imus);
+        //Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp, orb_imus);
+
+        double image_time_stamp = (double) (image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
+        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp);
 
 
         // Set tracking result.
@@ -133,7 +136,6 @@ namespace android_slam
             res.last_pose[14] = mat_pose(2, 3);
             res.last_pose[15] = mat_pose(3, 3);
         }
-
 
         // Key frames and map points.
         if (ORB_SLAM3::Map* active_map = m_orb_slam->getAtlas().GetCurrentMap())

@@ -48,27 +48,16 @@ namespace android_slam
                           , last_pose[12], last_pose[13], -last_pose[14], last_pose[15]
         );
 
-        m_global_aabb = AABB{};
-
-        // map points
-        {
-            m_mp_count = (uint32_t)map_points.size();
-
-            glBindVertexArray(m_mp_vao);
-            glBindBuffer(GL_ARRAY_BUFFER, m_mp_vbo);
-            glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(sizeof(TrackingResult::Pos) * m_mp_count), map_points.data(), GL_DYNAMIC_DRAW);
-
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TrackingResult::Pos), (const void*) 0);
-            glEnableVertexAttribArray(0);
-        }
+        AABB global_aabb;
 
         // key frames
         {
-            m_kf_count = (uint32_t)trajectory.size();
             for(const auto [x, y, z] : trajectory)
             {
-                m_global_aabb.addPoint({x, y, z});
+                global_aabb.addPoint({x, y, z});
             }
+
+            m_kf_count = (uint32_t)trajectory.size();
 
             glBindVertexArray(m_kf_vao);
             glBindBuffer(GL_ARRAY_BUFFER, m_kf_vbo);
@@ -79,6 +68,25 @@ namespace android_slam
 
             glBindVertexArray(0);
         }
+
+        // map points
+        {
+            for(const auto [x, y, z] : map_points)
+            {
+                global_aabb.addPoint({x, y, z});
+            }
+
+            m_mp_count = (uint32_t)map_points.size();
+
+            glBindVertexArray(m_mp_vao);
+            glBindBuffer(GL_ARRAY_BUFFER, m_mp_vbo);
+            glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(sizeof(TrackingResult::Pos) * m_mp_count), map_points.data(), GL_DYNAMIC_DRAW);
+
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TrackingResult::Pos), (const void*) 0);
+            glEnableVertexAttribArray(0);
+        }
+
+        m_global_aabb = global_aabb;
 
         glBindVertexArray(0);
     }

@@ -16,7 +16,7 @@ namespace android_slam
 
     public:
         explicit Scene(App& app, const char* name) noexcept
-            : m_app(app)
+            : m_app_ref(app)
             , m_name(name)
         {}
         Scene(const Scene&) = delete;
@@ -35,7 +35,7 @@ namespace android_slam
         bool m_show_ui = false;
 
     protected:
-        App& m_app;
+        App& m_app_ref;
         std::string m_name;
     };
 

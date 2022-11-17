@@ -55,17 +55,19 @@ namespace android_slam
         }
 
     public:
-        glm::vec4 m_clear_color = { 0.1f, 0.1f, 0.1f, 1.0f };
-        glm::vec3 m_mp_color = { 1.0f, 1.0f, 1.0f };
-        glm::vec3 m_kf_color = { 0.0f, 1.0f, 1.0f };
+        glm::vec4 m_clear_color = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glm::vec3 m_mp_color = { 0.1f, 0.1f, 0.1f };
+        glm::vec3 m_kf_color = { 1.0f, 0.0f, 0.0f };
 
-        float m_point_size = 2.0f;
-        float m_line_width = 2.0f;
+        float m_point_size = 5.0f;
+        float m_line_width = 5.0f;
 
         bool m_show_mappoints = true;
         bool m_show_keyframes = true;
         bool m_show_image = false;
         bool m_show_total_trajectory = false;
+
+        //glm::vec3 temp_last_kf_position = glm::vec3(0.0f, 0.0f, 0.0f);
 
     private:
         float m_fov = 45.0f;

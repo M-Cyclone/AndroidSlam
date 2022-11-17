@@ -18,17 +18,13 @@ namespace android_slam
     {
         // Camera image converter.
         m_image_pool = std::make_unique<ImagePool>(
-            k_sensor_camera_width,
-            k_sensor_camera_height,
-            "shader/yuv2rgb.vert",
-            "shader/yuv2rgb.frag"
+        k_sensor_camera_width, k_sensor_camera_height, "shader/yuv2rgb.vert", "shader/yuv2rgb.frag"
         );
         Image first_image = m_image_pool->getImage();
 
-        m_slam_renderer = std::make_unique<SlamRenderer>(k_fps_camera_fov,
-                                                         m_app.getWindow().getAspectRatio(),
-                                                         k_fps_camera_z_min,
-                                                         k_fps_camera_z_max);
+        m_slam_renderer = std::make_unique<SlamRenderer>(
+        k_fps_camera_fov, m_app_ref.getWindow().getAspectRatio(), k_fps_camera_z_min, k_fps_camera_z_max
+        );
 
         // Create slam kernel.
         {
@@ -42,10 +38,9 @@ namespace android_slam
             std::string voc_buffer(buffer, buffer + size);
             AAsset_close(asset);
 
-            m_slam_kernel = std::make_unique<SlamKernel>(k_sensor_camera_width,
-                                                         k_sensor_camera_height,
-                                                         std::move(voc_buffer),
-                                                         first_image.time_stamp);
+            m_slam_kernel = std::make_unique<SlamKernel>(
+            k_sensor_camera_width, k_sensor_camera_height, std::move(voc_buffer), first_image.time_stamp
+            );
 
             DEBUG_INFO("[Android Slam App Info] Creates slam kernel successfully.");
         }
@@ -54,11 +49,12 @@ namespace android_slam
         m_is_running_slam = true;     // Whether the slam scene is running, also indicates the slam thread is running.
 
         // Create slam thread.
-        m_slam_thread = std::make_unique<std::thread>([this]()
+        m_slam_thread = std::make_unique<std::thread>(
+        [this]()
         {
-            SensorIMU sensor_imu;
+            //SensorIMU sensor_imu;
 
-            while(m_is_running_slam)
+            while (m_is_running_slam)
             {
                 if (m_slam_has_new_image)
                 {
@@ -69,10 +65,11 @@ namespace android_slam
                         images = std::move(m_images);
                     }
 
-                    std::vector<ImuPoint> imus = sensor_imu.getImuData();
+                    //std::vector<ImuPoint> imus = sensor_imu.getImuData();
 
                     // Call slam tracking function.
-                    auto res = m_slam_kernel->handleData(images, imus);
+                    //auto res = m_slam_kernel->handleData(images, imus);
+                    auto res = m_slam_kernel->handleData(images, {});
                     m_slam_has_new_image = false; // This image is processed and this thread needs new image.
 
                     // Synchronize tracking result to main thread, move the data because this thread doesn't need it.
@@ -82,7 +79,8 @@ namespace android_slam
                     }
                 }
             }
-        });
+        }
+        );
     }
 
     void SlamScene::exit()
@@ -129,8 +127,8 @@ namespace android_slam
         // Draw trajectory.
         m_slam_renderer->clearColor();
 
-        int32_t screen_width = m_app.getWindow().getWidth();
-        int32_t screen_height = m_app.getWindow().getHeight();
+        int32_t screen_width = m_app_ref.getWindow().getWidth();
+        int32_t screen_height = m_app_ref.getWindow().getHeight();
 
         m_slam_renderer->drawMapPoints(0, 0, screen_width, screen_height);
         m_slam_renderer->drawKeyFrames(0, 0, screen_width, screen_height);
@@ -139,36 +137,39 @@ namespace android_slam
         int32_t img_height = screen_height * 3 / 7;
         m_slam_renderer->drawImage(0, 0, img_width, img_height); // Aspect ratio: 4 : 3
 
-        m_slam_renderer->drawTotalTrajectory(0, img_height, img_width, screen_height); // Aspect ratio: 1 : 1
+        m_slam_renderer->drawTotalTrajectory(0, img_height, img_width, screen_height - img_height); // Aspect ratio: 1 : 1
     }
 
     void SlamScene::drawGui(float dt)
     {
-        if(ImGui::TreeNode(u8"SLAM控制"))
+        if (ImGui::TreeNode(u8"SLAM控制"))
         {
-            if(ImGui::Button(m_need_update_image ? u8"暂停" : u8"继续"))
+            //auto pos = m_slam_renderer->temp_last_kf_position;
+            //ImGui::Text("Position: (%f, %f, %f)", pos.x, pos.y, pos.z);
+
+            if (ImGui::Button(m_need_update_image ? u8"暂停" : u8"继续"))
             {
                 m_need_update_image = !m_need_update_image;
             }
 
-            if(ImGui::Button(u8"重置"))
-            {
-                m_slam_kernel->reset();
-            }
+            //if (ImGui::Button(u8"重置"))
+            //{
+            //    m_slam_kernel->reset();
+            //}
 
-            if(ImGui::Button(u8"退出"))
+            if (ImGui::Button(u8"退出"))
             {
-                m_app.setActiveScene("Init");
+                m_app_ref.setActiveScene("Init");
             }
 
             ImGui::TreePop();
         }
 
-        if(ImGui::TreeNode(u8"绘制选项"))
+        if (ImGui::TreeNode(u8"绘制选项"))
         {
-            if(ImGui::TreeNode(u8"地图点"))
+            if (ImGui::TreeNode(u8"地图点"))
             {
-                if(ImGui::Button(m_slam_renderer->m_show_mappoints ? u8"隐藏" : u8"显示"))
+                if (ImGui::Button(m_slam_renderer->m_show_mappoints ? u8"隐藏" : u8"显示"))
                 {
                     m_slam_renderer->m_show_mappoints = !m_slam_renderer->m_show_mappoints;
                 }
@@ -180,9 +181,9 @@ namespace android_slam
                 ImGui::TreePop();
             }
 
-            if(ImGui::TreeNode(u8"相机轨迹"))
+            if (ImGui::TreeNode(u8"相机轨迹"))
             {
-                if(ImGui::Button(m_slam_renderer->m_show_keyframes ? u8"隐藏" : u8"显示"))
+                if (ImGui::Button(m_slam_renderer->m_show_keyframes ? u8"隐藏" : u8"显示"))
                 {
                     m_slam_renderer->m_show_keyframes = !m_slam_renderer->m_show_keyframes;
                 }
@@ -194,14 +195,14 @@ namespace android_slam
                 ImGui::TreePop();
             }
 
-            if(ImGui::TreeNode(u8"其他"))
+            if (ImGui::TreeNode(u8"其他"))
             {
-                if(ImGui::Button(m_slam_renderer->m_show_image ? u8"隐藏相机图像" : u8"显示相机图像"))
+                if (ImGui::Button(m_slam_renderer->m_show_image ? u8"隐藏相机图像" : u8"显示相机图像"))
                 {
                     m_slam_renderer->m_show_image = !m_slam_renderer->m_show_image;
                 }
 
-                if(ImGui::Button(m_slam_renderer->m_show_total_trajectory ? u8"隐藏全局轨迹" : u8"显示全局轨迹"))
+                if (ImGui::Button(m_slam_renderer->m_show_total_trajectory ? u8"隐藏全局轨迹" : u8"显示全局轨迹"))
                 {
                     m_slam_renderer->m_show_total_trajectory = !m_slam_renderer->m_show_total_trajectory;
                 }
