@@ -1244,6 +1244,7 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA)
     }
 
     const int N = vpKF.size();
+
     IMU::Bias b(0, 0, 0, 0, 0, 0);
 
     // Compute and KF velocities mRwg estimation
@@ -1254,18 +1255,19 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA)
         dirG.setZero();
         for (auto& itKF: vpKF)
         {
-            if (!itKF->mpImuPreintegrated)
-                continue;
-            if (!itKF->mPrevKF)
+            if (!itKF->mpImuPreintegrated || !itKF->mPrevKF)
                 continue;
 
-            dirG -= itKF->mPrevKF->GetImuRotation() * itKF->mpImuPreintegrated->GetUpdatedDeltaVelocity();
+            auto last_R = itKF->mPrevKF->GetImuRotation();
+            auto delta_v = itKF->mpImuPreintegrated->GetUpdatedDeltaVelocity();
+            dirG -= last_R * delta_v;
+
             Eigen::Vector3f _vel = (itKF->GetImuPosition() - itKF->mPrevKF->GetImuPosition()) / itKF->mpImuPreintegrated->dT;
             itKF->SetVelocity(_vel);
             itKF->mPrevKF->SetVelocity(_vel);
         }
 
-        dirG = dirG / dirG.norm();
+        dirG.normalize();
         Eigen::Vector3f gI(0.0f, 0.0f, -1.0f);
         Eigen::Vector3f v = gI.cross(dirG);
         const float nv = v.norm();
@@ -1505,10 +1507,10 @@ void LocalMapping::ScaleRefinement()
     }
     std::chrono::steady_clock::time_point t3 = std::chrono::steady_clock::now();
 
-    for(list<KeyFrame*>::iterator lit = mlNewKeyFrames.begin(), lend=mlNewKeyFrames.end(); lit!=lend; lit++)
+    for(auto & mlNewKeyFrame : mlNewKeyFrames)
     {
-        (*lit)->SetBadFlag();
-        delete *lit;
+        mlNewKeyFrame->SetBadFlag();
+        delete mlNewKeyFrame;
     }
     mlNewKeyFrames.clear();
 
@@ -1516,13 +1518,10 @@ void LocalMapping::ScaleRefinement()
 
     // To perform pose-inertial opt w.r.t. last keyframe
     mpCurrentKeyFrame->GetMap()->IncreaseChangeIndex();
-
-    return;
 }
 
 
-
-bool LocalMapping::IsInitializing()
+bool LocalMapping::IsInitializing() const
 {
     return bInitializing;
 }

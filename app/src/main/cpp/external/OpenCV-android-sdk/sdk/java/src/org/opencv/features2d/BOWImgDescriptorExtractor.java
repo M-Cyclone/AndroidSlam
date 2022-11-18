@@ -39,6 +39,21 @@ public class BOWImgDescriptorExtractor {
 
 
     //
+    // C++:  void cv::BOWImgDescriptorExtractor::setVocabulary(Mat vocabulary)
+    //
+
+    /**
+     * Sets a visual vocabulary.
+     *
+     *     @param vocabulary Vocabulary (can be trained using the inheritor of BOWTrainer ). Each row of the
+     *     vocabulary is a visual word (cluster center).
+     */
+    public void setVocabulary(Mat vocabulary) {
+        setVocabulary_0(nativeObj, vocabulary.nativeObj);
+    }
+
+
+    //
     // C++:  Mat cv::BOWImgDescriptorExtractor::getVocabulary()
     //
 
@@ -48,6 +63,24 @@ public class BOWImgDescriptorExtractor {
      */
     public Mat getVocabulary() {
         return new Mat(getVocabulary_0(nativeObj));
+    }
+
+
+    //
+    // C++:  void cv::BOWImgDescriptorExtractor::compute2(Mat image, vector_KeyPoint keypoints, Mat& imgDescriptor)
+    //
+
+    /**
+     *
+     *     @param imgDescriptor Computed output image descriptor.
+     *     pointIdxsOfClusters[i] are keypoint indices that belong to the i -th cluster (word of vocabulary)
+     *     returned if it is non-zero.
+     * @param image automatically generated
+     * @param keypoints automatically generated
+     */
+    public void compute(Mat image, MatOfKeyPoint keypoints, Mat imgDescriptor) {
+        Mat keypoints_mat = keypoints;
+        compute_0(nativeObj, image.nativeObj, keypoints_mat.nativeObj, imgDescriptor.nativeObj);
     }
 
 
@@ -77,39 +110,6 @@ public class BOWImgDescriptorExtractor {
     }
 
 
-    //
-    // C++:  void cv::BOWImgDescriptorExtractor::compute2(Mat image, vector_KeyPoint keypoints, Mat& imgDescriptor)
-    //
-
-    /**
-     *
-     *     @param imgDescriptor Computed output image descriptor.
-     *     pointIdxsOfClusters[i] are keypoint indices that belong to the i -th cluster (word of vocabulary)
-     *     returned if it is non-zero.
-     * @param image automatically generated
-     * @param keypoints automatically generated
-     */
-    public void compute(Mat image, MatOfKeyPoint keypoints, Mat imgDescriptor) {
-        Mat keypoints_mat = keypoints;
-        compute_0(nativeObj, image.nativeObj, keypoints_mat.nativeObj, imgDescriptor.nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::BOWImgDescriptorExtractor::setVocabulary(Mat vocabulary)
-    //
-
-    /**
-     * Sets a visual vocabulary.
-     *
-     *     @param vocabulary Vocabulary (can be trained using the inheritor of BOWTrainer ). Each row of the
-     *     vocabulary is a visual word (cluster center).
-     */
-    public void setVocabulary(Mat vocabulary) {
-        setVocabulary_0(nativeObj, vocabulary.nativeObj);
-    }
-
-
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
@@ -117,20 +117,20 @@ public class BOWImgDescriptorExtractor {
 
 
 
+    // C++:  void cv::BOWImgDescriptorExtractor::setVocabulary(Mat vocabulary)
+    private static native void setVocabulary_0(long nativeObj, long vocabulary_nativeObj);
+
     // C++:  Mat cv::BOWImgDescriptorExtractor::getVocabulary()
     private static native long getVocabulary_0(long nativeObj);
+
+    // C++:  void cv::BOWImgDescriptorExtractor::compute2(Mat image, vector_KeyPoint keypoints, Mat& imgDescriptor)
+    private static native void compute_0(long nativeObj, long image_nativeObj, long keypoints_mat_nativeObj, long imgDescriptor_nativeObj);
 
     // C++:  int cv::BOWImgDescriptorExtractor::descriptorSize()
     private static native int descriptorSize_0(long nativeObj);
 
     // C++:  int cv::BOWImgDescriptorExtractor::descriptorType()
     private static native int descriptorType_0(long nativeObj);
-
-    // C++:  void cv::BOWImgDescriptorExtractor::compute2(Mat image, vector_KeyPoint keypoints, Mat& imgDescriptor)
-    private static native void compute_0(long nativeObj, long image_nativeObj, long keypoints_mat_nativeObj, long imgDescriptor_nativeObj);
-
-    // C++:  void cv::BOWImgDescriptorExtractor::setVocabulary(Mat vocabulary)
-    private static native void setVocabulary_0(long nativeObj, long vocabulary_nativeObj);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

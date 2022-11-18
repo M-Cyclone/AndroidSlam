@@ -8,6 +8,8 @@
 
 #include "core/Window.h"
 #include "core/Scene.h"
+
+#include "utils/Log.h"
 #include "utils/Timer.h"
 
 namespace android_slam
@@ -24,7 +26,10 @@ namespace android_slam
         App(android_app* state) noexcept;
         App(const App&) = delete;
         App& operator=(const App&) = delete;
-        ~App() noexcept = default;
+        ~App() noexcept
+        {
+            std::cout.rdbuf(nullptr);
+        }
 
         void run();
 
@@ -48,6 +53,8 @@ namespace android_slam
         float m_last_process_delta_time = 1.0f;
 
     private:
+        AndroidCOutBuffer m_cout_buffer;
+
         Timer m_timer;
         std::unique_ptr<Window> m_window;
 

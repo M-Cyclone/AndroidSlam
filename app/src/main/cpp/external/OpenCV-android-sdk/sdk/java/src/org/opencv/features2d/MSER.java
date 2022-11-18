@@ -35,8 +35,7 @@ import org.opencv.utils.Converters;
  * <ul>
  *   <li>
  *  the color image algorithm is taken from: CITE: forssen2007maximally ; it should be much slower
- * than grey image method ( 3~4 times ); the chi_table.h file is taken directly from paper's source
- * code which is distributed under GPL.
+ * than grey image method ( 3~4 times )
  *   </li>
  * </ul>
  *
@@ -54,187 +53,142 @@ public class MSER extends Feature2D {
     public static MSER __fromPtr__(long addr) { return new MSER(addr); }
 
     //
-    // C++: static Ptr_MSER cv::MSER::create(int _delta = 5, int _min_area = 60, int _max_area = 14400, double _max_variation = 0.25, double _min_diversity = .2, int _max_evolution = 200, double _area_threshold = 1.01, double _min_margin = 0.003, int _edge_blur_size = 5)
+    // C++: static Ptr_MSER cv::MSER::create(int delta = 5, int min_area = 60, int max_area = 14400, double max_variation = 0.25, double min_diversity = .2, int max_evolution = 200, double area_threshold = 1.01, double min_margin = 0.003, int edge_blur_size = 5)
     //
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
-     *     @param _delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param _min_area prune the area which smaller than minArea
-     *     @param _max_area prune the area which bigger than maxArea
-     *     @param _max_variation prune the area have similar size to its children
-     *     @param _min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
-     *     @param _max_evolution  for color image, the evolution steps
-     *     @param _area_threshold for color image, the area threshold to cause re-initialize
-     *     @param _min_margin for color image, ignore too small margin
-     *     @param _edge_blur_size for color image, the aperture size for edge blur
+     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     *     @param min_area prune the area which smaller than minArea
+     *     @param max_area prune the area which bigger than maxArea
+     *     @param max_variation prune the area have similar size to its children
+     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
+     *     @param max_evolution  for color image, the evolution steps
+     *     @param area_threshold for color image, the area threshold to cause re-initialize
+     *     @param min_margin for color image, ignore too small margin
+     *     @param edge_blur_size for color image, the aperture size for edge blur
      * @return automatically generated
      */
-    public static MSER create(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity, int _max_evolution, double _area_threshold, double _min_margin, int _edge_blur_size) {
-        return MSER.__fromPtr__(create_0(_delta, _min_area, _max_area, _max_variation, _min_diversity, _max_evolution, _area_threshold, _min_margin, _edge_blur_size));
+    public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold, double min_margin, int edge_blur_size) {
+        return MSER.__fromPtr__(create_0(delta, min_area, max_area, max_variation, min_diversity, max_evolution, area_threshold, min_margin, edge_blur_size));
     }
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
-     *     @param _delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param _min_area prune the area which smaller than minArea
-     *     @param _max_area prune the area which bigger than maxArea
-     *     @param _max_variation prune the area have similar size to its children
-     *     @param _min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
-     *     @param _max_evolution  for color image, the evolution steps
-     *     @param _area_threshold for color image, the area threshold to cause re-initialize
-     *     @param _min_margin for color image, ignore too small margin
+     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     *     @param min_area prune the area which smaller than minArea
+     *     @param max_area prune the area which bigger than maxArea
+     *     @param max_variation prune the area have similar size to its children
+     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
+     *     @param max_evolution  for color image, the evolution steps
+     *     @param area_threshold for color image, the area threshold to cause re-initialize
+     *     @param min_margin for color image, ignore too small margin
      * @return automatically generated
      */
-    public static MSER create(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity, int _max_evolution, double _area_threshold, double _min_margin) {
-        return MSER.__fromPtr__(create_1(_delta, _min_area, _max_area, _max_variation, _min_diversity, _max_evolution, _area_threshold, _min_margin));
+    public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold, double min_margin) {
+        return MSER.__fromPtr__(create_1(delta, min_area, max_area, max_variation, min_diversity, max_evolution, area_threshold, min_margin));
     }
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
-     *     @param _delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param _min_area prune the area which smaller than minArea
-     *     @param _max_area prune the area which bigger than maxArea
-     *     @param _max_variation prune the area have similar size to its children
-     *     @param _min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
-     *     @param _max_evolution  for color image, the evolution steps
-     *     @param _area_threshold for color image, the area threshold to cause re-initialize
+     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     *     @param min_area prune the area which smaller than minArea
+     *     @param max_area prune the area which bigger than maxArea
+     *     @param max_variation prune the area have similar size to its children
+     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
+     *     @param max_evolution  for color image, the evolution steps
+     *     @param area_threshold for color image, the area threshold to cause re-initialize
      * @return automatically generated
      */
-    public static MSER create(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity, int _max_evolution, double _area_threshold) {
-        return MSER.__fromPtr__(create_2(_delta, _min_area, _max_area, _max_variation, _min_diversity, _max_evolution, _area_threshold));
+    public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold) {
+        return MSER.__fromPtr__(create_2(delta, min_area, max_area, max_variation, min_diversity, max_evolution, area_threshold));
     }
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
-     *     @param _delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param _min_area prune the area which smaller than minArea
-     *     @param _max_area prune the area which bigger than maxArea
-     *     @param _max_variation prune the area have similar size to its children
-     *     @param _min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
-     *     @param _max_evolution  for color image, the evolution steps
+     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     *     @param min_area prune the area which smaller than minArea
+     *     @param max_area prune the area which bigger than maxArea
+     *     @param max_variation prune the area have similar size to its children
+     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
+     *     @param max_evolution  for color image, the evolution steps
      * @return automatically generated
      */
-    public static MSER create(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity, int _max_evolution) {
-        return MSER.__fromPtr__(create_3(_delta, _min_area, _max_area, _max_variation, _min_diversity, _max_evolution));
+    public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution) {
+        return MSER.__fromPtr__(create_3(delta, min_area, max_area, max_variation, min_diversity, max_evolution));
     }
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
-     *     @param _delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param _min_area prune the area which smaller than minArea
-     *     @param _max_area prune the area which bigger than maxArea
-     *     @param _max_variation prune the area have similar size to its children
-     *     @param _min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
+     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     *     @param min_area prune the area which smaller than minArea
+     *     @param max_area prune the area which bigger than maxArea
+     *     @param max_variation prune the area have similar size to its children
+     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
      * @return automatically generated
      */
-    public static MSER create(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity) {
-        return MSER.__fromPtr__(create_4(_delta, _min_area, _max_area, _max_variation, _min_diversity));
+    public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity) {
+        return MSER.__fromPtr__(create_4(delta, min_area, max_area, max_variation, min_diversity));
     }
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
-     *     @param _delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param _min_area prune the area which smaller than minArea
-     *     @param _max_area prune the area which bigger than maxArea
-     *     @param _max_variation prune the area have similar size to its children
+     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     *     @param min_area prune the area which smaller than minArea
+     *     @param max_area prune the area which bigger than maxArea
+     *     @param max_variation prune the area have similar size to its children
      * @return automatically generated
      */
-    public static MSER create(int _delta, int _min_area, int _max_area, double _max_variation) {
-        return MSER.__fromPtr__(create_5(_delta, _min_area, _max_area, _max_variation));
+    public static MSER create(int delta, int min_area, int max_area, double max_variation) {
+        return MSER.__fromPtr__(create_5(delta, min_area, max_area, max_variation));
     }
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
-     *     @param _delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param _min_area prune the area which smaller than minArea
-     *     @param _max_area prune the area which bigger than maxArea
+     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     *     @param min_area prune the area which smaller than minArea
+     *     @param max_area prune the area which bigger than maxArea
      * @return automatically generated
      */
-    public static MSER create(int _delta, int _min_area, int _max_area) {
-        return MSER.__fromPtr__(create_6(_delta, _min_area, _max_area));
+    public static MSER create(int delta, int min_area, int max_area) {
+        return MSER.__fromPtr__(create_6(delta, min_area, max_area));
     }
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
-     *     @param _delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param _min_area prune the area which smaller than minArea
+     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     *     @param min_area prune the area which smaller than minArea
      * @return automatically generated
      */
-    public static MSER create(int _delta, int _min_area) {
-        return MSER.__fromPtr__(create_7(_delta, _min_area));
+    public static MSER create(int delta, int min_area) {
+        return MSER.__fromPtr__(create_7(delta, min_area));
     }
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
-     *     @param _delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
      * @return automatically generated
      */
-    public static MSER create(int _delta) {
-        return MSER.__fromPtr__(create_8(_delta));
+    public static MSER create(int delta) {
+        return MSER.__fromPtr__(create_8(delta));
     }
 
     /**
-     * Full consturctor for %MSER detector
+     * Full constructor for %MSER detector
      *
      * @return automatically generated
      */
     public static MSER create() {
         return MSER.__fromPtr__(create_9());
-    }
-
-
-    //
-    // C++:  String cv::MSER::getDefaultName()
-    //
-
-    public String getDefaultName() {
-        return getDefaultName_0(nativeObj);
-    }
-
-
-    //
-    // C++:  bool cv::MSER::getPass2Only()
-    //
-
-    public boolean getPass2Only() {
-        return getPass2Only_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::MSER::getDelta()
-    //
-
-    public int getDelta() {
-        return getDelta_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::MSER::getMaxArea()
-    //
-
-    public int getMaxArea() {
-        return getMaxArea_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::MSER::getMinArea()
-    //
-
-    public int getMinArea() {
-        return getMinArea_0(nativeObj);
     }
 
 
@@ -268,11 +222,11 @@ public class MSER extends Feature2D {
 
 
     //
-    // C++:  void cv::MSER::setMaxArea(int maxArea)
+    // C++:  int cv::MSER::getDelta()
     //
 
-    public void setMaxArea(int maxArea) {
-        setMaxArea_0(nativeObj, maxArea);
+    public int getDelta() {
+        return getDelta_0(nativeObj);
     }
 
 
@@ -286,11 +240,56 @@ public class MSER extends Feature2D {
 
 
     //
+    // C++:  int cv::MSER::getMinArea()
+    //
+
+    public int getMinArea() {
+        return getMinArea_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::MSER::setMaxArea(int maxArea)
+    //
+
+    public void setMaxArea(int maxArea) {
+        setMaxArea_0(nativeObj, maxArea);
+    }
+
+
+    //
+    // C++:  int cv::MSER::getMaxArea()
+    //
+
+    public int getMaxArea() {
+        return getMaxArea_0(nativeObj);
+    }
+
+
+    //
     // C++:  void cv::MSER::setPass2Only(bool f)
     //
 
     public void setPass2Only(boolean f) {
         setPass2Only_0(nativeObj, f);
+    }
+
+
+    //
+    // C++:  bool cv::MSER::getPass2Only()
+    //
+
+    public boolean getPass2Only() {
+        return getPass2Only_0(nativeObj);
+    }
+
+
+    //
+    // C++:  String cv::MSER::getDefaultName()
+    //
+
+    public String getDefaultName() {
+        return getDefaultName_0(nativeObj);
     }
 
 
@@ -301,32 +300,17 @@ public class MSER extends Feature2D {
 
 
 
-    // C++: static Ptr_MSER cv::MSER::create(int _delta = 5, int _min_area = 60, int _max_area = 14400, double _max_variation = 0.25, double _min_diversity = .2, int _max_evolution = 200, double _area_threshold = 1.01, double _min_margin = 0.003, int _edge_blur_size = 5)
-    private static native long create_0(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity, int _max_evolution, double _area_threshold, double _min_margin, int _edge_blur_size);
-    private static native long create_1(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity, int _max_evolution, double _area_threshold, double _min_margin);
-    private static native long create_2(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity, int _max_evolution, double _area_threshold);
-    private static native long create_3(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity, int _max_evolution);
-    private static native long create_4(int _delta, int _min_area, int _max_area, double _max_variation, double _min_diversity);
-    private static native long create_5(int _delta, int _min_area, int _max_area, double _max_variation);
-    private static native long create_6(int _delta, int _min_area, int _max_area);
-    private static native long create_7(int _delta, int _min_area);
-    private static native long create_8(int _delta);
+    // C++: static Ptr_MSER cv::MSER::create(int delta = 5, int min_area = 60, int max_area = 14400, double max_variation = 0.25, double min_diversity = .2, int max_evolution = 200, double area_threshold = 1.01, double min_margin = 0.003, int edge_blur_size = 5)
+    private static native long create_0(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold, double min_margin, int edge_blur_size);
+    private static native long create_1(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold, double min_margin);
+    private static native long create_2(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold);
+    private static native long create_3(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution);
+    private static native long create_4(int delta, int min_area, int max_area, double max_variation, double min_diversity);
+    private static native long create_5(int delta, int min_area, int max_area, double max_variation);
+    private static native long create_6(int delta, int min_area, int max_area);
+    private static native long create_7(int delta, int min_area);
+    private static native long create_8(int delta);
     private static native long create_9();
-
-    // C++:  String cv::MSER::getDefaultName()
-    private static native String getDefaultName_0(long nativeObj);
-
-    // C++:  bool cv::MSER::getPass2Only()
-    private static native boolean getPass2Only_0(long nativeObj);
-
-    // C++:  int cv::MSER::getDelta()
-    private static native int getDelta_0(long nativeObj);
-
-    // C++:  int cv::MSER::getMaxArea()
-    private static native int getMaxArea_0(long nativeObj);
-
-    // C++:  int cv::MSER::getMinArea()
-    private static native int getMinArea_0(long nativeObj);
 
     // C++:  void cv::MSER::detectRegions(Mat image, vector_vector_Point& msers, vector_Rect& bboxes)
     private static native void detectRegions_0(long nativeObj, long image_nativeObj, long msers_mat_nativeObj, long bboxes_mat_nativeObj);
@@ -334,14 +318,29 @@ public class MSER extends Feature2D {
     // C++:  void cv::MSER::setDelta(int delta)
     private static native void setDelta_0(long nativeObj, int delta);
 
-    // C++:  void cv::MSER::setMaxArea(int maxArea)
-    private static native void setMaxArea_0(long nativeObj, int maxArea);
+    // C++:  int cv::MSER::getDelta()
+    private static native int getDelta_0(long nativeObj);
 
     // C++:  void cv::MSER::setMinArea(int minArea)
     private static native void setMinArea_0(long nativeObj, int minArea);
 
+    // C++:  int cv::MSER::getMinArea()
+    private static native int getMinArea_0(long nativeObj);
+
+    // C++:  void cv::MSER::setMaxArea(int maxArea)
+    private static native void setMaxArea_0(long nativeObj, int maxArea);
+
+    // C++:  int cv::MSER::getMaxArea()
+    private static native int getMaxArea_0(long nativeObj);
+
     // C++:  void cv::MSER::setPass2Only(bool f)
     private static native void setPass2Only_0(long nativeObj, boolean f);
+
+    // C++:  bool cv::MSER::getPass2Only()
+    private static native boolean getPass2Only_0(long nativeObj);
+
+    // C++:  String cv::MSER::getDefaultName()
+    private static native String getDefaultName_0(long nativeObj);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

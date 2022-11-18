@@ -26,44 +26,19 @@ public class BOWTrainer {
     public static BOWTrainer __fromPtr__(long addr) { return new BOWTrainer(addr); }
 
     //
-    // C++:  Mat cv::BOWTrainer::cluster(Mat descriptors)
+    // C++:  void cv::BOWTrainer::add(Mat descriptors)
     //
 
     /**
-     * Clusters train descriptors.
+     * Adds descriptors to a training set.
      *
-     *     @param descriptors Descriptors to cluster. Each row of the descriptors matrix is a descriptor.
-     *     Descriptors are not added to the inner train descriptor set.
+     *     @param descriptors Descriptors to add to a training set. Each row of the descriptors matrix is a
+     *     descriptor.
      *
-     *     The vocabulary consists of cluster centers. So, this method returns the vocabulary. In the first
-     *     variant of the method, train descriptors stored in the object are clustered. In the second variant,
-     *     input descriptors are clustered.
-     * @return automatically generated
+     *     The training set is clustered using clustermethod to construct the vocabulary.
      */
-    public Mat cluster(Mat descriptors) {
-        return new Mat(cluster_0(nativeObj, descriptors.nativeObj));
-    }
-
-
-    //
-    // C++:  Mat cv::BOWTrainer::cluster()
-    //
-
-    public Mat cluster() {
-        return new Mat(cluster_1(nativeObj));
-    }
-
-
-    //
-    // C++:  int cv::BOWTrainer::descriptorsCount()
-    //
-
-    /**
-     * Returns the count of all descriptors stored in the training set.
-     * @return automatically generated
-     */
-    public int descriptorsCount() {
-        return descriptorsCount_0(nativeObj);
+    public void add(Mat descriptors) {
+        add_0(nativeObj, descriptors.nativeObj);
     }
 
 
@@ -84,19 +59,15 @@ public class BOWTrainer {
 
 
     //
-    // C++:  void cv::BOWTrainer::add(Mat descriptors)
+    // C++:  int cv::BOWTrainer::descriptorsCount()
     //
 
     /**
-     * Adds descriptors to a training set.
-     *
-     *     @param descriptors Descriptors to add to a training set. Each row of the descriptors matrix is a
-     *     descriptor.
-     *
-     *     The training set is clustered using clustermethod to construct the vocabulary.
+     * Returns the count of all descriptors stored in the training set.
+     * @return automatically generated
      */
-    public void add(Mat descriptors) {
-        add_0(nativeObj, descriptors.nativeObj);
+    public int descriptorsCount() {
+        return descriptorsCount_0(nativeObj);
     }
 
 
@@ -109,6 +80,35 @@ public class BOWTrainer {
     }
 
 
+    //
+    // C++:  Mat cv::BOWTrainer::cluster()
+    //
+
+    public Mat cluster() {
+        return new Mat(cluster_0(nativeObj));
+    }
+
+
+    //
+    // C++:  Mat cv::BOWTrainer::cluster(Mat descriptors)
+    //
+
+    /**
+     * Clusters train descriptors.
+     *
+     *     @param descriptors Descriptors to cluster. Each row of the descriptors matrix is a descriptor.
+     *     Descriptors are not added to the inner train descriptor set.
+     *
+     *     The vocabulary consists of cluster centers. So, this method returns the vocabulary. In the first
+     *     variant of the method, train descriptors stored in the object are clustered. In the second variant,
+     *     input descriptors are clustered.
+     * @return automatically generated
+     */
+    public Mat cluster(Mat descriptors) {
+        return new Mat(cluster_1(nativeObj, descriptors.nativeObj));
+    }
+
+
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
@@ -116,23 +116,23 @@ public class BOWTrainer {
 
 
 
-    // C++:  Mat cv::BOWTrainer::cluster(Mat descriptors)
-    private static native long cluster_0(long nativeObj, long descriptors_nativeObj);
-
-    // C++:  Mat cv::BOWTrainer::cluster()
-    private static native long cluster_1(long nativeObj);
-
-    // C++:  int cv::BOWTrainer::descriptorsCount()
-    private static native int descriptorsCount_0(long nativeObj);
+    // C++:  void cv::BOWTrainer::add(Mat descriptors)
+    private static native void add_0(long nativeObj, long descriptors_nativeObj);
 
     // C++:  vector_Mat cv::BOWTrainer::getDescriptors()
     private static native long getDescriptors_0(long nativeObj);
 
-    // C++:  void cv::BOWTrainer::add(Mat descriptors)
-    private static native void add_0(long nativeObj, long descriptors_nativeObj);
+    // C++:  int cv::BOWTrainer::descriptorsCount()
+    private static native int descriptorsCount_0(long nativeObj);
 
     // C++:  void cv::BOWTrainer::clear()
     private static native void clear_0(long nativeObj);
+
+    // C++:  Mat cv::BOWTrainer::cluster()
+    private static native long cluster_0(long nativeObj);
+
+    // C++:  Mat cv::BOWTrainer::cluster(Mat descriptors)
+    private static native long cluster_1(long nativeObj, long descriptors_nativeObj);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

@@ -20,42 +20,35 @@ public class KNearest extends StatModel {
     // internal usage only
     public static KNearest __fromPtr__(long addr) { return new KNearest(addr); }
 
-    // C++: enum Types
+    // C++: enum Types (cv.ml.KNearest.Types)
     public static final int
             BRUTE_FORCE = 1,
             KDTREE = 2;
 
 
     //
-    // C++: static Ptr_KNearest cv::ml::KNearest::create()
+    // C++:  int cv::ml::KNearest::getDefaultK()
     //
 
     /**
-     * Creates the empty model
-     *
-     *     The static method creates empty %KNearest classifier. It should be then trained using StatModel::train method.
+     * SEE: setDefaultK
      * @return automatically generated
      */
-    public static KNearest create() {
-        return KNearest.__fromPtr__(create_0());
+    public int getDefaultK() {
+        return getDefaultK_0(nativeObj);
     }
 
 
     //
-    // C++: static Ptr_KNearest cv::ml::KNearest::load(String filepath)
+    // C++:  void cv::ml::KNearest::setDefaultK(int val)
     //
 
     /**
-     * Loads and creates a serialized knearest from a file
-     *
-     * Use KNearest::save to serialize and store an KNearest to disk.
-     * Load the KNearest from this file again, by calling this function with the path to the file.
-     *
-     * @param filepath path to serialized KNearest
-     * @return automatically generated
+     *  getDefaultK SEE: getDefaultK
+     * @param val automatically generated
      */
-    public static KNearest load(String filepath) {
-        return KNearest.__fromPtr__(load_0(filepath));
+    public void setDefaultK(int val) {
+        setDefaultK_0(nativeObj, val);
     }
 
 
@@ -69,6 +62,71 @@ public class KNearest extends StatModel {
      */
     public boolean getIsClassifier() {
         return getIsClassifier_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::KNearest::setIsClassifier(bool val)
+    //
+
+    /**
+     *  getIsClassifier SEE: getIsClassifier
+     * @param val automatically generated
+     */
+    public void setIsClassifier(boolean val) {
+        setIsClassifier_0(nativeObj, val);
+    }
+
+
+    //
+    // C++:  int cv::ml::KNearest::getEmax()
+    //
+
+    /**
+     * SEE: setEmax
+     * @return automatically generated
+     */
+    public int getEmax() {
+        return getEmax_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::KNearest::setEmax(int val)
+    //
+
+    /**
+     *  getEmax SEE: getEmax
+     * @param val automatically generated
+     */
+    public void setEmax(int val) {
+        setEmax_0(nativeObj, val);
+    }
+
+
+    //
+    // C++:  int cv::ml::KNearest::getAlgorithmType()
+    //
+
+    /**
+     * SEE: setAlgorithmType
+     * @return automatically generated
+     */
+    public int getAlgorithmType() {
+        return getAlgorithmType_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::KNearest::setAlgorithmType(int val)
+    //
+
+    /**
+     *  getAlgorithmType SEE: getAlgorithmType
+     * @param val automatically generated
+     */
+    public void setAlgorithmType(int val) {
+        setAlgorithmType_0(nativeObj, val);
     }
 
 
@@ -171,93 +229,35 @@ public class KNearest extends StatModel {
 
 
     //
-    // C++:  int cv::ml::KNearest::getAlgorithmType()
+    // C++: static Ptr_KNearest cv::ml::KNearest::create()
     //
 
     /**
-     * SEE: setAlgorithmType
+     * Creates the empty model
+     *
+     *     The static method creates empty %KNearest classifier. It should be then trained using StatModel::train method.
      * @return automatically generated
      */
-    public int getAlgorithmType() {
-        return getAlgorithmType_0(nativeObj);
+    public static KNearest create() {
+        return KNearest.__fromPtr__(create_0());
     }
 
 
     //
-    // C++:  int cv::ml::KNearest::getDefaultK()
+    // C++: static Ptr_KNearest cv::ml::KNearest::load(String filepath)
     //
 
     /**
-     * SEE: setDefaultK
+     * Loads and creates a serialized knearest from a file
+     *
+     * Use KNearest::save to serialize and store an KNearest to disk.
+     * Load the KNearest from this file again, by calling this function with the path to the file.
+     *
+     * @param filepath path to serialized KNearest
      * @return automatically generated
      */
-    public int getDefaultK() {
-        return getDefaultK_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::ml::KNearest::getEmax()
-    //
-
-    /**
-     * SEE: setEmax
-     * @return automatically generated
-     */
-    public int getEmax() {
-        return getEmax_0(nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::ml::KNearest::setAlgorithmType(int val)
-    //
-
-    /**
-     *  getAlgorithmType SEE: getAlgorithmType
-     * @param val automatically generated
-     */
-    public void setAlgorithmType(int val) {
-        setAlgorithmType_0(nativeObj, val);
-    }
-
-
-    //
-    // C++:  void cv::ml::KNearest::setDefaultK(int val)
-    //
-
-    /**
-     *  getDefaultK SEE: getDefaultK
-     * @param val automatically generated
-     */
-    public void setDefaultK(int val) {
-        setDefaultK_0(nativeObj, val);
-    }
-
-
-    //
-    // C++:  void cv::ml::KNearest::setEmax(int val)
-    //
-
-    /**
-     *  getEmax SEE: getEmax
-     * @param val automatically generated
-     */
-    public void setEmax(int val) {
-        setEmax_0(nativeObj, val);
-    }
-
-
-    //
-    // C++:  void cv::ml::KNearest::setIsClassifier(bool val)
-    //
-
-    /**
-     *  getIsClassifier SEE: getIsClassifier
-     * @param val automatically generated
-     */
-    public void setIsClassifier(boolean val) {
-        setIsClassifier_0(nativeObj, val);
+    public static KNearest load(String filepath) {
+        return KNearest.__fromPtr__(load_0(filepath));
     }
 
 
@@ -268,40 +268,40 @@ public class KNearest extends StatModel {
 
 
 
-    // C++: static Ptr_KNearest cv::ml::KNearest::create()
-    private static native long create_0();
+    // C++:  int cv::ml::KNearest::getDefaultK()
+    private static native int getDefaultK_0(long nativeObj);
 
-    // C++: static Ptr_KNearest cv::ml::KNearest::load(String filepath)
-    private static native long load_0(String filepath);
+    // C++:  void cv::ml::KNearest::setDefaultK(int val)
+    private static native void setDefaultK_0(long nativeObj, int val);
 
     // C++:  bool cv::ml::KNearest::getIsClassifier()
     private static native boolean getIsClassifier_0(long nativeObj);
+
+    // C++:  void cv::ml::KNearest::setIsClassifier(bool val)
+    private static native void setIsClassifier_0(long nativeObj, boolean val);
+
+    // C++:  int cv::ml::KNearest::getEmax()
+    private static native int getEmax_0(long nativeObj);
+
+    // C++:  void cv::ml::KNearest::setEmax(int val)
+    private static native void setEmax_0(long nativeObj, int val);
+
+    // C++:  int cv::ml::KNearest::getAlgorithmType()
+    private static native int getAlgorithmType_0(long nativeObj);
+
+    // C++:  void cv::ml::KNearest::setAlgorithmType(int val)
+    private static native void setAlgorithmType_0(long nativeObj, int val);
 
     // C++:  float cv::ml::KNearest::findNearest(Mat samples, int k, Mat& results, Mat& neighborResponses = Mat(), Mat& dist = Mat())
     private static native float findNearest_0(long nativeObj, long samples_nativeObj, int k, long results_nativeObj, long neighborResponses_nativeObj, long dist_nativeObj);
     private static native float findNearest_1(long nativeObj, long samples_nativeObj, int k, long results_nativeObj, long neighborResponses_nativeObj);
     private static native float findNearest_2(long nativeObj, long samples_nativeObj, int k, long results_nativeObj);
 
-    // C++:  int cv::ml::KNearest::getAlgorithmType()
-    private static native int getAlgorithmType_0(long nativeObj);
+    // C++: static Ptr_KNearest cv::ml::KNearest::create()
+    private static native long create_0();
 
-    // C++:  int cv::ml::KNearest::getDefaultK()
-    private static native int getDefaultK_0(long nativeObj);
-
-    // C++:  int cv::ml::KNearest::getEmax()
-    private static native int getEmax_0(long nativeObj);
-
-    // C++:  void cv::ml::KNearest::setAlgorithmType(int val)
-    private static native void setAlgorithmType_0(long nativeObj, int val);
-
-    // C++:  void cv::ml::KNearest::setDefaultK(int val)
-    private static native void setDefaultK_0(long nativeObj, int val);
-
-    // C++:  void cv::ml::KNearest::setEmax(int val)
-    private static native void setEmax_0(long nativeObj, int val);
-
-    // C++:  void cv::ml::KNearest::setIsClassifier(bool val)
-    private static native void setIsClassifier_0(long nativeObj, boolean val);
+    // C++: static Ptr_KNearest cv::ml::KNearest::load(String filepath)
+    private static native long load_0(String filepath);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

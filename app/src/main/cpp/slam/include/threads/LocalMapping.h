@@ -74,7 +74,7 @@ public:
         return mlNewKeyFrames.size();
     }
 
-    bool IsInitializing();
+    bool IsInitializing() const;
     double GetCurrKFTime();
     KeyFrame* GetCurrKF();
 

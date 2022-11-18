@@ -9,8 +9,6 @@
 #include "utils/Log.h"
 #include "utils/AssetManager.h"
 
-#include "sensor/SensorIMU.h"
-
 namespace android_slam
 {
 
@@ -18,17 +16,25 @@ namespace android_slam
     {
         // Camera image converter.
         m_image_pool = std::make_unique<ImagePool>(
-        k_sensor_camera_width, k_sensor_camera_height, "shader/yuv2rgb.vert", "shader/yuv2rgb.frag"
+            k_sensor_camera_width,
+            k_sensor_camera_height,
+            "shader/yuv2rgb.vert",
+            "shader/yuv2rgb.frag"
         );
         Image first_image = m_image_pool->getImage();
 
+        m_imu_pool = std::make_unique<SensorIMU>();
+
         m_slam_renderer = std::make_unique<SlamRenderer>(
-        k_fps_camera_fov, m_app_ref.getWindow().getAspectRatio(), k_fps_camera_z_min, k_fps_camera_z_max
+            k_fps_camera_fov,
+            m_app_ref.getWindow().getAspectRatio(),
+            k_fps_camera_z_min,
+            k_fps_camera_z_max
         );
 
         // Create slam kernel.
         {
-            DEBUG_INFO("[Android Slam App Info] Starts to create slam kernel.");
+            std::cout << "[Android Slam App Info] Starts to create slam kernel." << std::endl;
 
             AAsset* asset = AAssetManager_open(AssetManager::get(), "vocabulary/ORBVoc.txt", AASSET_MODE_BUFFER);
             assert(asset && "[Android Slam App Info] Failed to open ORBVoc.txt.");
@@ -42,41 +48,40 @@ namespace android_slam
             k_sensor_camera_width, k_sensor_camera_height, std::move(voc_buffer), first_image.time_stamp
             );
 
-            DEBUG_INFO("[Android Slam App Info] Creates slam kernel successfully.");
+            std::cout << "[Android Slam App Info] Creates slam kernel successfully." << std::endl;
         }
 
-        m_slam_has_new_image = false; // Whether the main thread generates new image for slam thread.
+        m_slam_has_new_data = false; // Whether the main thread generates new image for slam thread.
         m_is_running_slam = true;     // Whether the slam scene is running, also indicates the slam thread is running.
 
         // Create slam thread.
         m_slam_thread = std::make_unique<std::thread>(
         [this]()
         {
-            //SensorIMU sensor_imu;
+            std::vector<Image> images;
+            std::vector<ImuPoint> imu_points;
 
             while (m_is_running_slam)
             {
-                if (m_slam_has_new_image)
+                if (m_slam_has_new_data)
                 {
-                    // Acquire new images.
-                    std::vector<Image> images;
                     {
                         std::unique_lock<std::mutex> lock(m_image_mutex);
                         images = std::move(m_images);
+                        imu_points = std::move(m_imu_points);
                     }
 
-                    //std::vector<ImuPoint> imus = sensor_imu.getImuData();
-
                     // Call slam tracking function.
-                    //auto res = m_slam_kernel->handleData(images, imus);
-                    auto res = m_slam_kernel->handleData(images, {});
-                    m_slam_has_new_image = false; // This image is processed and this thread needs new image.
+                    auto res = m_slam_kernel->handleData(images, imu_points);
+                    m_slam_has_new_data = false; // This image is processed and this thread needs new image.
 
                     // Synchronize tracking result to main thread, move the data because this thread doesn't need it.
                     {
                         std::unique_lock<std::mutex> lock(m_tracking_res_mutex);
                         m_tracking_result = std::move(res);
                     }
+
+                    imu_points = {};
                 }
             }
         }
@@ -98,24 +103,24 @@ namespace android_slam
     void SlamScene::update(float dt)
     {
         // Update image data if not paused and slam thread needs new image. Render data will be set at the same time.
-        if (m_need_update_image && !m_slam_has_new_image)
+        if (m_need_update_image && !m_slam_has_new_data)
         {
             // Slam handling.
             std::vector<Image> images;
-            images.push_back(m_image_pool->getImage());
             {
+                images.push_back(m_image_pool->getImage());
+
                 std::unique_lock<std::mutex> lock(m_image_mutex);
                 m_images = images;
+                m_imu_points = m_imu_pool->getImuData();
             }
-            m_slam_has_new_image = true;
+            m_slam_has_new_data = true;
 
             TrackingResult tracking_res;
             {
                 std::unique_lock<std::mutex> lock(m_tracking_res_mutex);
                 tracking_res = std::move(m_tracking_result);
             }
-
-            DEBUG_INFO("[Android Slam App Info] Current tracking state: %s", tracking_res.tracking_status.c_str());
 
             // Set slam data.
             m_slam_renderer->setImage(k_sensor_camera_width, k_sensor_camera_height, images[0]);

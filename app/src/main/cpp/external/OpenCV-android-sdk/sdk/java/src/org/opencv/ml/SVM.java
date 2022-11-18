@@ -22,7 +22,7 @@ public class SVM extends StatModel {
     // internal usage only
     public static SVM __fromPtr__(long addr) { return new SVM(addr); }
 
-    // C++: enum KernelTypes
+    // C++: enum KernelTypes (cv.ml.SVM.KernelTypes)
     public static final int
             CUSTOM = -1,
             LINEAR = 0,
@@ -33,7 +33,17 @@ public class SVM extends StatModel {
             INTER = 5;
 
 
-    // C++: enum Types
+    // C++: enum ParamTypes (cv.ml.SVM.ParamTypes)
+    public static final int
+            C = 0,
+            GAMMA = 1,
+            P = 2,
+            NU = 3,
+            COEF = 4,
+            DEGREE = 5;
+
+
+    // C++: enum Types (cv.ml.SVM.Types)
     public static final int
             C_SVC = 100,
             NU_SVC = 101,
@@ -42,14 +52,186 @@ public class SVM extends StatModel {
             NU_SVR = 104;
 
 
-    // C++: enum ParamTypes
-    public static final int
-            C = 0,
-            GAMMA = 1,
-            P = 2,
-            NU = 3,
-            COEF = 4,
-            DEGREE = 5;
+    //
+    // C++:  int cv::ml::SVM::getType()
+    //
+
+    /**
+     * SEE: setType
+     * @return automatically generated
+     */
+    public int getType() {
+        return getType_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::SVM::setType(int val)
+    //
+
+    /**
+     *  getType SEE: getType
+     * @param val automatically generated
+     */
+    public void setType(int val) {
+        setType_0(nativeObj, val);
+    }
+
+
+    //
+    // C++:  double cv::ml::SVM::getGamma()
+    //
+
+    /**
+     * SEE: setGamma
+     * @return automatically generated
+     */
+    public double getGamma() {
+        return getGamma_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::SVM::setGamma(double val)
+    //
+
+    /**
+     *  getGamma SEE: getGamma
+     * @param val automatically generated
+     */
+    public void setGamma(double val) {
+        setGamma_0(nativeObj, val);
+    }
+
+
+    //
+    // C++:  double cv::ml::SVM::getCoef0()
+    //
+
+    /**
+     * SEE: setCoef0
+     * @return automatically generated
+     */
+    public double getCoef0() {
+        return getCoef0_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::SVM::setCoef0(double val)
+    //
+
+    /**
+     *  getCoef0 SEE: getCoef0
+     * @param val automatically generated
+     */
+    public void setCoef0(double val) {
+        setCoef0_0(nativeObj, val);
+    }
+
+
+    //
+    // C++:  double cv::ml::SVM::getDegree()
+    //
+
+    /**
+     * SEE: setDegree
+     * @return automatically generated
+     */
+    public double getDegree() {
+        return getDegree_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::SVM::setDegree(double val)
+    //
+
+    /**
+     *  getDegree SEE: getDegree
+     * @param val automatically generated
+     */
+    public void setDegree(double val) {
+        setDegree_0(nativeObj, val);
+    }
+
+
+    //
+    // C++:  double cv::ml::SVM::getC()
+    //
+
+    /**
+     * SEE: setC
+     * @return automatically generated
+     */
+    public double getC() {
+        return getC_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::SVM::setC(double val)
+    //
+
+    /**
+     *  getC SEE: getC
+     * @param val automatically generated
+     */
+    public void setC(double val) {
+        setC_0(nativeObj, val);
+    }
+
+
+    //
+    // C++:  double cv::ml::SVM::getNu()
+    //
+
+    /**
+     * SEE: setNu
+     * @return automatically generated
+     */
+    public double getNu() {
+        return getNu_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::SVM::setNu(double val)
+    //
+
+    /**
+     *  getNu SEE: getNu
+     * @param val automatically generated
+     */
+    public void setNu(double val) {
+        setNu_0(nativeObj, val);
+    }
+
+
+    //
+    // C++:  double cv::ml::SVM::getP()
+    //
+
+    /**
+     * SEE: setP
+     * @return automatically generated
+     */
+    public double getP() {
+        return getP_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::SVM::setP(double val)
+    //
+
+    /**
+     *  getP SEE: getP
+     * @param val automatically generated
+     */
+    public void setP(double val) {
+        setP_0(nativeObj, val);
+    }
 
 
     //
@@ -66,87 +248,15 @@ public class SVM extends StatModel {
 
 
     //
-    // C++:  Mat cv::ml::SVM::getSupportVectors()
+    // C++:  void cv::ml::SVM::setClassWeights(Mat val)
     //
 
     /**
-     * Retrieves all the support vectors
-     *
-     *     The method returns all the support vectors as a floating-point matrix, where support vectors are
-     *     stored as matrix rows.
-     * @return automatically generated
+     *  getClassWeights SEE: getClassWeights
+     * @param val automatically generated
      */
-    public Mat getSupportVectors() {
-        return new Mat(getSupportVectors_0(nativeObj));
-    }
-
-
-    //
-    // C++:  Mat cv::ml::SVM::getUncompressedSupportVectors()
-    //
-
-    /**
-     * Retrieves all the uncompressed support vectors of a linear %SVM
-     *
-     *     The method returns all the uncompressed support vectors of a linear %SVM that the compressed
-     *     support vector, used for prediction, was derived from. They are returned in a floating-point
-     *     matrix, where the support vectors are stored as matrix rows.
-     * @return automatically generated
-     */
-    public Mat getUncompressedSupportVectors() {
-        return new Mat(getUncompressedSupportVectors_0(nativeObj));
-    }
-
-
-    //
-    // C++: static Ptr_ParamGrid cv::ml::SVM::getDefaultGridPtr(int param_id)
-    //
-
-    /**
-     * Generates a grid for %SVM parameters.
-     *
-     *     @param param_id %SVM parameters IDs that must be one of the SVM::ParamTypes. The grid is
-     *     generated for the parameter with this ID.
-     *
-     *     The function generates a grid pointer for the specified parameter of the %SVM algorithm.
-     *     The grid may be passed to the function SVM::trainAuto.
-     * @return automatically generated
-     */
-    public static ParamGrid getDefaultGridPtr(int param_id) {
-        return ParamGrid.__fromPtr__(getDefaultGridPtr_0(param_id));
-    }
-
-
-    //
-    // C++: static Ptr_SVM cv::ml::SVM::create()
-    //
-
-    /**
-     * Creates empty model.
-     *     Use StatModel::train to train the model. Since %SVM has several parameters, you may want to
-     * find the best parameters for your problem, it can be done with SVM::trainAuto.
-     * @return automatically generated
-     */
-    public static SVM create() {
-        return SVM.__fromPtr__(create_0());
-    }
-
-
-    //
-    // C++: static Ptr_SVM cv::ml::SVM::load(String filepath)
-    //
-
-    /**
-     * Loads and creates a serialized svm from a file
-     *
-     * Use SVM::save to serialize and store an SVM to disk.
-     * Load the SVM from this file again, by calling this function with the path to the file.
-     *
-     * @param filepath path to serialized svm
-     * @return automatically generated
-     */
-    public static SVM load(String filepath) {
-        return SVM.__fromPtr__(load_0(filepath));
+    public void setClassWeights(Mat val) {
+        setClassWeights_0(nativeObj, val.nativeObj);
     }
 
 
@@ -160,6 +270,47 @@ public class SVM extends StatModel {
      */
     public TermCriteria getTermCriteria() {
         return new TermCriteria(getTermCriteria_0(nativeObj));
+    }
+
+
+    //
+    // C++:  void cv::ml::SVM::setTermCriteria(TermCriteria val)
+    //
+
+    /**
+     *  getTermCriteria SEE: getTermCriteria
+     * @param val automatically generated
+     */
+    public void setTermCriteria(TermCriteria val) {
+        setTermCriteria_0(nativeObj, val.type, val.maxCount, val.epsilon);
+    }
+
+
+    //
+    // C++:  int cv::ml::SVM::getKernelType()
+    //
+
+    /**
+     * Type of a %SVM kernel.
+     * See SVM::KernelTypes. Default value is SVM::RBF.
+     * @return automatically generated
+     */
+    public int getKernelType() {
+        return getKernelType_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::ml::SVM::setKernel(int kernelType)
+    //
+
+    /**
+     * Initialize with one of predefined kernels.
+     * See SVM::KernelTypes.
+     * @param kernelType automatically generated
+     */
+    public void setKernel(int kernelType) {
+        setKernel_0(nativeObj, kernelType);
     }
 
 
@@ -439,28 +590,35 @@ public class SVM extends StatModel {
 
 
     //
-    // C++:  double cv::ml::SVM::getC()
+    // C++:  Mat cv::ml::SVM::getSupportVectors()
     //
 
     /**
-     * SEE: setC
+     * Retrieves all the support vectors
+     *
+     *     The method returns all the support vectors as a floating-point matrix, where support vectors are
+     *     stored as matrix rows.
      * @return automatically generated
      */
-    public double getC() {
-        return getC_0(nativeObj);
+    public Mat getSupportVectors() {
+        return new Mat(getSupportVectors_0(nativeObj));
     }
 
 
     //
-    // C++:  double cv::ml::SVM::getCoef0()
+    // C++:  Mat cv::ml::SVM::getUncompressedSupportVectors()
     //
 
     /**
-     * SEE: setCoef0
+     * Retrieves all the uncompressed support vectors of a linear %SVM
+     *
+     *     The method returns all the uncompressed support vectors of a linear %SVM that the compressed
+     *     support vector, used for prediction, was derived from. They are returned in a floating-point
+     *     matrix, where the support vectors are stored as matrix rows.
      * @return automatically generated
      */
-    public double getCoef0() {
-        return getCoef0_0(nativeObj);
+    public Mat getUncompressedSupportVectors() {
+        return new Mat(getUncompressedSupportVectors_0(nativeObj));
     }
 
 
@@ -491,212 +649,54 @@ public class SVM extends StatModel {
 
 
     //
-    // C++:  double cv::ml::SVM::getDegree()
+    // C++: static Ptr_ParamGrid cv::ml::SVM::getDefaultGridPtr(int param_id)
     //
 
     /**
-     * SEE: setDegree
+     * Generates a grid for %SVM parameters.
+     *
+     *     @param param_id %SVM parameters IDs that must be one of the SVM::ParamTypes. The grid is
+     *     generated for the parameter with this ID.
+     *
+     *     The function generates a grid pointer for the specified parameter of the %SVM algorithm.
+     *     The grid may be passed to the function SVM::trainAuto.
      * @return automatically generated
      */
-    public double getDegree() {
-        return getDegree_0(nativeObj);
+    public static ParamGrid getDefaultGridPtr(int param_id) {
+        return ParamGrid.__fromPtr__(getDefaultGridPtr_0(param_id));
     }
 
 
     //
-    // C++:  double cv::ml::SVM::getGamma()
+    // C++: static Ptr_SVM cv::ml::SVM::create()
     //
 
     /**
-     * SEE: setGamma
+     * Creates empty model.
+     *     Use StatModel::train to train the model. Since %SVM has several parameters, you may want to
+     * find the best parameters for your problem, it can be done with SVM::trainAuto.
      * @return automatically generated
      */
-    public double getGamma() {
-        return getGamma_0(nativeObj);
+    public static SVM create() {
+        return SVM.__fromPtr__(create_0());
     }
 
 
     //
-    // C++:  double cv::ml::SVM::getNu()
+    // C++: static Ptr_SVM cv::ml::SVM::load(String filepath)
     //
 
     /**
-     * SEE: setNu
+     * Loads and creates a serialized svm from a file
+     *
+     * Use SVM::save to serialize and store an SVM to disk.
+     * Load the SVM from this file again, by calling this function with the path to the file.
+     *
+     * @param filepath path to serialized svm
      * @return automatically generated
      */
-    public double getNu() {
-        return getNu_0(nativeObj);
-    }
-
-
-    //
-    // C++:  double cv::ml::SVM::getP()
-    //
-
-    /**
-     * SEE: setP
-     * @return automatically generated
-     */
-    public double getP() {
-        return getP_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::ml::SVM::getKernelType()
-    //
-
-    /**
-     * Type of a %SVM kernel.
-     * See SVM::KernelTypes. Default value is SVM::RBF.
-     * @return automatically generated
-     */
-    public int getKernelType() {
-        return getKernelType_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::ml::SVM::getType()
-    //
-
-    /**
-     * SEE: setType
-     * @return automatically generated
-     */
-    public int getType() {
-        return getType_0(nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setC(double val)
-    //
-
-    /**
-     *  getC SEE: getC
-     * @param val automatically generated
-     */
-    public void setC(double val) {
-        setC_0(nativeObj, val);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setClassWeights(Mat val)
-    //
-
-    /**
-     *  getClassWeights SEE: getClassWeights
-     * @param val automatically generated
-     */
-    public void setClassWeights(Mat val) {
-        setClassWeights_0(nativeObj, val.nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setCoef0(double val)
-    //
-
-    /**
-     *  getCoef0 SEE: getCoef0
-     * @param val automatically generated
-     */
-    public void setCoef0(double val) {
-        setCoef0_0(nativeObj, val);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setDegree(double val)
-    //
-
-    /**
-     *  getDegree SEE: getDegree
-     * @param val automatically generated
-     */
-    public void setDegree(double val) {
-        setDegree_0(nativeObj, val);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setGamma(double val)
-    //
-
-    /**
-     *  getGamma SEE: getGamma
-     * @param val automatically generated
-     */
-    public void setGamma(double val) {
-        setGamma_0(nativeObj, val);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setKernel(int kernelType)
-    //
-
-    /**
-     * Initialize with one of predefined kernels.
-     * See SVM::KernelTypes.
-     * @param kernelType automatically generated
-     */
-    public void setKernel(int kernelType) {
-        setKernel_0(nativeObj, kernelType);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setNu(double val)
-    //
-
-    /**
-     *  getNu SEE: getNu
-     * @param val automatically generated
-     */
-    public void setNu(double val) {
-        setNu_0(nativeObj, val);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setP(double val)
-    //
-
-    /**
-     *  getP SEE: getP
-     * @param val automatically generated
-     */
-    public void setP(double val) {
-        setP_0(nativeObj, val);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setTermCriteria(TermCriteria val)
-    //
-
-    /**
-     *  getTermCriteria SEE: getTermCriteria
-     * @param val automatically generated
-     */
-    public void setTermCriteria(TermCriteria val) {
-        setTermCriteria_0(nativeObj, val.type, val.maxCount, val.epsilon);
-    }
-
-
-    //
-    // C++:  void cv::ml::SVM::setType(int val)
-    //
-
-    /**
-     *  getType SEE: getType
-     * @param val automatically generated
-     */
-    public void setType(int val) {
-        setType_0(nativeObj, val);
+    public static SVM load(String filepath) {
+        return SVM.__fromPtr__(load_0(filepath));
     }
 
 
@@ -707,26 +707,65 @@ public class SVM extends StatModel {
 
 
 
+    // C++:  int cv::ml::SVM::getType()
+    private static native int getType_0(long nativeObj);
+
+    // C++:  void cv::ml::SVM::setType(int val)
+    private static native void setType_0(long nativeObj, int val);
+
+    // C++:  double cv::ml::SVM::getGamma()
+    private static native double getGamma_0(long nativeObj);
+
+    // C++:  void cv::ml::SVM::setGamma(double val)
+    private static native void setGamma_0(long nativeObj, double val);
+
+    // C++:  double cv::ml::SVM::getCoef0()
+    private static native double getCoef0_0(long nativeObj);
+
+    // C++:  void cv::ml::SVM::setCoef0(double val)
+    private static native void setCoef0_0(long nativeObj, double val);
+
+    // C++:  double cv::ml::SVM::getDegree()
+    private static native double getDegree_0(long nativeObj);
+
+    // C++:  void cv::ml::SVM::setDegree(double val)
+    private static native void setDegree_0(long nativeObj, double val);
+
+    // C++:  double cv::ml::SVM::getC()
+    private static native double getC_0(long nativeObj);
+
+    // C++:  void cv::ml::SVM::setC(double val)
+    private static native void setC_0(long nativeObj, double val);
+
+    // C++:  double cv::ml::SVM::getNu()
+    private static native double getNu_0(long nativeObj);
+
+    // C++:  void cv::ml::SVM::setNu(double val)
+    private static native void setNu_0(long nativeObj, double val);
+
+    // C++:  double cv::ml::SVM::getP()
+    private static native double getP_0(long nativeObj);
+
+    // C++:  void cv::ml::SVM::setP(double val)
+    private static native void setP_0(long nativeObj, double val);
+
     // C++:  Mat cv::ml::SVM::getClassWeights()
     private static native long getClassWeights_0(long nativeObj);
 
-    // C++:  Mat cv::ml::SVM::getSupportVectors()
-    private static native long getSupportVectors_0(long nativeObj);
-
-    // C++:  Mat cv::ml::SVM::getUncompressedSupportVectors()
-    private static native long getUncompressedSupportVectors_0(long nativeObj);
-
-    // C++: static Ptr_ParamGrid cv::ml::SVM::getDefaultGridPtr(int param_id)
-    private static native long getDefaultGridPtr_0(int param_id);
-
-    // C++: static Ptr_SVM cv::ml::SVM::create()
-    private static native long create_0();
-
-    // C++: static Ptr_SVM cv::ml::SVM::load(String filepath)
-    private static native long load_0(String filepath);
+    // C++:  void cv::ml::SVM::setClassWeights(Mat val)
+    private static native void setClassWeights_0(long nativeObj, long val_nativeObj);
 
     // C++:  TermCriteria cv::ml::SVM::getTermCriteria()
     private static native double[] getTermCriteria_0(long nativeObj);
+
+    // C++:  void cv::ml::SVM::setTermCriteria(TermCriteria val)
+    private static native void setTermCriteria_0(long nativeObj, int val_type, int val_maxCount, double val_epsilon);
+
+    // C++:  int cv::ml::SVM::getKernelType()
+    private static native int getKernelType_0(long nativeObj);
+
+    // C++:  void cv::ml::SVM::setKernel(int kernelType)
+    private static native void setKernel_0(long nativeObj, int kernelType);
 
     // C++:  bool cv::ml::SVM::trainAuto(Mat samples, int layout, Mat responses, int kFold = 10, Ptr_ParamGrid Cgrid = SVM::getDefaultGridPtr(SVM::C), Ptr_ParamGrid gammaGrid = SVM::getDefaultGridPtr(SVM::GAMMA), Ptr_ParamGrid pGrid = SVM::getDefaultGridPtr(SVM::P), Ptr_ParamGrid nuGrid = SVM::getDefaultGridPtr(SVM::NU), Ptr_ParamGrid coeffGrid = SVM::getDefaultGridPtr(SVM::COEF), Ptr_ParamGrid degreeGrid = SVM::getDefaultGridPtr(SVM::DEGREE), bool balanced = false)
     private static native boolean trainAuto_0(long nativeObj, long samples_nativeObj, int layout, long responses_nativeObj, int kFold, long Cgrid_nativeObj, long gammaGrid_nativeObj, long pGrid_nativeObj, long nuGrid_nativeObj, long coeffGrid_nativeObj, long degreeGrid_nativeObj, boolean balanced);
@@ -739,62 +778,23 @@ public class SVM extends StatModel {
     private static native boolean trainAuto_7(long nativeObj, long samples_nativeObj, int layout, long responses_nativeObj, int kFold);
     private static native boolean trainAuto_8(long nativeObj, long samples_nativeObj, int layout, long responses_nativeObj);
 
-    // C++:  double cv::ml::SVM::getC()
-    private static native double getC_0(long nativeObj);
+    // C++:  Mat cv::ml::SVM::getSupportVectors()
+    private static native long getSupportVectors_0(long nativeObj);
 
-    // C++:  double cv::ml::SVM::getCoef0()
-    private static native double getCoef0_0(long nativeObj);
+    // C++:  Mat cv::ml::SVM::getUncompressedSupportVectors()
+    private static native long getUncompressedSupportVectors_0(long nativeObj);
 
     // C++:  double cv::ml::SVM::getDecisionFunction(int i, Mat& alpha, Mat& svidx)
     private static native double getDecisionFunction_0(long nativeObj, int i, long alpha_nativeObj, long svidx_nativeObj);
 
-    // C++:  double cv::ml::SVM::getDegree()
-    private static native double getDegree_0(long nativeObj);
+    // C++: static Ptr_ParamGrid cv::ml::SVM::getDefaultGridPtr(int param_id)
+    private static native long getDefaultGridPtr_0(int param_id);
 
-    // C++:  double cv::ml::SVM::getGamma()
-    private static native double getGamma_0(long nativeObj);
+    // C++: static Ptr_SVM cv::ml::SVM::create()
+    private static native long create_0();
 
-    // C++:  double cv::ml::SVM::getNu()
-    private static native double getNu_0(long nativeObj);
-
-    // C++:  double cv::ml::SVM::getP()
-    private static native double getP_0(long nativeObj);
-
-    // C++:  int cv::ml::SVM::getKernelType()
-    private static native int getKernelType_0(long nativeObj);
-
-    // C++:  int cv::ml::SVM::getType()
-    private static native int getType_0(long nativeObj);
-
-    // C++:  void cv::ml::SVM::setC(double val)
-    private static native void setC_0(long nativeObj, double val);
-
-    // C++:  void cv::ml::SVM::setClassWeights(Mat val)
-    private static native void setClassWeights_0(long nativeObj, long val_nativeObj);
-
-    // C++:  void cv::ml::SVM::setCoef0(double val)
-    private static native void setCoef0_0(long nativeObj, double val);
-
-    // C++:  void cv::ml::SVM::setDegree(double val)
-    private static native void setDegree_0(long nativeObj, double val);
-
-    // C++:  void cv::ml::SVM::setGamma(double val)
-    private static native void setGamma_0(long nativeObj, double val);
-
-    // C++:  void cv::ml::SVM::setKernel(int kernelType)
-    private static native void setKernel_0(long nativeObj, int kernelType);
-
-    // C++:  void cv::ml::SVM::setNu(double val)
-    private static native void setNu_0(long nativeObj, double val);
-
-    // C++:  void cv::ml::SVM::setP(double val)
-    private static native void setP_0(long nativeObj, double val);
-
-    // C++:  void cv::ml::SVM::setTermCriteria(TermCriteria val)
-    private static native void setTermCriteria_0(long nativeObj, int val_type, int val_maxCount, double val_epsilon);
-
-    // C++:  void cv::ml::SVM::setType(int val)
-    private static native void setType_0(long nativeObj, int val);
+    // C++: static Ptr_SVM cv::ml::SVM::load(String filepath)
+    private static native long load_0(String filepath);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

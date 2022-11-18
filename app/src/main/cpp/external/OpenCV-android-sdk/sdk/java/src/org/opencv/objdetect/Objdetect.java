@@ -22,7 +22,7 @@ public class Objdetect {
             CASCADE_DO_ROUGH_SEARCH = 8;
 
 
-    // C++: enum ObjectStatus
+    // C++: enum ObjectStatus (cv.DetectionBasedTracker.ObjectStatus)
     public static final int
             DetectionBasedTracker_DETECTED_NOT_SHOWN_YET = 0,
             DetectionBasedTracker_DETECTED = 1,

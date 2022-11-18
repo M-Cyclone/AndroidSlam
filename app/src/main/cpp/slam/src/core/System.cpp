@@ -424,35 +424,35 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, 
 {
     {
         unique_lock<mutex> lock(mMutexReset);
-        if(mbShutDown)
+        if (mbShutDown)
         {
-            return Sophus::SE3f();
+            return {};
         }
     }
 
-    if(mSensor!=MONOCULAR && mSensor!=IMU_MONOCULAR)
+    if (mSensor != MONOCULAR && mSensor != IMU_MONOCULAR)
     {
         cerr << "ERROR: you called TrackMonocular but input sensor was not set to Monocular nor Monocular-Inertial." << endl;
         exit(-1);
     }
 
     cv::Mat imToFeed = im.clone();
-    if(settings_ && settings_->needToResize())
+    if (settings_ && settings_->needToResize())
     {
         cv::Mat resizedIm;
-        cv::resize(im,resizedIm,settings_->newImSize());
+        cv::resize(im, resizedIm, settings_->newImSize());
         imToFeed = resizedIm;
     }
 
     // Check mode change
     {
         unique_lock<mutex> lock(mMutexMode);
-        if(mbActivateLocalizationMode)
+        if (mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();
 
             // Wait until Local Mapping has effectively stopped
-            while(!mpLocalMapper->isStopped())
+            while (!mpLocalMapper->isStopped())
             {
                 usleep(1000);
             }
@@ -460,7 +460,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, 
             mpTracker->InformOnlyTracking(true);
             mbActivateLocalizationMode = false;
         }
-        if(mbDeactivateLocalizationMode)
+        if (mbDeactivateLocalizationMode)
         {
             mpTracker->InformOnlyTracking(false);
             mpLocalMapper->Release();
@@ -471,13 +471,13 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, 
     // Check reset
     {
         unique_lock<mutex> lock(mMutexReset);
-        if(mbReset)
+        if (mbReset)
         {
             mpTracker->Reset();
             mbReset = false;
             mbResetActiveMap = false;
         }
-        else if(mbResetActiveMap)
+        else if (mbResetActiveMap)
         {
             cout << "SYSTEM-> Reseting active map in monocular case" << endl;
             mpTracker->ResetActiveMap();
@@ -486,26 +486,22 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, 
     }
 
     if (mSensor == System::IMU_MONOCULAR)
-        for(size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
-            mpTracker->GrabImuData(vImuMeas[i_imu]);
+    {
+        for (const auto& vImuMea: vImuMeas)
+        {
+            mpTracker->GrabImuData(vImuMea);
+        }
+    }
 
-    Sophus::SE3f Tcw = mpTracker->GrabImageMonocular(imToFeed,timestamp,filename);
+    Sophus::SE3f Tcw = mpTracker->GrabImageMonocular(imToFeed, timestamp, std::move(filename));
 
     unique_lock<mutex> lock2(mMutexState);
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
-    // std::cout
-    //     << "Current global map point count: [" << mpAtlas->GetAllMapPoints().size()
-    //     << "]    Current local map point count: [" << mpAtlas->GetReferenceMapPoints().size()
-    //     << "]    Current keyframe count: [" << mpAtlas->GetAllKeyFrames().size()
-    //     << "]" << std::endl;
-
     return Tcw;
 }
-
-
 
 void System::ActivateLocalizationMode()
 {

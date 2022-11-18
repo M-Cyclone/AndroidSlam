@@ -30,33 +30,6 @@ public class MergeMertens extends MergeExposures {
     public static MergeMertens __fromPtr__(long addr) { return new MergeMertens(addr); }
 
     //
-    // C++:  float cv::MergeMertens::getContrastWeight()
-    //
-
-    public float getContrastWeight() {
-        return getContrastWeight_0(nativeObj);
-    }
-
-
-    //
-    // C++:  float cv::MergeMertens::getExposureWeight()
-    //
-
-    public float getExposureWeight() {
-        return getExposureWeight_0(nativeObj);
-    }
-
-
-    //
-    // C++:  float cv::MergeMertens::getSaturationWeight()
-    //
-
-    public float getSaturationWeight() {
-        return getSaturationWeight_0(nativeObj);
-    }
-
-
-    //
     // C++:  void cv::MergeMertens::process(vector_Mat src, Mat& dst, Mat times, Mat response)
     //
 
@@ -83,6 +56,15 @@ public class MergeMertens extends MergeExposures {
 
 
     //
+    // C++:  float cv::MergeMertens::getContrastWeight()
+    //
+
+    public float getContrastWeight() {
+        return getContrastWeight_0(nativeObj);
+    }
+
+
+    //
     // C++:  void cv::MergeMertens::setContrastWeight(float contrast_weiht)
     //
 
@@ -92,11 +74,11 @@ public class MergeMertens extends MergeExposures {
 
 
     //
-    // C++:  void cv::MergeMertens::setExposureWeight(float exposure_weight)
+    // C++:  float cv::MergeMertens::getSaturationWeight()
     //
 
-    public void setExposureWeight(float exposure_weight) {
-        setExposureWeight_0(nativeObj, exposure_weight);
+    public float getSaturationWeight() {
+        return getSaturationWeight_0(nativeObj);
     }
 
 
@@ -109,6 +91,24 @@ public class MergeMertens extends MergeExposures {
     }
 
 
+    //
+    // C++:  float cv::MergeMertens::getExposureWeight()
+    //
+
+    public float getExposureWeight() {
+        return getExposureWeight_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::MergeMertens::setExposureWeight(float exposure_weight)
+    //
+
+    public void setExposureWeight(float exposure_weight) {
+        setExposureWeight_0(nativeObj, exposure_weight);
+    }
+
+
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
@@ -116,29 +116,29 @@ public class MergeMertens extends MergeExposures {
 
 
 
-    // C++:  float cv::MergeMertens::getContrastWeight()
-    private static native float getContrastWeight_0(long nativeObj);
-
-    // C++:  float cv::MergeMertens::getExposureWeight()
-    private static native float getExposureWeight_0(long nativeObj);
-
-    // C++:  float cv::MergeMertens::getSaturationWeight()
-    private static native float getSaturationWeight_0(long nativeObj);
-
     // C++:  void cv::MergeMertens::process(vector_Mat src, Mat& dst, Mat times, Mat response)
     private static native void process_0(long nativeObj, long src_mat_nativeObj, long dst_nativeObj, long times_nativeObj, long response_nativeObj);
 
     // C++:  void cv::MergeMertens::process(vector_Mat src, Mat& dst)
     private static native void process_1(long nativeObj, long src_mat_nativeObj, long dst_nativeObj);
 
+    // C++:  float cv::MergeMertens::getContrastWeight()
+    private static native float getContrastWeight_0(long nativeObj);
+
     // C++:  void cv::MergeMertens::setContrastWeight(float contrast_weiht)
     private static native void setContrastWeight_0(long nativeObj, float contrast_weiht);
 
-    // C++:  void cv::MergeMertens::setExposureWeight(float exposure_weight)
-    private static native void setExposureWeight_0(long nativeObj, float exposure_weight);
+    // C++:  float cv::MergeMertens::getSaturationWeight()
+    private static native float getSaturationWeight_0(long nativeObj);
 
     // C++:  void cv::MergeMertens::setSaturationWeight(float saturation_weight)
     private static native void setSaturationWeight_0(long nativeObj, float saturation_weight);
+
+    // C++:  float cv::MergeMertens::getExposureWeight()
+    private static native float getExposureWeight_0(long nativeObj);
+
+    // C++:  void cv::MergeMertens::setExposureWeight(float exposure_weight)
+    private static native void setExposureWeight_0(long nativeObj, float exposure_weight);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

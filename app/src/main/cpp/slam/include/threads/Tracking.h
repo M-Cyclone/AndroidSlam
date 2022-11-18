@@ -20,6 +20,7 @@
 #ifndef TRACKING_H
 #define TRACKING_H
 #include <mutex>
+#include <deque>
 #include <unordered_set>
 
 #include <opencv2/core/core.hpp>
@@ -55,8 +56,14 @@ namespace ORB_SLAM3
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-        Tracking(
-        System* pSys, ORBVocabulary* pVoc, Atlas* pAtlas, KeyFrameDatabase* pKFDB, const string& strSettingPath, const int sensor, Settings* settings, const string& _nameSeq = std::string());
+        Tracking(System* pSys,
+                 ORBVocabulary* pVoc,
+                 Atlas* pAtlas,
+                 KeyFrameDatabase* pKFDB,
+                 const string& strSettingPath,
+                 const int sensor,
+                 Settings* settings,
+                 const string& _nameSeq = "");
 
         ~Tracking();
 
@@ -230,7 +237,7 @@ namespace ORB_SLAM3
         IMU::Preintegrated* mpImuPreintegratedFromLastKF;
 
         // Queue of IMU measurements between frames
-        std::list<IMU::Point> mlQueueImuData;
+        std::deque<IMU::Point> mlQueueImuData;
 
         // Vector of IMU measurements from previous to current frame (to be filled by PreintegrateIMU)
         std::vector<IMU::Point> mvImuFromLastFrame;

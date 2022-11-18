@@ -3130,10 +3130,8 @@ void Optimizer::InertialOptimization(Map *pMap, Eigen::Matrix3d &Rwg, double &sc
     vppUsedKF.reserve(vpKFs.size());
     //std::cout << "build optimization graph" << std::endl;
 
-    for(size_t i=0;i<vpKFs.size();i++)
+    for(auto pKFi : vpKFs)
     {
-        KeyFrame* pKFi = vpKFs[i];
-
         if(pKFi->mPrevKF && pKFi->mnId<=maxKFid)
         {
             if(pKFi->isBad() || pKFi->mPrevKF->mnId>maxKFid)
@@ -3195,7 +3193,7 @@ void Optimizer::InertialOptimization(Map *pMap, Eigen::Matrix3d &Rwg, double &sc
 
 
     IMU::Bias b (vb[3],vb[4],vb[5],vb[0],vb[1],vb[2]);
-    Rwg = VGDir->estimate().Rwg;
+    Rwg = Eigen::Matrix3d(Eigen::Quaterniond(VGDir->estimate().Rwg).normalized());
 
     //Keyframes velocities and biases
     const int N = vpKFs.size();
@@ -3235,25 +3233,24 @@ void Optimizer::InertialOptimization(Map *pMap, Eigen::Vector3d &bg, Eigen::Vect
 
     linearSolver = new g2o::LinearSolverEigen<g2o::BlockSolverX::PoseMatrixType>();
 
-    g2o::BlockSolverX * solver_ptr = new g2o::BlockSolverX(linearSolver);
+    auto solver_ptr = new g2o::BlockSolverX(linearSolver);
 
-    g2o::OptimizationAlgorithmLevenberg* solver = new g2o::OptimizationAlgorithmLevenberg(solver_ptr);
+    auto solver = new g2o::OptimizationAlgorithmLevenberg(solver_ptr);
     solver->setUserLambdaInit(1e3);
 
     optimizer.setAlgorithm(solver);
 
     // Set KeyFrame vertices (fixed poses and optimizable velocities)
-    for(size_t i=0; i<vpKFs.size(); i++)
+    for(auto pKFi : vpKFs)
     {
-        KeyFrame* pKFi = vpKFs[i];
         if(pKFi->mnId>maxKFid)
             continue;
-        VertexPose * VP = new VertexPose(pKFi);
+        auto VP = new VertexPose(pKFi);
         VP->setId(pKFi->mnId);
         VP->setFixed(true);
         optimizer.addVertex(VP);
 
-        VertexVelocity* VV = new VertexVelocity(pKFi);
+        auto VV = new VertexVelocity(pKFi);
         VV->setId(maxKFid+(pKFi->mnId)+1);
         VV->setFixed(false);
 
@@ -3303,10 +3300,8 @@ void Optimizer::InertialOptimization(Map *pMap, Eigen::Vector3d &bg, Eigen::Vect
     vector<pair<KeyFrame*,KeyFrame*> > vppUsedKF;
     vppUsedKF.reserve(vpKFs.size());
 
-    for(size_t i=0;i<vpKFs.size();i++)
+    for(auto pKFi : vpKFs)
     {
-        KeyFrame* pKFi = vpKFs[i];
-
         if(pKFi->mPrevKF && pKFi->mnId<=maxKFid)
         {
             if(pKFi->isBad() || pKFi->mPrevKF->mnId>maxKFid)
@@ -3491,7 +3486,7 @@ void Optimizer::InertialOptimization(Map *pMap, Eigen::Matrix3d &Rwg, double &sc
     float err_end = optimizer.activeRobustChi2();
     // Recover optimized data
     scale = VS->estimate();
-    Rwg = VGDir->estimate().Rwg;
+    Rwg = Eigen::Matrix3d(Eigen::Quaterniond(VGDir->estimate().Rwg).normalized());
 }
 
 void Optimizer::LocalBundleAdjustment(KeyFrame* pMainKF,vector<KeyFrame*> vpAdjustKF, vector<KeyFrame*> vpFixedKF, bool *pbStopFlag)

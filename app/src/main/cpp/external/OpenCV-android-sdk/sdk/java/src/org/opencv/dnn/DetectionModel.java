@@ -9,6 +9,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfRect;
+import org.opencv.dnn.DetectionModel;
 import org.opencv.dnn.Model;
 import org.opencv.dnn.Net;
 import org.opencv.utils.Converters;
@@ -30,19 +31,6 @@ public class DetectionModel extends Model {
     public static DetectionModel __fromPtr__(long addr) { return new DetectionModel(addr); }
 
     //
-    // C++:   cv::dnn::DetectionModel::DetectionModel(Net network)
-    //
-
-    /**
-     * Create model from deep learning network.
-     * @param network Net object.
-     */
-    public DetectionModel(Net network) {
-        super(DetectionModel_0(network.nativeObj));
-    }
-
-
-    //
     // C++:   cv::dnn::DetectionModel::DetectionModel(String model, String config = "")
     //
 
@@ -53,7 +41,7 @@ public class DetectionModel extends Model {
      * @param config Text file contains network configuration.
      */
     public DetectionModel(String model, String config) {
-        super(DetectionModel_1(model, config));
+        super(DetectionModel_0(model, config));
     }
 
     /**
@@ -62,7 +50,50 @@ public class DetectionModel extends Model {
      * @param model Binary file contains trained weights.
      */
     public DetectionModel(String model) {
-        super(DetectionModel_2(model));
+        super(DetectionModel_1(model));
+    }
+
+
+    //
+    // C++:   cv::dnn::DetectionModel::DetectionModel(Net network)
+    //
+
+    /**
+     * Create model from deep learning network.
+     * @param network Net object.
+     */
+    public DetectionModel(Net network) {
+        super(DetectionModel_2(network.nativeObj));
+    }
+
+
+    //
+    // C++:  DetectionModel cv::dnn::DetectionModel::setNmsAcrossClasses(bool value)
+    //
+
+    /**
+     * nmsAcrossClasses defaults to false,
+     * such that when non max suppression is used during the detect() function, it will do so per-class.
+     * This function allows you to toggle this behaviour.
+     * @param value The new value for nmsAcrossClasses
+     * @return automatically generated
+     */
+    public DetectionModel setNmsAcrossClasses(boolean value) {
+        return new DetectionModel(setNmsAcrossClasses_0(nativeObj, value));
+    }
+
+
+    //
+    // C++:  bool cv::dnn::DetectionModel::getNmsAcrossClasses()
+    //
+
+    /**
+     * Getter for nmsAcrossClasses. This variable defaults to false,
+     * such that when non max suppression is used during the detect() function, it will do so only per-class
+     * @return automatically generated
+     */
+    public boolean getNmsAcrossClasses() {
+        return getNmsAcrossClasses_0(nativeObj);
     }
 
 
@@ -123,12 +154,18 @@ public class DetectionModel extends Model {
 
 
 
-    // C++:   cv::dnn::DetectionModel::DetectionModel(Net network)
-    private static native long DetectionModel_0(long network_nativeObj);
-
     // C++:   cv::dnn::DetectionModel::DetectionModel(String model, String config = "")
-    private static native long DetectionModel_1(String model, String config);
-    private static native long DetectionModel_2(String model);
+    private static native long DetectionModel_0(String model, String config);
+    private static native long DetectionModel_1(String model);
+
+    // C++:   cv::dnn::DetectionModel::DetectionModel(Net network)
+    private static native long DetectionModel_2(long network_nativeObj);
+
+    // C++:  DetectionModel cv::dnn::DetectionModel::setNmsAcrossClasses(bool value)
+    private static native long setNmsAcrossClasses_0(long nativeObj, boolean value);
+
+    // C++:  bool cv::dnn::DetectionModel::getNmsAcrossClasses()
+    private static native boolean getNmsAcrossClasses_0(long nativeObj);
 
     // C++:  void cv::dnn::DetectionModel::detect(Mat frame, vector_int& classIds, vector_float& confidences, vector_Rect& boxes, float confThreshold = 0.5f, float nmsThreshold = 0.0f)
     private static native void detect_0(long nativeObj, long frame_nativeObj, long classIds_mat_nativeObj, long confidences_mat_nativeObj, long boxes_mat_nativeObj, float confThreshold, float nmsThreshold);

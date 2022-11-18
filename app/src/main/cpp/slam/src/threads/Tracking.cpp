@@ -220,7 +220,7 @@ namespace ORB_SLAM3
         Sophus::SE3f Tbc = settings->Tbc();
         mInsertKFsLost = settings->insertKFsWhenLost();
         mImuFreq = settings->imuFrequency();
-        mImuPer = 0.001; //1.0 / (double) mImuFreq;     //TODO: ESTO ESTA BIEN?
+        mImuPer = 1.0 / (double) mImuFreq;
         float Ng = settings->noiseGyro();
         float Na = settings->noiseAcc();
         float Ngw = settings->gyroWalk();
@@ -229,7 +229,7 @@ namespace ORB_SLAM3
         const float sf = sqrt(mImuFreq);
         mpImuCalib = new IMU::Calib(Tbc, Ng * sf, Na * sf, Ngw / sf, Naw / sf);
 
-        mpImuPreintegratedFromLastKF = new IMU::Preintegrated(IMU::Bias(), *mpImuCalib);
+        mpImuPreintegratedFromLastKF = new IMU::Preintegrated(IMU::Bias{}, *mpImuCalib);
     }
 
     bool Tracking::ParseCamParamFile(cv::FileStorage& fSettings)
@@ -1034,7 +1034,6 @@ namespace ORB_SLAM3
 
         mpImuPreintegratedFromLastKF = new IMU::Preintegrated(IMU::Bias(), *mpImuCalib);
 
-
         return true;
     }
 
@@ -1172,17 +1171,11 @@ namespace ORB_SLAM3
         mImGray = im;
         if (mImGray.channels() == 3)
         {
-            if (mbRGB)
-                cvtColor(mImGray, mImGray, cv::COLOR_RGB2GRAY);
-            else
-                cvtColor(mImGray, mImGray, cv::COLOR_BGR2GRAY);
+            cvtColor(mImGray, mImGray, (mbRGB ? cv::COLOR_RGB2GRAY : cv::COLOR_BGR2GRAY));
         }
         else if (mImGray.channels() == 4)
         {
-            if (mbRGB)
-                cvtColor(mImGray, mImGray, cv::COLOR_RGBA2GRAY);
-            else
-                cvtColor(mImGray, mImGray, cv::COLOR_BGRA2GRAY);
+            cvtColor(mImGray, mImGray, (mbRGB ? cv::COLOR_RGBA2GRAY : cv::COLOR_BGRA2GRAY));
         }
 
         if (mSensor == System::MONOCULAR)
@@ -1213,12 +1206,15 @@ namespace ORB_SLAM3
         }
 
         if (mState == NO_IMAGES_YET)
+        {
             t0 = timestamp;
+        }
 
-        mCurrentFrame.mNameFile = filename;
+        mCurrentFrame.mNameFile = std::move(filename);
         mCurrentFrame.mnDataset = mnNumDataset;
 
         lastID = mCurrentFrame.mnId;
+
         Track();
 
         return mCurrentFrame.GetPose();
@@ -1241,65 +1237,58 @@ namespace ORB_SLAM3
         }
 
         mvImuFromLastFrame.clear();
-        mvImuFromLastFrame.reserve(mlQueueImuData.size());
-        if (mlQueueImuData.size() == 0)
+        if (mlQueueImuData.empty())
         {
             Verbose::PrintMess("Not IMU data in mlQueueImuData!!", Verbose::VERBOSITY_NORMAL);
             mCurrentFrame.setIntegrated();
             return;
         }
 
-        while (true)
         {
-            bool bSleep = false;
+            unique_lock<mutex> lock(mMutexImuQueue);
+
+            while(!mlQueueImuData.empty())
             {
-                unique_lock<mutex> lock(mMutexImuQueue);
-                if (!mlQueueImuData.empty())
+                const IMU::Point& m = mlQueueImuData.front();
+
+                if (m.t + mImuPer < mCurrentFrame.mpPrevFrame->mTimeStamp)
                 {
-                    IMU::Point* m = &mlQueueImuData.front();
-                    cout.precision(17);
-                    if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer)
-                    {
-                        mlQueueImuData.pop_front();
-                    }
-                    else if (m->t < mCurrentFrame.mTimeStamp - mImuPer)
-                    {
-                        mvImuFromLastFrame.push_back(*m);
-                        mlQueueImuData.pop_front();
-                    }
-                    else
-                    {
-                        mvImuFromLastFrame.push_back(*m);
-                        break;
-                    }
+                    // The time stamp is too old.
+                    mlQueueImuData.pop_front();
+                }
+                else if (m.t + mImuPer < mCurrentFrame.mTimeStamp)
+                {
+                    mvImuFromLastFrame.push_back(m);
+                    mlQueueImuData.pop_front();
                 }
                 else
                 {
+                    // The time stamp is the first one after the image' time stamp.
+                    // This imu data will be used in this and next frame.
+                    mvImuFromLastFrame.push_back(m);
                     break;
-                    bSleep = true;
                 }
             }
-            if (bSleep)
-                usleep(500);
         }
 
-        const int n = (int)mvImuFromLastFrame.size() - 1;
+        const int n = (int) mvImuFromLastFrame.size() - 1;
         if (n == 0)
         {
             cout << "Empty IMU measurements vector!!!\n";
             return;
         }
 
-        auto* pImuPreintegratedFromLastFrame = new IMU::Preintegrated(mLastFrame.mImuBias, mCurrentFrame.mImuCalib);
+        auto pImuPreintegratedFromLastFrame = new IMU::Preintegrated(mLastFrame.mImuBias, mCurrentFrame.mImuCalib);
+        assert(pImuPreintegratedFromLastFrame);
 
         for (int i = 0; i < n; i++)
         {
-            float tstep;
+            double tstep{};
             Eigen::Vector3f acc, angVel;
             if ((i == 0) && (i < (n - 1)))
             {
-                float tab = mvImuFromLastFrame[i + 1].t - mvImuFromLastFrame[i].t;
-                float tini = mvImuFromLastFrame[i].t - mCurrentFrame.mpPrevFrame->mTimeStamp;
+                double tab = mvImuFromLastFrame[i + 1].t - mvImuFromLastFrame[i].t;
+                double tini = mvImuFromLastFrame[i].t - mCurrentFrame.mpPrevFrame->mTimeStamp;
                 acc = (mvImuFromLastFrame[i].a + mvImuFromLastFrame[i + 1].a - (mvImuFromLastFrame[i + 1].a - mvImuFromLastFrame[i].a) * (tini / tab)) * 0.5f;
                 angVel = (mvImuFromLastFrame[i].w + mvImuFromLastFrame[i + 1].w - (mvImuFromLastFrame[i + 1].w - mvImuFromLastFrame[i].w) * (tini / tab)) * 0.5f;
                 tstep = mvImuFromLastFrame[i + 1].t - mCurrentFrame.mpPrevFrame->mTimeStamp;
@@ -1312,8 +1301,8 @@ namespace ORB_SLAM3
             }
             else if ((i > 0) && (i == (n - 1)))
             {
-                float tab = mvImuFromLastFrame[i + 1].t - mvImuFromLastFrame[i].t;
-                float tend = mvImuFromLastFrame[i + 1].t - mCurrentFrame.mTimeStamp;
+                double tab = mvImuFromLastFrame[i + 1].t - mvImuFromLastFrame[i].t;
+                double tend = mvImuFromLastFrame[i + 1].t - mCurrentFrame.mTimeStamp;
                 acc = (mvImuFromLastFrame[i].a + mvImuFromLastFrame[i + 1].a - (mvImuFromLastFrame[i + 1].a - mvImuFromLastFrame[i].a) * (tend / tab)) * 0.5f;
                 angVel = (mvImuFromLastFrame[i].w + mvImuFromLastFrame[i + 1].w - (mvImuFromLastFrame[i + 1].w - mvImuFromLastFrame[i].w) * (tend / tab)) * 0.5f;
                 tstep = mCurrentFrame.mTimeStamp - mvImuFromLastFrame[i].t;
@@ -1325,15 +1314,17 @@ namespace ORB_SLAM3
                 tstep = mCurrentFrame.mTimeStamp - mCurrentFrame.mpPrevFrame->mTimeStamp;
             }
 
-            if (!mpImuPreintegratedFromLastKF)
-                cout << "mpImuPreintegratedFromLastKF does not exist" << endl;
-            mpImuPreintegratedFromLastKF->IntegrateNewMeasurement(acc, angVel, tstep);
-            pImuPreintegratedFromLastFrame->IntegrateNewMeasurement(acc, angVel, tstep);
+            assert(mpImuPreintegratedFromLastKF);
+            pImuPreintegratedFromLastFrame->IntegrateNewMeasurement(acc, angVel, (float) tstep);
+            mpImuPreintegratedFromLastKF->IntegrateNewMeasurement(acc, angVel, (float) tstep);
         }
 
         mCurrentFrame.mpImuPreintegratedFrame = pImuPreintegratedFromLastFrame;
         mCurrentFrame.mpImuPreintegrated = mpImuPreintegratedFromLastKF;
         mCurrentFrame.mpLastKeyFrame = mpLastKeyFrame;
+
+        assert(mCurrentFrame.mpImuPreintegratedFrame);
+        assert(mCurrentFrame.mpImuPreintegrated);
 
         mCurrentFrame.setIntegrated();
     }
@@ -1410,28 +1401,24 @@ namespace ORB_SLAM3
         }
 
         Map* pCurrentMap = mpAtlas->GetCurrentMap();
-        if (!pCurrentMap)
-        {
-            cout << "ERROR: There is not an active map in the atlas" << endl;
-        }
+        assert(pCurrentMap);
 
         if (mState != NO_IMAGES_YET)
         {
-            if (mLastFrame.mTimeStamp > mCurrentFrame.mTimeStamp)
+            //if (mLastFrame.mTimeStamp > mCurrentFrame.mTimeStamp)
+            //{
+            //    cerr << "ERROR: Frame with a timestamp older than previous frame detected!" << endl;
+            //    unique_lock<mutex> lock(mMutexImuQueue);
+            //    mlQueueImuData.clear();
+            //    CreateMapInAtlas();
+            //    return;
+            //}
+            assert(mLastFrame.mTimeStamp <= mCurrentFrame.mTimeStamp);
+
+            if (mCurrentFrame.mTimeStamp > mLastFrame.mTimeStamp + 1.0)
             {
-                cerr << "ERROR: Frame with a timestamp older than previous frame detected!" << endl;
-                unique_lock<mutex> lock(mMutexImuQueue);
-                mlQueueImuData.clear();
-                CreateMapInAtlas();
-                return;
-            }
-            else if (mCurrentFrame.mTimeStamp > mLastFrame.mTimeStamp + 1.0)
-            {
-                // cout << mCurrentFrame.mTimeStamp << ", " << mLastFrame.mTimeStamp << endl;
-                // cout << "id last: " << mLastFrame.mnId << "    id curr: " << mCurrentFrame.mnId << endl;
                 if (mpAtlas->isInertial())
                 {
-
                     if (mpAtlas->isImuInitialized())
                     {
                         cout << "Timestamp jump detected. State set to LOST. Reseting IMU integration..." << endl;
@@ -1451,26 +1438,29 @@ namespace ORB_SLAM3
                     }
                     return;
                 }
-
             }
         }
 
 
-        if ((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) && mpLastKeyFrame)
+        if ((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) &&
+             mpLastKeyFrame)
+        {
             mCurrentFrame.SetNewBias(mpLastKeyFrame->GetImuBias());
+        }
 
         if (mState == NO_IMAGES_YET)
         {
             mState = NOT_INITIALIZED;
         }
-
         mLastProcessedState = mState;
 
-        if ((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) && !mbCreatedMap)
+        if ((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) &&
+            !mbCreatedMap)
         {
             PreintegrateIMU();
         }
         mbCreatedMap = false;
+
 
         // Get Map Mutex -> Map cannot be changed
         unique_lock<mutex> lock(pCurrentMap->mMutexMapUpdate);
@@ -1488,7 +1478,10 @@ namespace ORB_SLAM3
 
         if (mState == NOT_INITIALIZED)
         {
-            if (mSensor == System::STEREO || mSensor == System::RGBD || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD)
+            if (mSensor == System::STEREO ||
+                mSensor == System::RGBD ||
+                mSensor == System::IMU_STEREO ||
+                mSensor == System::IMU_RGBD)
             {
                 StereoInitialization();
             }
@@ -1516,13 +1509,11 @@ namespace ORB_SLAM3
             // Initial camera pose estimation using motion model or relocalization (if tracking is lost)
             if (!mbOnlyTracking)
             {
-
                 // State OK
                 // Local Mapping is activated. This is the normal behaviour, unless
                 // you explicitly activate the "only tracking" mode.
                 if (mState == OK)
                 {
-
                     // Local Mapping might have changed some MapPoints tracked in last frame
                     CheckReplacedInLastFrame();
 
@@ -2037,7 +2028,6 @@ namespace ORB_SLAM3
                     }
                     mpImuPreintegratedFromLastKF = new IMU::Preintegrated(IMU::Bias(), *mpImuCalib);
                     mCurrentFrame.mpImuPreintegrated = mpImuPreintegratedFromLastKF;
-
                 }
 
                 mbReadyToInitializate = true;
@@ -2093,11 +2083,11 @@ namespace ORB_SLAM3
     void Tracking::CreateInitialMapMonocular()
     {
         // Create KeyFrames
-        KeyFrame* pKFini = new KeyFrame(mInitialFrame, mpAtlas->GetCurrentMap(), mpKeyFrameDB);
-        KeyFrame* pKFcur = new KeyFrame(mCurrentFrame, mpAtlas->GetCurrentMap(), mpKeyFrameDB);
+        auto pKFini = new KeyFrame(mInitialFrame, mpAtlas->GetCurrentMap(), mpKeyFrameDB);
+        auto pKFcur = new KeyFrame(mCurrentFrame, mpAtlas->GetCurrentMap(), mpKeyFrameDB);
 
         if (mSensor == System::IMU_MONOCULAR)
-            pKFini->mpImuPreintegrated = (IMU::Preintegrated*)(NULL);
+            pKFini->mpImuPreintegrated = nullptr;
 
 
         pKFini->ComputeBoW();
@@ -2115,7 +2105,7 @@ namespace ORB_SLAM3
             //Create MapPoint.
             Eigen::Vector3f worldPos;
             worldPos << mvIniP3D[i].x, mvIniP3D[i].y, mvIniP3D[i].z;
-            MapPoint* pMP = new MapPoint(worldPos, pKFcur, mpAtlas->GetCurrentMap());
+            auto pMP = new MapPoint(worldPos, pKFcur, mpAtlas->GetCurrentMap());
 
             pKFini->AddMapPoint(pMP, i);
             pKFcur->AddMapPoint(pMP, mvIniMatches[i]);
@@ -2167,11 +2157,11 @@ namespace ORB_SLAM3
 
         // Scale points
         vector<MapPoint*> vpAllMapPoints = pKFini->GetMapPointMatches();
-        for (size_t iMP = 0; iMP < vpAllMapPoints.size(); iMP++)
+        for (auto & vpAllMapPoint : vpAllMapPoints)
         {
-            if (vpAllMapPoints[iMP])
+            if (vpAllMapPoint)
             {
-                MapPoint* pMP = vpAllMapPoints[iMP];
+                MapPoint* pMP = vpAllMapPoint;
                 pMP->SetWorldPos(pMP->GetWorldPos() * invMedianDepth);
                 pMP->UpdateNormalAndDepth();
             }

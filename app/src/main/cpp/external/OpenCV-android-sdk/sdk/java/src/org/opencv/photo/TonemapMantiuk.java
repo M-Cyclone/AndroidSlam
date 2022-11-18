@@ -21,29 +21,11 @@ public class TonemapMantiuk extends Tonemap {
     public static TonemapMantiuk __fromPtr__(long addr) { return new TonemapMantiuk(addr); }
 
     //
-    // C++:  float cv::TonemapMantiuk::getSaturation()
-    //
-
-    public float getSaturation() {
-        return getSaturation_0(nativeObj);
-    }
-
-
-    //
     // C++:  float cv::TonemapMantiuk::getScale()
     //
 
     public float getScale() {
         return getScale_0(nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::TonemapMantiuk::setSaturation(float saturation)
-    //
-
-    public void setSaturation(float saturation) {
-        setSaturation_0(nativeObj, saturation);
     }
 
 
@@ -56,6 +38,24 @@ public class TonemapMantiuk extends Tonemap {
     }
 
 
+    //
+    // C++:  float cv::TonemapMantiuk::getSaturation()
+    //
+
+    public float getSaturation() {
+        return getSaturation_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::TonemapMantiuk::setSaturation(float saturation)
+    //
+
+    public void setSaturation(float saturation) {
+        setSaturation_0(nativeObj, saturation);
+    }
+
+
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
@@ -63,17 +63,17 @@ public class TonemapMantiuk extends Tonemap {
 
 
 
-    // C++:  float cv::TonemapMantiuk::getSaturation()
-    private static native float getSaturation_0(long nativeObj);
-
     // C++:  float cv::TonemapMantiuk::getScale()
     private static native float getScale_0(long nativeObj);
 
-    // C++:  void cv::TonemapMantiuk::setSaturation(float saturation)
-    private static native void setSaturation_0(long nativeObj, float saturation);
-
     // C++:  void cv::TonemapMantiuk::setScale(float scale)
     private static native void setScale_0(long nativeObj, float scale);
+
+    // C++:  float cv::TonemapMantiuk::getSaturation()
+    private static native float getSaturation_0(long nativeObj);
+
+    // C++:  void cv::TonemapMantiuk::setSaturation(float saturation)
+    private static native void setSaturation_0(long nativeObj, float saturation);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

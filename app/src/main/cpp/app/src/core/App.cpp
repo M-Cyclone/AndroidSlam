@@ -12,7 +12,6 @@
 #include "core/InitScene.h"
 #include "core/SlamScene.h"
 
-#include "utils/Log.h"
 #include "utils/AssetManager.h"
 
 #include "render/SensorTexture.h"
@@ -32,6 +31,9 @@ namespace android_slam
         state->onAppCmd = App::onCmd;
         state->onInputEvent = App::onInput;
 
+        std::cout.rdbuf(&m_cout_buffer);
+
+        is_init = true;
         SensorTexture::registerFunctions();
     }
 
@@ -243,7 +245,7 @@ namespace android_slam
             {
                 instance.init();
 
-                DEBUG_INFO("App window initialized.");
+                std::cout << "App window initialized." << std::endl;
 
                 break;
             }
@@ -251,7 +253,7 @@ namespace android_slam
             {
                 instance.exit();
 
-                DEBUG_INFO("App window terminated.");
+                std::cout << "App window terminated." << std::endl;
 
                 break;
             }
@@ -265,7 +267,7 @@ namespace android_slam
                     instance.m_window->resize(new_width, new_height);
                 }
 
-                DEBUG_INFO("App window resized.");
+                std::cout << "App window resized." << std::endl;
 
                 break;
             }
@@ -273,7 +275,7 @@ namespace android_slam
             {
                 instance.m_active = true;
 
-                DEBUG_INFO("App gained focus.");
+                std::cout << "App window gained focus." << std::endl;
 
                 break;
             }
@@ -281,7 +283,7 @@ namespace android_slam
             {
                 instance.m_active = false;
 
-                DEBUG_INFO("App lost focus.");
+                std::cout << "App window lost focus." << std::endl;
 
                 break;
             }

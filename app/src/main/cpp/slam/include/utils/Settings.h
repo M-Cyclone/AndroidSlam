@@ -303,7 +303,6 @@ namespace ORB_SLAM3 {
          * Other stuff
          */
         float thFarPoints_;
-
     };
 };
 

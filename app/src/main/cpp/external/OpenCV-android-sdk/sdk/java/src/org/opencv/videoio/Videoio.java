@@ -9,63 +9,6 @@ package org.opencv.videoio;
 
 public class Videoio {
 
-    // C++: enum VideoWriterProperties
-    public static final int
-            VIDEOWRITER_PROP_QUALITY = 1,
-            VIDEOWRITER_PROP_FRAMEBYTES = 2,
-            VIDEOWRITER_PROP_NSTRIPES = 3;
-
-
-    // C++: enum VideoCaptureProperties
-    public static final int
-            CAP_PROP_POS_MSEC = 0,
-            CAP_PROP_POS_FRAMES = 1,
-            CAP_PROP_POS_AVI_RATIO = 2,
-            CAP_PROP_FRAME_WIDTH = 3,
-            CAP_PROP_FRAME_HEIGHT = 4,
-            CAP_PROP_FPS = 5,
-            CAP_PROP_FOURCC = 6,
-            CAP_PROP_FRAME_COUNT = 7,
-            CAP_PROP_FORMAT = 8,
-            CAP_PROP_MODE = 9,
-            CAP_PROP_BRIGHTNESS = 10,
-            CAP_PROP_CONTRAST = 11,
-            CAP_PROP_SATURATION = 12,
-            CAP_PROP_HUE = 13,
-            CAP_PROP_GAIN = 14,
-            CAP_PROP_EXPOSURE = 15,
-            CAP_PROP_CONVERT_RGB = 16,
-            CAP_PROP_WHITE_BALANCE_BLUE_U = 17,
-            CAP_PROP_RECTIFICATION = 18,
-            CAP_PROP_MONOCHROME = 19,
-            CAP_PROP_SHARPNESS = 20,
-            CAP_PROP_AUTO_EXPOSURE = 21,
-            CAP_PROP_GAMMA = 22,
-            CAP_PROP_TEMPERATURE = 23,
-            CAP_PROP_TRIGGER = 24,
-            CAP_PROP_TRIGGER_DELAY = 25,
-            CAP_PROP_WHITE_BALANCE_RED_V = 26,
-            CAP_PROP_ZOOM = 27,
-            CAP_PROP_FOCUS = 28,
-            CAP_PROP_GUID = 29,
-            CAP_PROP_ISO_SPEED = 30,
-            CAP_PROP_BACKLIGHT = 32,
-            CAP_PROP_PAN = 33,
-            CAP_PROP_TILT = 34,
-            CAP_PROP_ROLL = 35,
-            CAP_PROP_IRIS = 36,
-            CAP_PROP_SETTINGS = 37,
-            CAP_PROP_BUFFERSIZE = 38,
-            CAP_PROP_AUTOFOCUS = 39,
-            CAP_PROP_SAR_NUM = 40,
-            CAP_PROP_SAR_DEN = 41,
-            CAP_PROP_BACKEND = 42,
-            CAP_PROP_CHANNEL = 43,
-            CAP_PROP_AUTO_WB = 44,
-            CAP_PROP_WB_TEMPERATURE = 45,
-            CAP_PROP_CODEC_PIXEL_FORMAT = 46;
-
-
     // C++: enum <unnamed>
     public static final int
             CAP_PROP_DC1394_OFF = -4,
@@ -286,6 +229,7 @@ public class Videoio {
             CAP_PROP_XI_FFS_ACCESS_KEY = 583,
             CAP_PROP_XI_SENSOR_FEATURE_SELECTOR = 585,
             CAP_PROP_XI_SENSOR_FEATURE_VALUE = 586,
+            CAP_PROP_ARAVIS_AUTOTRIGGER = 600,
             CAP_PROP_IOS_DEVICE_FOCUS = 9001,
             CAP_PROP_IOS_DEVICE_EXPOSURE = 9002,
             CAP_PROP_IOS_DEVICE_FLASH = 9003,
@@ -326,7 +270,16 @@ public class Videoio {
             CAP_PROP_IMAGES_LAST = 19000;
 
 
-    // C++: enum VideoCaptureAPIs
+    // C++: enum VideoAccelerationType (cv.VideoAccelerationType)
+    public static final int
+            VIDEO_ACCELERATION_NONE = 0,
+            VIDEO_ACCELERATION_ANY = 1,
+            VIDEO_ACCELERATION_D3D11 = 2,
+            VIDEO_ACCELERATION_VAAPI = 3,
+            VIDEO_ACCELERATION_MFX = 4;
+
+
+    // C++: enum VideoCaptureAPIs (cv.VideoCaptureAPIs)
     public static final int
             CAP_ANY = 0,
             CAP_VFW = 200,
@@ -353,6 +306,7 @@ public class Videoio {
             CAP_REALSENSE = 1500,
             CAP_OPENNI2 = 1600,
             CAP_OPENNI2_ASUS = 1610,
+            CAP_OPENNI2_ASTRA = 1620,
             CAP_GPHOTO2 = 1700,
             CAP_GSTREAMER = 1800,
             CAP_FFMPEG = 1900,
@@ -360,7 +314,92 @@ public class Videoio {
             CAP_ARAVIS = 2100,
             CAP_OPENCV_MJPEG = 2200,
             CAP_INTEL_MFX = 2300,
-            CAP_XINE = 2400;
+            CAP_XINE = 2400,
+            CAP_UEYE = 2500;
+
+
+    // C++: enum VideoCaptureProperties (cv.VideoCaptureProperties)
+    public static final int
+            CAP_PROP_POS_MSEC = 0,
+            CAP_PROP_POS_FRAMES = 1,
+            CAP_PROP_POS_AVI_RATIO = 2,
+            CAP_PROP_FRAME_WIDTH = 3,
+            CAP_PROP_FRAME_HEIGHT = 4,
+            CAP_PROP_FPS = 5,
+            CAP_PROP_FOURCC = 6,
+            CAP_PROP_FRAME_COUNT = 7,
+            CAP_PROP_FORMAT = 8,
+            CAP_PROP_MODE = 9,
+            CAP_PROP_BRIGHTNESS = 10,
+            CAP_PROP_CONTRAST = 11,
+            CAP_PROP_SATURATION = 12,
+            CAP_PROP_HUE = 13,
+            CAP_PROP_GAIN = 14,
+            CAP_PROP_EXPOSURE = 15,
+            CAP_PROP_CONVERT_RGB = 16,
+            CAP_PROP_WHITE_BALANCE_BLUE_U = 17,
+            CAP_PROP_RECTIFICATION = 18,
+            CAP_PROP_MONOCHROME = 19,
+            CAP_PROP_SHARPNESS = 20,
+            CAP_PROP_AUTO_EXPOSURE = 21,
+            CAP_PROP_GAMMA = 22,
+            CAP_PROP_TEMPERATURE = 23,
+            CAP_PROP_TRIGGER = 24,
+            CAP_PROP_TRIGGER_DELAY = 25,
+            CAP_PROP_WHITE_BALANCE_RED_V = 26,
+            CAP_PROP_ZOOM = 27,
+            CAP_PROP_FOCUS = 28,
+            CAP_PROP_GUID = 29,
+            CAP_PROP_ISO_SPEED = 30,
+            CAP_PROP_BACKLIGHT = 32,
+            CAP_PROP_PAN = 33,
+            CAP_PROP_TILT = 34,
+            CAP_PROP_ROLL = 35,
+            CAP_PROP_IRIS = 36,
+            CAP_PROP_SETTINGS = 37,
+            CAP_PROP_BUFFERSIZE = 38,
+            CAP_PROP_AUTOFOCUS = 39,
+            CAP_PROP_SAR_NUM = 40,
+            CAP_PROP_SAR_DEN = 41,
+            CAP_PROP_BACKEND = 42,
+            CAP_PROP_CHANNEL = 43,
+            CAP_PROP_AUTO_WB = 44,
+            CAP_PROP_WB_TEMPERATURE = 45,
+            CAP_PROP_CODEC_PIXEL_FORMAT = 46,
+            CAP_PROP_BITRATE = 47,
+            CAP_PROP_ORIENTATION_META = 48,
+            CAP_PROP_ORIENTATION_AUTO = 49,
+            CAP_PROP_HW_ACCELERATION = 50,
+            CAP_PROP_HW_DEVICE = 51,
+            CAP_PROP_HW_ACCELERATION_USE_OPENCL = 52,
+            CAP_PROP_OPEN_TIMEOUT_MSEC = 53,
+            CAP_PROP_READ_TIMEOUT_MSEC = 54,
+            CAP_PROP_STREAM_OPEN_TIME_USEC = 55,
+            CAP_PROP_VIDEO_TOTAL_CHANNELS = 56,
+            CAP_PROP_VIDEO_STREAM = 57,
+            CAP_PROP_AUDIO_STREAM = 58,
+            CAP_PROP_AUDIO_POS = 59,
+            CAP_PROP_AUDIO_SHIFT_NSEC = 60,
+            CAP_PROP_AUDIO_DATA_DEPTH = 61,
+            CAP_PROP_AUDIO_SAMPLES_PER_SECOND = 62,
+            CAP_PROP_AUDIO_BASE_INDEX = 63,
+            CAP_PROP_AUDIO_TOTAL_CHANNELS = 64,
+            CAP_PROP_AUDIO_TOTAL_STREAMS = 65,
+            CAP_PROP_AUDIO_SYNCHRONIZE = 66,
+            CAP_PROP_LRF_HAS_KEY_FRAME = 67,
+            CAP_PROP_CODEC_EXTRADATA_INDEX = 68;
+
+
+    // C++: enum VideoWriterProperties (cv.VideoWriterProperties)
+    public static final int
+            VIDEOWRITER_PROP_QUALITY = 1,
+            VIDEOWRITER_PROP_FRAMEBYTES = 2,
+            VIDEOWRITER_PROP_NSTRIPES = 3,
+            VIDEOWRITER_PROP_IS_COLOR = 4,
+            VIDEOWRITER_PROP_DEPTH = 5,
+            VIDEOWRITER_PROP_HW_ACCELERATION = 6,
+            VIDEOWRITER_PROP_HW_DEVICE = 7,
+            VIDEOWRITER_PROP_HW_ACCELERATION_USE_OPENCL = 8;
 
 
     //
@@ -405,9 +444,115 @@ public class Videoio {
     // Return type 'vector_VideoCaptureAPIs' is not supported, skipping the function
 
 
+    //
+    // C++:  bool cv::videoio_registry::hasBackend(VideoCaptureAPIs api)
+    //
+
+    /**
+     * Returns true if backend is available
+     * @param api automatically generated
+     * @return automatically generated
+     */
+    public static boolean hasBackend(int api) {
+        return hasBackend_0(api);
+    }
+
+
+    //
+    // C++:  bool cv::videoio_registry::isBackendBuiltIn(VideoCaptureAPIs api)
+    //
+
+    /**
+     * Returns true if backend is built in (false if backend is used as plugin)
+     * @param api automatically generated
+     * @return automatically generated
+     */
+    public static boolean isBackendBuiltIn(int api) {
+        return isBackendBuiltIn_0(api);
+    }
+
+
+    //
+    // C++:  string cv::videoio_registry::getCameraBackendPluginVersion(VideoCaptureAPIs api, int& version_ABI, int& version_API)
+    //
+
+    /**
+     * Returns description and ABI/API version of videoio plugin's camera interface
+     * @param api automatically generated
+     * @param version_ABI automatically generated
+     * @param version_API automatically generated
+     * @return automatically generated
+     */
+    public static String getCameraBackendPluginVersion(int api, int[] version_ABI, int[] version_API) {
+        double[] version_ABI_out = new double[1];
+        double[] version_API_out = new double[1];
+        String retVal = getCameraBackendPluginVersion_0(api, version_ABI_out, version_API_out);
+        if(version_ABI!=null) version_ABI[0] = (int)version_ABI_out[0];
+        if(version_API!=null) version_API[0] = (int)version_API_out[0];
+        return retVal;
+    }
+
+
+    //
+    // C++:  string cv::videoio_registry::getStreamBackendPluginVersion(VideoCaptureAPIs api, int& version_ABI, int& version_API)
+    //
+
+    /**
+     * Returns description and ABI/API version of videoio plugin's stream capture interface
+     * @param api automatically generated
+     * @param version_ABI automatically generated
+     * @param version_API automatically generated
+     * @return automatically generated
+     */
+    public static String getStreamBackendPluginVersion(int api, int[] version_ABI, int[] version_API) {
+        double[] version_ABI_out = new double[1];
+        double[] version_API_out = new double[1];
+        String retVal = getStreamBackendPluginVersion_0(api, version_ABI_out, version_API_out);
+        if(version_ABI!=null) version_ABI[0] = (int)version_ABI_out[0];
+        if(version_API!=null) version_API[0] = (int)version_API_out[0];
+        return retVal;
+    }
+
+
+    //
+    // C++:  string cv::videoio_registry::getWriterBackendPluginVersion(VideoCaptureAPIs api, int& version_ABI, int& version_API)
+    //
+
+    /**
+     * Returns description and ABI/API version of videoio plugin's writer interface
+     * @param api automatically generated
+     * @param version_ABI automatically generated
+     * @param version_API automatically generated
+     * @return automatically generated
+     */
+    public static String getWriterBackendPluginVersion(int api, int[] version_ABI, int[] version_API) {
+        double[] version_ABI_out = new double[1];
+        double[] version_API_out = new double[1];
+        String retVal = getWriterBackendPluginVersion_0(api, version_ABI_out, version_API_out);
+        if(version_ABI!=null) version_ABI[0] = (int)version_ABI_out[0];
+        if(version_API!=null) version_API[0] = (int)version_API_out[0];
+        return retVal;
+    }
+
+
 
 
     // C++:  String cv::videoio_registry::getBackendName(VideoCaptureAPIs api)
     private static native String getBackendName_0(int api);
+
+    // C++:  bool cv::videoio_registry::hasBackend(VideoCaptureAPIs api)
+    private static native boolean hasBackend_0(int api);
+
+    // C++:  bool cv::videoio_registry::isBackendBuiltIn(VideoCaptureAPIs api)
+    private static native boolean isBackendBuiltIn_0(int api);
+
+    // C++:  string cv::videoio_registry::getCameraBackendPluginVersion(VideoCaptureAPIs api, int& version_ABI, int& version_API)
+    private static native String getCameraBackendPluginVersion_0(int api, double[] version_ABI_out, double[] version_API_out);
+
+    // C++:  string cv::videoio_registry::getStreamBackendPluginVersion(VideoCaptureAPIs api, int& version_ABI, int& version_API)
+    private static native String getStreamBackendPluginVersion_0(int api, double[] version_ABI_out, double[] version_API_out);
+
+    // C++:  string cv::videoio_registry::getWriterBackendPluginVersion(VideoCaptureAPIs api, int& version_ABI, int& version_API)
+    private static native String getWriterBackendPluginVersion_0(int api, double[] version_ABI_out, double[] version_API_out);
 
 }

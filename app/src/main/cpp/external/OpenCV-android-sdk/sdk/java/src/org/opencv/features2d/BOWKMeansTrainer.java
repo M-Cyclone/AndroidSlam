@@ -70,20 +70,20 @@ public class BOWKMeansTrainer extends BOWTrainer {
 
 
     //
-    // C++:  Mat cv::BOWKMeansTrainer::cluster(Mat descriptors)
-    //
-
-    public Mat cluster(Mat descriptors) {
-        return new Mat(cluster_0(nativeObj, descriptors.nativeObj));
-    }
-
-
-    //
     // C++:  Mat cv::BOWKMeansTrainer::cluster()
     //
 
     public Mat cluster() {
-        return new Mat(cluster_1(nativeObj));
+        return new Mat(cluster_0(nativeObj));
+    }
+
+
+    //
+    // C++:  Mat cv::BOWKMeansTrainer::cluster(Mat descriptors)
+    //
+
+    public Mat cluster(Mat descriptors) {
+        return new Mat(cluster_1(nativeObj, descriptors.nativeObj));
     }
 
 
@@ -100,11 +100,11 @@ public class BOWKMeansTrainer extends BOWTrainer {
     private static native long BOWKMeansTrainer_2(int clusterCount, int termcrit_type, int termcrit_maxCount, double termcrit_epsilon);
     private static native long BOWKMeansTrainer_3(int clusterCount);
 
-    // C++:  Mat cv::BOWKMeansTrainer::cluster(Mat descriptors)
-    private static native long cluster_0(long nativeObj, long descriptors_nativeObj);
-
     // C++:  Mat cv::BOWKMeansTrainer::cluster()
-    private static native long cluster_1(long nativeObj);
+    private static native long cluster_0(long nativeObj);
+
+    // C++:  Mat cv::BOWKMeansTrainer::cluster(Mat descriptors)
+    private static native long cluster_1(long nativeObj, long descriptors_nativeObj);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

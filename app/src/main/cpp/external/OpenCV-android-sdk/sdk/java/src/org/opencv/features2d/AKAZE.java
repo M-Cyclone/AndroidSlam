@@ -30,30 +30,12 @@ public class AKAZE extends Feature2D {
     // internal usage only
     public static AKAZE __fromPtr__(long addr) { return new AKAZE(addr); }
 
-    // C++: enum DescriptorType
+    // C++: enum DescriptorType (cv.AKAZE.DescriptorType)
     public static final int
             DESCRIPTOR_KAZE_UPRIGHT = 2,
             DESCRIPTOR_KAZE = 3,
             DESCRIPTOR_MLDB_UPRIGHT = 4,
             DESCRIPTOR_MLDB = 5;
-
-
-    //
-    // C++:  AKAZE_DescriptorType cv::AKAZE::getDescriptorType()
-    //
-
-    public int getDescriptorType() {
-        return getDescriptorType_0(nativeObj);
-    }
-
-
-    //
-    // C++:  KAZE_DiffusivityType cv::AKAZE::getDiffusivity()
-    //
-
-    public int getDiffusivity() {
-        return getDiffusivity_0(nativeObj);
-    }
 
 
     //
@@ -178,65 +160,20 @@ public class AKAZE extends Feature2D {
 
 
     //
-    // C++:  String cv::AKAZE::getDefaultName()
+    // C++:  void cv::AKAZE::setDescriptorType(AKAZE_DescriptorType dtype)
     //
 
-    public String getDefaultName() {
-        return getDefaultName_0(nativeObj);
+    public void setDescriptorType(int dtype) {
+        setDescriptorType_0(nativeObj, dtype);
     }
 
 
     //
-    // C++:  double cv::AKAZE::getThreshold()
+    // C++:  AKAZE_DescriptorType cv::AKAZE::getDescriptorType()
     //
 
-    public double getThreshold() {
-        return getThreshold_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::AKAZE::getDescriptorChannels()
-    //
-
-    public int getDescriptorChannels() {
-        return getDescriptorChannels_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::AKAZE::getDescriptorSize()
-    //
-
-    public int getDescriptorSize() {
-        return getDescriptorSize_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::AKAZE::getNOctaveLayers()
-    //
-
-    public int getNOctaveLayers() {
-        return getNOctaveLayers_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::AKAZE::getNOctaves()
-    //
-
-    public int getNOctaves() {
-        return getNOctaves_0(nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::AKAZE::setDescriptorChannels(int dch)
-    //
-
-    public void setDescriptorChannels(int dch) {
-        setDescriptorChannels_0(nativeObj, dch);
+    public int getDescriptorType() {
+        return getDescriptorType_0(nativeObj);
     }
 
 
@@ -250,29 +187,47 @@ public class AKAZE extends Feature2D {
 
 
     //
-    // C++:  void cv::AKAZE::setDescriptorType(AKAZE_DescriptorType dtype)
+    // C++:  int cv::AKAZE::getDescriptorSize()
     //
 
-    public void setDescriptorType(int dtype) {
-        setDescriptorType_0(nativeObj, dtype);
+    public int getDescriptorSize() {
+        return getDescriptorSize_0(nativeObj);
     }
 
 
     //
-    // C++:  void cv::AKAZE::setDiffusivity(KAZE_DiffusivityType diff)
+    // C++:  void cv::AKAZE::setDescriptorChannels(int dch)
     //
 
-    public void setDiffusivity(int diff) {
-        setDiffusivity_0(nativeObj, diff);
+    public void setDescriptorChannels(int dch) {
+        setDescriptorChannels_0(nativeObj, dch);
     }
 
 
     //
-    // C++:  void cv::AKAZE::setNOctaveLayers(int octaveLayers)
+    // C++:  int cv::AKAZE::getDescriptorChannels()
     //
 
-    public void setNOctaveLayers(int octaveLayers) {
-        setNOctaveLayers_0(nativeObj, octaveLayers);
+    public int getDescriptorChannels() {
+        return getDescriptorChannels_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::AKAZE::setThreshold(double threshold)
+    //
+
+    public void setThreshold(double threshold) {
+        setThreshold_0(nativeObj, threshold);
+    }
+
+
+    //
+    // C++:  double cv::AKAZE::getThreshold()
+    //
+
+    public double getThreshold() {
+        return getThreshold_0(nativeObj);
     }
 
 
@@ -286,11 +241,56 @@ public class AKAZE extends Feature2D {
 
 
     //
-    // C++:  void cv::AKAZE::setThreshold(double threshold)
+    // C++:  int cv::AKAZE::getNOctaves()
     //
 
-    public void setThreshold(double threshold) {
-        setThreshold_0(nativeObj, threshold);
+    public int getNOctaves() {
+        return getNOctaves_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::AKAZE::setNOctaveLayers(int octaveLayers)
+    //
+
+    public void setNOctaveLayers(int octaveLayers) {
+        setNOctaveLayers_0(nativeObj, octaveLayers);
+    }
+
+
+    //
+    // C++:  int cv::AKAZE::getNOctaveLayers()
+    //
+
+    public int getNOctaveLayers() {
+        return getNOctaveLayers_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::AKAZE::setDiffusivity(KAZE_DiffusivityType diff)
+    //
+
+    public void setDiffusivity(int diff) {
+        setDiffusivity_0(nativeObj, diff);
+    }
+
+
+    //
+    // C++:  KAZE_DiffusivityType cv::AKAZE::getDiffusivity()
+    //
+
+    public int getDiffusivity() {
+        return getDiffusivity_0(nativeObj);
+    }
+
+
+    //
+    // C++:  String cv::AKAZE::getDefaultName()
+    //
+
+    public String getDefaultName() {
+        return getDefaultName_0(nativeObj);
     }
 
 
@@ -300,12 +300,6 @@ public class AKAZE extends Feature2D {
     }
 
 
-
-    // C++:  AKAZE_DescriptorType cv::AKAZE::getDescriptorType()
-    private static native int getDescriptorType_0(long nativeObj);
-
-    // C++:  KAZE_DiffusivityType cv::AKAZE::getDiffusivity()
-    private static native int getDiffusivity_0(long nativeObj);
 
     // C++: static Ptr_AKAZE cv::AKAZE::create(AKAZE_DescriptorType descriptor_type = AKAZE::DESCRIPTOR_MLDB, int descriptor_size = 0, int descriptor_channels = 3, float threshold = 0.001f, int nOctaves = 4, int nOctaveLayers = 4, KAZE_DiffusivityType diffusivity = KAZE::DIFF_PM_G2)
     private static native long create_0(int descriptor_type, int descriptor_size, int descriptor_channels, float threshold, int nOctaves, int nOctaveLayers, int diffusivity);
@@ -317,44 +311,50 @@ public class AKAZE extends Feature2D {
     private static native long create_6(int descriptor_type);
     private static native long create_7();
 
-    // C++:  String cv::AKAZE::getDefaultName()
-    private static native String getDefaultName_0(long nativeObj);
+    // C++:  void cv::AKAZE::setDescriptorType(AKAZE_DescriptorType dtype)
+    private static native void setDescriptorType_0(long nativeObj, int dtype);
 
-    // C++:  double cv::AKAZE::getThreshold()
-    private static native double getThreshold_0(long nativeObj);
-
-    // C++:  int cv::AKAZE::getDescriptorChannels()
-    private static native int getDescriptorChannels_0(long nativeObj);
-
-    // C++:  int cv::AKAZE::getDescriptorSize()
-    private static native int getDescriptorSize_0(long nativeObj);
-
-    // C++:  int cv::AKAZE::getNOctaveLayers()
-    private static native int getNOctaveLayers_0(long nativeObj);
-
-    // C++:  int cv::AKAZE::getNOctaves()
-    private static native int getNOctaves_0(long nativeObj);
-
-    // C++:  void cv::AKAZE::setDescriptorChannels(int dch)
-    private static native void setDescriptorChannels_0(long nativeObj, int dch);
+    // C++:  AKAZE_DescriptorType cv::AKAZE::getDescriptorType()
+    private static native int getDescriptorType_0(long nativeObj);
 
     // C++:  void cv::AKAZE::setDescriptorSize(int dsize)
     private static native void setDescriptorSize_0(long nativeObj, int dsize);
 
-    // C++:  void cv::AKAZE::setDescriptorType(AKAZE_DescriptorType dtype)
-    private static native void setDescriptorType_0(long nativeObj, int dtype);
+    // C++:  int cv::AKAZE::getDescriptorSize()
+    private static native int getDescriptorSize_0(long nativeObj);
 
-    // C++:  void cv::AKAZE::setDiffusivity(KAZE_DiffusivityType diff)
-    private static native void setDiffusivity_0(long nativeObj, int diff);
+    // C++:  void cv::AKAZE::setDescriptorChannels(int dch)
+    private static native void setDescriptorChannels_0(long nativeObj, int dch);
 
-    // C++:  void cv::AKAZE::setNOctaveLayers(int octaveLayers)
-    private static native void setNOctaveLayers_0(long nativeObj, int octaveLayers);
+    // C++:  int cv::AKAZE::getDescriptorChannels()
+    private static native int getDescriptorChannels_0(long nativeObj);
+
+    // C++:  void cv::AKAZE::setThreshold(double threshold)
+    private static native void setThreshold_0(long nativeObj, double threshold);
+
+    // C++:  double cv::AKAZE::getThreshold()
+    private static native double getThreshold_0(long nativeObj);
 
     // C++:  void cv::AKAZE::setNOctaves(int octaves)
     private static native void setNOctaves_0(long nativeObj, int octaves);
 
-    // C++:  void cv::AKAZE::setThreshold(double threshold)
-    private static native void setThreshold_0(long nativeObj, double threshold);
+    // C++:  int cv::AKAZE::getNOctaves()
+    private static native int getNOctaves_0(long nativeObj);
+
+    // C++:  void cv::AKAZE::setNOctaveLayers(int octaveLayers)
+    private static native void setNOctaveLayers_0(long nativeObj, int octaveLayers);
+
+    // C++:  int cv::AKAZE::getNOctaveLayers()
+    private static native int getNOctaveLayers_0(long nativeObj);
+
+    // C++:  void cv::AKAZE::setDiffusivity(KAZE_DiffusivityType diff)
+    private static native void setDiffusivity_0(long nativeObj, int diff);
+
+    // C++:  KAZE_DiffusivityType cv::AKAZE::getDiffusivity()
+    private static native int getDiffusivity_0(long nativeObj);
+
+    // C++:  String cv::AKAZE::getDefaultName()
+    private static native String getDefaultName_0(long nativeObj);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

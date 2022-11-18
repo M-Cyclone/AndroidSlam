@@ -24,21 +24,6 @@ public class Layer extends Algorithm {
     public static Layer __fromPtr__(long addr) { return new Layer(addr); }
 
     //
-    // C++:  int cv::dnn::Layer::outputNameToIndex(String outputName)
-    //
-
-    /**
-     * Returns index of output blob in output array.
-     * SEE: inputNameToIndex()
-     * @param outputName automatically generated
-     * @return automatically generated
-     */
-    public int outputNameToIndex(String outputName) {
-        return outputNameToIndex_0(nativeObj, outputName);
-    }
-
-
-    //
     // C++:  void cv::dnn::Layer::finalize(vector_Mat inputs, vector_Mat& outputs)
     //
 
@@ -80,6 +65,21 @@ public class Layer extends Algorithm {
         outputs_mat.release();
         Converters.Mat_to_vector_Mat(internals_mat, internals);
         internals_mat.release();
+    }
+
+
+    //
+    // C++:  int cv::dnn::Layer::outputNameToIndex(String outputName)
+    //
+
+    /**
+     * Returns index of output blob in output array.
+     * SEE: inputNameToIndex()
+     * @param outputName automatically generated
+     * @return automatically generated
+     */
+    public int outputNameToIndex(String outputName) {
+        return outputNameToIndex_0(nativeObj, outputName);
     }
 
 
@@ -139,14 +139,14 @@ public class Layer extends Algorithm {
 
 
 
-    // C++:  int cv::dnn::Layer::outputNameToIndex(String outputName)
-    private static native int outputNameToIndex_0(long nativeObj, String outputName);
-
     // C++:  void cv::dnn::Layer::finalize(vector_Mat inputs, vector_Mat& outputs)
     private static native void finalize_0(long nativeObj, long inputs_mat_nativeObj, long outputs_mat_nativeObj);
 
     // C++:  void cv::dnn::Layer::run(vector_Mat inputs, vector_Mat& outputs, vector_Mat& internals)
     private static native void run_0(long nativeObj, long inputs_mat_nativeObj, long outputs_mat_nativeObj, long internals_mat_nativeObj);
+
+    // C++:  int cv::dnn::Layer::outputNameToIndex(String outputName)
+    private static native int outputNameToIndex_0(long nativeObj, String outputName);
 
     // C++: vector_Mat Layer::blobs
     private static native long get_blobs_0(long nativeObj);

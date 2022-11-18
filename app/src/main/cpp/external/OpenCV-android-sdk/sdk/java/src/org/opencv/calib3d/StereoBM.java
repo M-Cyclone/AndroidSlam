@@ -26,6 +26,150 @@ public class StereoBM extends StereoMatcher {
 
 
     //
+    // C++:  int cv::StereoBM::getPreFilterType()
+    //
+
+    public int getPreFilterType() {
+        return getPreFilterType_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoBM::setPreFilterType(int preFilterType)
+    //
+
+    public void setPreFilterType(int preFilterType) {
+        setPreFilterType_0(nativeObj, preFilterType);
+    }
+
+
+    //
+    // C++:  int cv::StereoBM::getPreFilterSize()
+    //
+
+    public int getPreFilterSize() {
+        return getPreFilterSize_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoBM::setPreFilterSize(int preFilterSize)
+    //
+
+    public void setPreFilterSize(int preFilterSize) {
+        setPreFilterSize_0(nativeObj, preFilterSize);
+    }
+
+
+    //
+    // C++:  int cv::StereoBM::getPreFilterCap()
+    //
+
+    public int getPreFilterCap() {
+        return getPreFilterCap_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoBM::setPreFilterCap(int preFilterCap)
+    //
+
+    public void setPreFilterCap(int preFilterCap) {
+        setPreFilterCap_0(nativeObj, preFilterCap);
+    }
+
+
+    //
+    // C++:  int cv::StereoBM::getTextureThreshold()
+    //
+
+    public int getTextureThreshold() {
+        return getTextureThreshold_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoBM::setTextureThreshold(int textureThreshold)
+    //
+
+    public void setTextureThreshold(int textureThreshold) {
+        setTextureThreshold_0(nativeObj, textureThreshold);
+    }
+
+
+    //
+    // C++:  int cv::StereoBM::getUniquenessRatio()
+    //
+
+    public int getUniquenessRatio() {
+        return getUniquenessRatio_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoBM::setUniquenessRatio(int uniquenessRatio)
+    //
+
+    public void setUniquenessRatio(int uniquenessRatio) {
+        setUniquenessRatio_0(nativeObj, uniquenessRatio);
+    }
+
+
+    //
+    // C++:  int cv::StereoBM::getSmallerBlockSize()
+    //
+
+    public int getSmallerBlockSize() {
+        return getSmallerBlockSize_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoBM::setSmallerBlockSize(int blockSize)
+    //
+
+    public void setSmallerBlockSize(int blockSize) {
+        setSmallerBlockSize_0(nativeObj, blockSize);
+    }
+
+
+    //
+    // C++:  Rect cv::StereoBM::getROI1()
+    //
+
+    public Rect getROI1() {
+        return new Rect(getROI1_0(nativeObj));
+    }
+
+
+    //
+    // C++:  void cv::StereoBM::setROI1(Rect roi1)
+    //
+
+    public void setROI1(Rect roi1) {
+        setROI1_0(nativeObj, roi1.x, roi1.y, roi1.width, roi1.height);
+    }
+
+
+    //
+    // C++:  Rect cv::StereoBM::getROI2()
+    //
+
+    public Rect getROI2() {
+        return new Rect(getROI2_0(nativeObj));
+    }
+
+
+    //
+    // C++:  void cv::StereoBM::setROI2(Rect roi2)
+    //
+
+    public void setROI2(Rect roi2) {
+        setROI2_0(nativeObj, roi2.x, roi2.y, roi2.width, roi2.height);
+    }
+
+
+    //
     // C++: static Ptr_StereoBM cv::StereoBM::create(int numDisparities = 0, int blockSize = 21)
     //
 
@@ -84,150 +228,6 @@ public class StereoBM extends StereoMatcher {
     }
 
 
-    //
-    // C++:  Rect cv::StereoBM::getROI1()
-    //
-
-    public Rect getROI1() {
-        return new Rect(getROI1_0(nativeObj));
-    }
-
-
-    //
-    // C++:  Rect cv::StereoBM::getROI2()
-    //
-
-    public Rect getROI2() {
-        return new Rect(getROI2_0(nativeObj));
-    }
-
-
-    //
-    // C++:  int cv::StereoBM::getPreFilterCap()
-    //
-
-    public int getPreFilterCap() {
-        return getPreFilterCap_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::StereoBM::getPreFilterSize()
-    //
-
-    public int getPreFilterSize() {
-        return getPreFilterSize_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::StereoBM::getPreFilterType()
-    //
-
-    public int getPreFilterType() {
-        return getPreFilterType_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::StereoBM::getSmallerBlockSize()
-    //
-
-    public int getSmallerBlockSize() {
-        return getSmallerBlockSize_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::StereoBM::getTextureThreshold()
-    //
-
-    public int getTextureThreshold() {
-        return getTextureThreshold_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::StereoBM::getUniquenessRatio()
-    //
-
-    public int getUniquenessRatio() {
-        return getUniquenessRatio_0(nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::StereoBM::setPreFilterCap(int preFilterCap)
-    //
-
-    public void setPreFilterCap(int preFilterCap) {
-        setPreFilterCap_0(nativeObj, preFilterCap);
-    }
-
-
-    //
-    // C++:  void cv::StereoBM::setPreFilterSize(int preFilterSize)
-    //
-
-    public void setPreFilterSize(int preFilterSize) {
-        setPreFilterSize_0(nativeObj, preFilterSize);
-    }
-
-
-    //
-    // C++:  void cv::StereoBM::setPreFilterType(int preFilterType)
-    //
-
-    public void setPreFilterType(int preFilterType) {
-        setPreFilterType_0(nativeObj, preFilterType);
-    }
-
-
-    //
-    // C++:  void cv::StereoBM::setROI1(Rect roi1)
-    //
-
-    public void setROI1(Rect roi1) {
-        setROI1_0(nativeObj, roi1.x, roi1.y, roi1.width, roi1.height);
-    }
-
-
-    //
-    // C++:  void cv::StereoBM::setROI2(Rect roi2)
-    //
-
-    public void setROI2(Rect roi2) {
-        setROI2_0(nativeObj, roi2.x, roi2.y, roi2.width, roi2.height);
-    }
-
-
-    //
-    // C++:  void cv::StereoBM::setSmallerBlockSize(int blockSize)
-    //
-
-    public void setSmallerBlockSize(int blockSize) {
-        setSmallerBlockSize_0(nativeObj, blockSize);
-    }
-
-
-    //
-    // C++:  void cv::StereoBM::setTextureThreshold(int textureThreshold)
-    //
-
-    public void setTextureThreshold(int textureThreshold) {
-        setTextureThreshold_0(nativeObj, textureThreshold);
-    }
-
-
-    //
-    // C++:  void cv::StereoBM::setUniquenessRatio(int uniquenessRatio)
-    //
-
-    public void setUniquenessRatio(int uniquenessRatio) {
-        setUniquenessRatio_0(nativeObj, uniquenessRatio);
-    }
-
-
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
@@ -235,58 +235,58 @@ public class StereoBM extends StereoMatcher {
 
 
 
-    // C++: static Ptr_StereoBM cv::StereoBM::create(int numDisparities = 0, int blockSize = 21)
-    private static native long create_0(int numDisparities, int blockSize);
-    private static native long create_1(int numDisparities);
-    private static native long create_2();
-
-    // C++:  Rect cv::StereoBM::getROI1()
-    private static native double[] getROI1_0(long nativeObj);
-
-    // C++:  Rect cv::StereoBM::getROI2()
-    private static native double[] getROI2_0(long nativeObj);
-
-    // C++:  int cv::StereoBM::getPreFilterCap()
-    private static native int getPreFilterCap_0(long nativeObj);
-
-    // C++:  int cv::StereoBM::getPreFilterSize()
-    private static native int getPreFilterSize_0(long nativeObj);
-
     // C++:  int cv::StereoBM::getPreFilterType()
     private static native int getPreFilterType_0(long nativeObj);
-
-    // C++:  int cv::StereoBM::getSmallerBlockSize()
-    private static native int getSmallerBlockSize_0(long nativeObj);
-
-    // C++:  int cv::StereoBM::getTextureThreshold()
-    private static native int getTextureThreshold_0(long nativeObj);
-
-    // C++:  int cv::StereoBM::getUniquenessRatio()
-    private static native int getUniquenessRatio_0(long nativeObj);
-
-    // C++:  void cv::StereoBM::setPreFilterCap(int preFilterCap)
-    private static native void setPreFilterCap_0(long nativeObj, int preFilterCap);
-
-    // C++:  void cv::StereoBM::setPreFilterSize(int preFilterSize)
-    private static native void setPreFilterSize_0(long nativeObj, int preFilterSize);
 
     // C++:  void cv::StereoBM::setPreFilterType(int preFilterType)
     private static native void setPreFilterType_0(long nativeObj, int preFilterType);
 
-    // C++:  void cv::StereoBM::setROI1(Rect roi1)
-    private static native void setROI1_0(long nativeObj, int roi1_x, int roi1_y, int roi1_width, int roi1_height);
+    // C++:  int cv::StereoBM::getPreFilterSize()
+    private static native int getPreFilterSize_0(long nativeObj);
 
-    // C++:  void cv::StereoBM::setROI2(Rect roi2)
-    private static native void setROI2_0(long nativeObj, int roi2_x, int roi2_y, int roi2_width, int roi2_height);
+    // C++:  void cv::StereoBM::setPreFilterSize(int preFilterSize)
+    private static native void setPreFilterSize_0(long nativeObj, int preFilterSize);
 
-    // C++:  void cv::StereoBM::setSmallerBlockSize(int blockSize)
-    private static native void setSmallerBlockSize_0(long nativeObj, int blockSize);
+    // C++:  int cv::StereoBM::getPreFilterCap()
+    private static native int getPreFilterCap_0(long nativeObj);
+
+    // C++:  void cv::StereoBM::setPreFilterCap(int preFilterCap)
+    private static native void setPreFilterCap_0(long nativeObj, int preFilterCap);
+
+    // C++:  int cv::StereoBM::getTextureThreshold()
+    private static native int getTextureThreshold_0(long nativeObj);
 
     // C++:  void cv::StereoBM::setTextureThreshold(int textureThreshold)
     private static native void setTextureThreshold_0(long nativeObj, int textureThreshold);
 
+    // C++:  int cv::StereoBM::getUniquenessRatio()
+    private static native int getUniquenessRatio_0(long nativeObj);
+
     // C++:  void cv::StereoBM::setUniquenessRatio(int uniquenessRatio)
     private static native void setUniquenessRatio_0(long nativeObj, int uniquenessRatio);
+
+    // C++:  int cv::StereoBM::getSmallerBlockSize()
+    private static native int getSmallerBlockSize_0(long nativeObj);
+
+    // C++:  void cv::StereoBM::setSmallerBlockSize(int blockSize)
+    private static native void setSmallerBlockSize_0(long nativeObj, int blockSize);
+
+    // C++:  Rect cv::StereoBM::getROI1()
+    private static native double[] getROI1_0(long nativeObj);
+
+    // C++:  void cv::StereoBM::setROI1(Rect roi1)
+    private static native void setROI1_0(long nativeObj, int roi1_x, int roi1_y, int roi1_width, int roi1_height);
+
+    // C++:  Rect cv::StereoBM::getROI2()
+    private static native double[] getROI2_0(long nativeObj);
+
+    // C++:  void cv::StereoBM::setROI2(Rect roi2)
+    private static native void setROI2_0(long nativeObj, int roi2_x, int roi2_y, int roi2_width, int roi2_height);
+
+    // C++: static Ptr_StereoBM cv::StereoBM::create(int numDisparities = 0, int blockSize = 21)
+    private static native long create_0(int numDisparities, int blockSize);
+    private static native long create_1(int numDisparities);
+    private static native long create_2();
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

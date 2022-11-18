@@ -56,6 +56,96 @@ public class StereoSGBM extends StereoMatcher {
 
 
     //
+    // C++:  int cv::StereoSGBM::getPreFilterCap()
+    //
+
+    public int getPreFilterCap() {
+        return getPreFilterCap_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoSGBM::setPreFilterCap(int preFilterCap)
+    //
+
+    public void setPreFilterCap(int preFilterCap) {
+        setPreFilterCap_0(nativeObj, preFilterCap);
+    }
+
+
+    //
+    // C++:  int cv::StereoSGBM::getUniquenessRatio()
+    //
+
+    public int getUniquenessRatio() {
+        return getUniquenessRatio_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoSGBM::setUniquenessRatio(int uniquenessRatio)
+    //
+
+    public void setUniquenessRatio(int uniquenessRatio) {
+        setUniquenessRatio_0(nativeObj, uniquenessRatio);
+    }
+
+
+    //
+    // C++:  int cv::StereoSGBM::getP1()
+    //
+
+    public int getP1() {
+        return getP1_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoSGBM::setP1(int P1)
+    //
+
+    public void setP1(int P1) {
+        setP1_0(nativeObj, P1);
+    }
+
+
+    //
+    // C++:  int cv::StereoSGBM::getP2()
+    //
+
+    public int getP2() {
+        return getP2_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoSGBM::setP2(int P2)
+    //
+
+    public void setP2(int P2) {
+        setP2_0(nativeObj, P2);
+    }
+
+
+    //
+    // C++:  int cv::StereoSGBM::getMode()
+    //
+
+    public int getMode() {
+        return getMode_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::StereoSGBM::setMode(int mode)
+    //
+
+    public void setMode(int mode) {
+        setMode_0(nativeObj, mode);
+    }
+
+
+    //
     // C++: static Ptr_StereoSGBM cv::StereoSGBM::create(int minDisparity = 0, int numDisparities = 16, int blockSize = 3, int P1 = 0, int P2 = 0, int disp12MaxDiff = 0, int preFilterCap = 0, int uniquenessRatio = 0, int speckleWindowSize = 0, int speckleRange = 0, int mode = StereoSGBM::MODE_SGBM)
     //
 
@@ -73,8 +163,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     @param disp12MaxDiff Maximum allowed difference (in integer pixel units) in the left-right
      *     disparity check. Set it to a non-positive value to disable the check.
      *     @param preFilterCap Truncation value for the prefiltered image pixels. The algorithm first
@@ -116,8 +206,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     @param disp12MaxDiff Maximum allowed difference (in integer pixel units) in the left-right
      *     disparity check. Set it to a non-positive value to disable the check.
      *     @param preFilterCap Truncation value for the prefiltered image pixels. The algorithm first
@@ -158,8 +248,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     @param disp12MaxDiff Maximum allowed difference (in integer pixel units) in the left-right
      *     disparity check. Set it to a non-positive value to disable the check.
      *     @param preFilterCap Truncation value for the prefiltered image pixels. The algorithm first
@@ -199,8 +289,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     @param disp12MaxDiff Maximum allowed difference (in integer pixel units) in the left-right
      *     disparity check. Set it to a non-positive value to disable the check.
      *     @param preFilterCap Truncation value for the prefiltered image pixels. The algorithm first
@@ -239,8 +329,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     @param disp12MaxDiff Maximum allowed difference (in integer pixel units) in the left-right
      *     disparity check. Set it to a non-positive value to disable the check.
      *     @param preFilterCap Truncation value for the prefiltered image pixels. The algorithm first
@@ -278,8 +368,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     @param disp12MaxDiff Maximum allowed difference (in integer pixel units) in the left-right
      *     disparity check. Set it to a non-positive value to disable the check.
      *     computes x-derivative at each pixel and clips its value by [-preFilterCap, preFilterCap] interval.
@@ -316,8 +406,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     disparity check. Set it to a non-positive value to disable the check.
      *     computes x-derivative at each pixel and clips its value by [-preFilterCap, preFilterCap] interval.
      *     The result values are passed to the Birchfield-Tomasi pixel cost function.
@@ -352,8 +442,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     disparity check. Set it to a non-positive value to disable the check.
      *     computes x-derivative at each pixel and clips its value by [-preFilterCap, preFilterCap] interval.
      *     The result values are passed to the Birchfield-Tomasi pixel cost function.
@@ -387,8 +477,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     disparity check. Set it to a non-positive value to disable the check.
      *     computes x-derivative at each pixel and clips its value by [-preFilterCap, preFilterCap] interval.
      *     The result values are passed to the Birchfield-Tomasi pixel cost function.
@@ -421,8 +511,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     disparity check. Set it to a non-positive value to disable the check.
      *     computes x-derivative at each pixel and clips its value by [-preFilterCap, preFilterCap] interval.
      *     The result values are passed to the Birchfield-Tomasi pixel cost function.
@@ -454,8 +544,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     disparity check. Set it to a non-positive value to disable the check.
      *     computes x-derivative at each pixel and clips its value by [-preFilterCap, preFilterCap] interval.
      *     The result values are passed to the Birchfield-Tomasi pixel cost function.
@@ -486,8 +576,8 @@ public class StereoSGBM extends StereoMatcher {
      *     the smoother the disparity is. P1 is the penalty on the disparity change by plus or minus 1
      *     between neighbor pixels. P2 is the penalty on the disparity change by more than 1 between neighbor
      *     pixels. The algorithm requires P2 &gt; P1 . See stereo_match.cpp sample where some reasonably good
-     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*SADWindowSize\*SADWindowSize and
-     *     32\*number_of_image_channels\*SADWindowSize\*SADWindowSize , respectively).
+     *     P1 and P2 values are shown (like 8\*number_of_image_channels\*blockSize\*blockSize and
+     *     32\*number_of_image_channels\*blockSize\*blockSize , respectively).
      *     disparity check. Set it to a non-positive value to disable the check.
      *     computes x-derivative at each pixel and clips its value by [-preFilterCap, preFilterCap] interval.
      *     The result values are passed to the Birchfield-Tomasi pixel cost function.
@@ -510,102 +600,42 @@ public class StereoSGBM extends StereoMatcher {
     }
 
 
-    //
-    // C++:  int cv::StereoSGBM::getMode()
-    //
-
-    public int getMode() {
-        return getMode_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::StereoSGBM::getP1()
-    //
-
-    public int getP1() {
-        return getP1_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::StereoSGBM::getP2()
-    //
-
-    public int getP2() {
-        return getP2_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::StereoSGBM::getPreFilterCap()
-    //
-
-    public int getPreFilterCap() {
-        return getPreFilterCap_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int cv::StereoSGBM::getUniquenessRatio()
-    //
-
-    public int getUniquenessRatio() {
-        return getUniquenessRatio_0(nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::StereoSGBM::setMode(int mode)
-    //
-
-    public void setMode(int mode) {
-        setMode_0(nativeObj, mode);
-    }
-
-
-    //
-    // C++:  void cv::StereoSGBM::setP1(int P1)
-    //
-
-    public void setP1(int P1) {
-        setP1_0(nativeObj, P1);
-    }
-
-
-    //
-    // C++:  void cv::StereoSGBM::setP2(int P2)
-    //
-
-    public void setP2(int P2) {
-        setP2_0(nativeObj, P2);
-    }
-
-
-    //
-    // C++:  void cv::StereoSGBM::setPreFilterCap(int preFilterCap)
-    //
-
-    public void setPreFilterCap(int preFilterCap) {
-        setPreFilterCap_0(nativeObj, preFilterCap);
-    }
-
-
-    //
-    // C++:  void cv::StereoSGBM::setUniquenessRatio(int uniquenessRatio)
-    //
-
-    public void setUniquenessRatio(int uniquenessRatio) {
-        setUniquenessRatio_0(nativeObj, uniquenessRatio);
-    }
-
-
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
 
 
+
+    // C++:  int cv::StereoSGBM::getPreFilterCap()
+    private static native int getPreFilterCap_0(long nativeObj);
+
+    // C++:  void cv::StereoSGBM::setPreFilterCap(int preFilterCap)
+    private static native void setPreFilterCap_0(long nativeObj, int preFilterCap);
+
+    // C++:  int cv::StereoSGBM::getUniquenessRatio()
+    private static native int getUniquenessRatio_0(long nativeObj);
+
+    // C++:  void cv::StereoSGBM::setUniquenessRatio(int uniquenessRatio)
+    private static native void setUniquenessRatio_0(long nativeObj, int uniquenessRatio);
+
+    // C++:  int cv::StereoSGBM::getP1()
+    private static native int getP1_0(long nativeObj);
+
+    // C++:  void cv::StereoSGBM::setP1(int P1)
+    private static native void setP1_0(long nativeObj, int P1);
+
+    // C++:  int cv::StereoSGBM::getP2()
+    private static native int getP2_0(long nativeObj);
+
+    // C++:  void cv::StereoSGBM::setP2(int P2)
+    private static native void setP2_0(long nativeObj, int P2);
+
+    // C++:  int cv::StereoSGBM::getMode()
+    private static native int getMode_0(long nativeObj);
+
+    // C++:  void cv::StereoSGBM::setMode(int mode)
+    private static native void setMode_0(long nativeObj, int mode);
 
     // C++: static Ptr_StereoSGBM cv::StereoSGBM::create(int minDisparity = 0, int numDisparities = 16, int blockSize = 3, int P1 = 0, int P2 = 0, int disp12MaxDiff = 0, int preFilterCap = 0, int uniquenessRatio = 0, int speckleWindowSize = 0, int speckleRange = 0, int mode = StereoSGBM::MODE_SGBM)
     private static native long create_0(int minDisparity, int numDisparities, int blockSize, int P1, int P2, int disp12MaxDiff, int preFilterCap, int uniquenessRatio, int speckleWindowSize, int speckleRange, int mode);
@@ -620,36 +650,6 @@ public class StereoSGBM extends StereoMatcher {
     private static native long create_9(int minDisparity, int numDisparities);
     private static native long create_10(int minDisparity);
     private static native long create_11();
-
-    // C++:  int cv::StereoSGBM::getMode()
-    private static native int getMode_0(long nativeObj);
-
-    // C++:  int cv::StereoSGBM::getP1()
-    private static native int getP1_0(long nativeObj);
-
-    // C++:  int cv::StereoSGBM::getP2()
-    private static native int getP2_0(long nativeObj);
-
-    // C++:  int cv::StereoSGBM::getPreFilterCap()
-    private static native int getPreFilterCap_0(long nativeObj);
-
-    // C++:  int cv::StereoSGBM::getUniquenessRatio()
-    private static native int getUniquenessRatio_0(long nativeObj);
-
-    // C++:  void cv::StereoSGBM::setMode(int mode)
-    private static native void setMode_0(long nativeObj, int mode);
-
-    // C++:  void cv::StereoSGBM::setP1(int P1)
-    private static native void setP1_0(long nativeObj, int P1);
-
-    // C++:  void cv::StereoSGBM::setP2(int P2)
-    private static native void setP2_0(long nativeObj, int P2);
-
-    // C++:  void cv::StereoSGBM::setPreFilterCap(int preFilterCap)
-    private static native void setPreFilterCap_0(long nativeObj, int preFilterCap);
-
-    // C++:  void cv::StereoSGBM::setUniquenessRatio(int uniquenessRatio)
-    private static native void setUniquenessRatio_0(long nativeObj, int uniquenessRatio);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

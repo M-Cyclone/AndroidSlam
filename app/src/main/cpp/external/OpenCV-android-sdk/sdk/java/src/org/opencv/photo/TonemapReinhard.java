@@ -22,38 +22,11 @@ public class TonemapReinhard extends Tonemap {
     public static TonemapReinhard __fromPtr__(long addr) { return new TonemapReinhard(addr); }
 
     //
-    // C++:  float cv::TonemapReinhard::getColorAdaptation()
-    //
-
-    public float getColorAdaptation() {
-        return getColorAdaptation_0(nativeObj);
-    }
-
-
-    //
     // C++:  float cv::TonemapReinhard::getIntensity()
     //
 
     public float getIntensity() {
         return getIntensity_0(nativeObj);
-    }
-
-
-    //
-    // C++:  float cv::TonemapReinhard::getLightAdaptation()
-    //
-
-    public float getLightAdaptation() {
-        return getLightAdaptation_0(nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::TonemapReinhard::setColorAdaptation(float color_adapt)
-    //
-
-    public void setColorAdaptation(float color_adapt) {
-        setColorAdaptation_0(nativeObj, color_adapt);
     }
 
 
@@ -67,11 +40,38 @@ public class TonemapReinhard extends Tonemap {
 
 
     //
+    // C++:  float cv::TonemapReinhard::getLightAdaptation()
+    //
+
+    public float getLightAdaptation() {
+        return getLightAdaptation_0(nativeObj);
+    }
+
+
+    //
     // C++:  void cv::TonemapReinhard::setLightAdaptation(float light_adapt)
     //
 
     public void setLightAdaptation(float light_adapt) {
         setLightAdaptation_0(nativeObj, light_adapt);
+    }
+
+
+    //
+    // C++:  float cv::TonemapReinhard::getColorAdaptation()
+    //
+
+    public float getColorAdaptation() {
+        return getColorAdaptation_0(nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::TonemapReinhard::setColorAdaptation(float color_adapt)
+    //
+
+    public void setColorAdaptation(float color_adapt) {
+        setColorAdaptation_0(nativeObj, color_adapt);
     }
 
 
@@ -82,23 +82,23 @@ public class TonemapReinhard extends Tonemap {
 
 
 
-    // C++:  float cv::TonemapReinhard::getColorAdaptation()
-    private static native float getColorAdaptation_0(long nativeObj);
-
     // C++:  float cv::TonemapReinhard::getIntensity()
     private static native float getIntensity_0(long nativeObj);
-
-    // C++:  float cv::TonemapReinhard::getLightAdaptation()
-    private static native float getLightAdaptation_0(long nativeObj);
-
-    // C++:  void cv::TonemapReinhard::setColorAdaptation(float color_adapt)
-    private static native void setColorAdaptation_0(long nativeObj, float color_adapt);
 
     // C++:  void cv::TonemapReinhard::setIntensity(float intensity)
     private static native void setIntensity_0(long nativeObj, float intensity);
 
+    // C++:  float cv::TonemapReinhard::getLightAdaptation()
+    private static native float getLightAdaptation_0(long nativeObj);
+
     // C++:  void cv::TonemapReinhard::setLightAdaptation(float light_adapt)
     private static native void setLightAdaptation_0(long nativeObj, float light_adapt);
+
+    // C++:  float cv::TonemapReinhard::getColorAdaptation()
+    private static native float getColorAdaptation_0(long nativeObj);
+
+    // C++:  void cv::TonemapReinhard::setColorAdaptation(float color_adapt)
+    private static native void setColorAdaptation_0(long nativeObj, float color_adapt);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

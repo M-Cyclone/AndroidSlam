@@ -2,6 +2,7 @@
 #include <string>
 #include <thread>
 #include <cassert>
+#include <iostream>
 
 #include "utils/Log.h"
 
@@ -104,11 +105,19 @@ namespace android_slam
             m_camera_device_state_callbacks.context = this;
             m_camera_device_state_callbacks.onDisconnected = [](void* context, ACameraDevice* device)
             {
-                DEBUG_INFO("[Android Slam Camera Info] Camera(ID: %s) is disconnected.", ACameraDevice_getId(device));
+                std::cout
+                    << "[Android Slam Camera Info] Camera(ID: "
+                    << ACameraDevice_getId(device)
+                    << ") is disconnected."<< std::endl;
             };
             m_camera_device_state_callbacks.onError = [](void* context, ACameraDevice* device, int error)
             {
-                DEBUG_INFO("[Android Slam Camera Info] Camera(ID: %s)\nError Code: %d", ACameraDevice_getId(device), error);
+                std::cout
+                    << "[Android Slam Camera Info] Camera(ID: "
+                    << ACameraDevice_getId(device)
+                    << ")\nError Code: "
+                    << error
+                    << std::endl;
             };
 
             decltype(m_camera_device.get()) ptr;
@@ -167,15 +176,27 @@ namespace android_slam
             m_capture_session_state_callbacks.context = this;
             m_capture_session_state_callbacks.onClosed = [](void* context, ACameraCaptureSession* session)
             {
-                DEBUG_INFO("[Android Slam Camera Info] Session(ptr == %p) is closed.", session);
+                std::cout
+                    << "[Android Slam Camera Info] Session(ptr == "
+                    << session
+                    << ") is closed."
+                    << std::endl;
             };
             m_capture_session_state_callbacks.onReady = [](void* context, ACameraCaptureSession* session)
             {
-                DEBUG_INFO("[Android Slam Camera Info] Session(ptr == %p) is ready.", session);
+                std::cout
+                    << "[Android Slam Camera Info] Session(ptr == "
+                    << session
+                    << ") is ready."
+                    << std::endl;
             };
             m_capture_session_state_callbacks.onActive = [](void* context, ACameraCaptureSession* session)
             {
-                DEBUG_INFO("[Android Slam Camera Info] Session(ptr == %p) is activated.", session);
+                std::cout
+                    << "[Android Slam Camera Info] Session(ptr == "
+                    << session
+                    << ") is activated."
+                    << std::endl;
             };
 
             decltype(m_capture_session.get()) ptr;
@@ -238,14 +259,14 @@ namespace android_slam
         }
         assert(getLatestImage());
 
-        DEBUG_INFO("[Android Slam Sensor Info] Camera Start Capturing.");
+        std::cout << "[Android Slam Sensor Info] Camera Start Capturing." << std::endl;
     }
 
     void SensorCamera::stopCapture()
     {
         ACameraCaptureSession_stopRepeating(m_capture_session.get());
 
-        DEBUG_INFO("[Android Slam Sensor Info] Camera Stop Capturing.");
+        std::cout << "[Android Slam Sensor Info] Camera Stop Capturing." << std::endl;
     }
 
     AImage* SensorCamera::getLatestImage() const

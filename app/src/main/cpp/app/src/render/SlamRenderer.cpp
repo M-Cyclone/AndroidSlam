@@ -40,7 +40,7 @@ namespace android_slam
 
     void SlamRenderer::setData(const TrackingResult& tracking_result)
     {
-        const auto& [last_pose, trajectory, map_points, _0, _1] = tracking_result;
+        const auto& [last_pose, trajectory, map_points, _] = tracking_result;
 
         m_view = glm::mat4( last_pose[+0], last_pose[+1], -last_pose[+2], last_pose[+3]
                           , last_pose[+4], last_pose[+5], -last_pose[+6], last_pose[+7]

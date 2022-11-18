@@ -20,7 +20,7 @@ namespace android_slam
     , m_last_time(std::chrono::steady_clock::now())
     {
         ORB_SLAM3::Settings::SettingDesc desc{};
-        desc.sensor = ORB_SLAM3::System::eSensor::MONOCULAR;
+        desc.sensor = ORB_SLAM3::System::eSensor::IMU_MONOCULAR;
         desc.cameraInfo.cameraType = ORB_SLAM3::Settings::CameraType::PinHole;
         desc.cameraInfo.fx = 458.654f;
         desc.cameraInfo.fy = 457.296f;
@@ -41,7 +41,11 @@ namespace android_slam
         desc.imuInfo.gyroWalk = 1.9393e-05f;
         desc.imuInfo.accWalk = 3.0000e-03f;
         desc.imuInfo.frequency = 200.0f;
-        desc.imuInfo.cvTbc = static_cast<cv::Mat>(cv::Mat_<float>(4, 4) << +0.0148655429818f, -0.99988092969800f, +0.00414029679422f, -0.02164014549750f, +0.9995572490080f, +0.01496721332470f, +0.02571552994800f, -0.06467698676800f, -0.0257744366974f, +0.00375618835797f, +0.99966072717800f, +0.00981073058949f, 0.0f, 0.0f, 0.0f, 1.0f
+        desc.imuInfo.cvTbc = static_cast<cv::Mat>(cv::Mat_<float>(4, 4) <<
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
         );
         desc.imuInfo.bInsertKFsWhenLost = true;
         desc.orbInfo.nFeatures = 1000;
@@ -94,22 +98,19 @@ namespace android_slam
         memcpy(cv_image.data, image.data.data(), sizeof(uint8_t) * image.data.size());
 
 
-
         // Convert imu data.
-        //std::vector<ORB_SLAM3::IMU::Point> orb_imus;
-        //orb_imus.reserve(imus.size());
-        //for(auto [ax, ay, az, wx, wy, wz, ts] : imus)
-        //{
-        //    orb_imus.emplace_back(-ax, ay, az, -wx, wy, wz, (double)(ts - m_begin_time_stamp) * k_nano_sec_to_sec_radio);
-        //}
+        std::vector<ORB_SLAM3::IMU::Point> orb_imus;
+        orb_imus.reserve(imus.size());
+        for(auto [ax, ay, az, wx, wy, wz, ts] : imus)
+        {
+            double relative_time_stamp = (double)(ts - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
+            orb_imus.emplace_back(ax, ay, az, wx, wy, wz, relative_time_stamp);
+        }
 
         // Get time stamp from android time stamp.
-        //double image_time_stamp = (double)(image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
+        double image_time_stamp = (double)(image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
         // Tracking.
-        //Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp, orb_imus);
-
-        double image_time_stamp = (double) (image.time_stamp - m_begin_time_stamp) * k_nano_sec_to_sec_radio;
-        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp);
+        Sophus::SE3f pose = m_orb_slam->TrackMonocular(cv_image, image_time_stamp, orb_imus);
 
 
         // Set tracking result.
@@ -190,38 +191,6 @@ namespace android_slam
                     Eigen::Vector3f position = mp->GetWorldPos();
                     res.map_points.push_back({ position.x(), position.y(), position.z() });
                 }
-            }
-        }
-
-
-        // Tracking status string.
-        {
-            int status = m_orb_slam->getTrackingState();
-            switch (status)
-            {
-                case -1:
-                    res.tracking_status = "SYSTEM_NOT_READY";
-                    break;
-                case 0:
-                    res.tracking_status = "NO_IMAGES_YET";
-                    break;
-                case 1:
-                    res.tracking_status = "NOT_INITIALIZED";
-                    break;
-                case 2:
-                    res.tracking_status = "OK";
-                    break;
-                case 3:
-                    res.tracking_status = "RECENTLY_LOST";
-                    break;
-                case 4:
-                    res.tracking_status = "LOST";
-                    break;
-                case 5:
-                    res.tracking_status = "OK_KLT";
-                    break;
-                default:
-                    break;
             }
         }
 

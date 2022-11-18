@@ -35,10 +35,10 @@ namespace android_slam
 
         GyroData() noexcept = default;
         GyroData(float wx, float wy, float wz, int64_t time_stamp) noexcept
-        : wx(wx)
-        , wy(wy)
-        , wz(wz)
-        , time_stamp(time_stamp)
+            : wx(wx)
+            , wy(wy)
+            , wz(wz)
+            , time_stamp(time_stamp)
         {}
     };
 
@@ -62,10 +62,9 @@ namespace android_slam
         ALooper* m_looper = nullptr;
 
         const ASensor* m_accelerometer = nullptr;
-        ASensorEventQueue* m_accelerometer_event_queue = nullptr;
-
         const ASensor* m_gyroscope = nullptr;
-        ASensorEventQueue* m_gyroscope_event_queue = nullptr;
+
+        ASensorEventQueue* m_sensor_event_queue = nullptr;
 
         mutable std::queue<AcceData> m_acce_data_que;
         mutable std::queue<GyroData> m_gyro_data_que;

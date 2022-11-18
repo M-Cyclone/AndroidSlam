@@ -59,7 +59,6 @@ namespace android_slam
         std::array<float, 16> last_pose;
         std::vector<Pos> trajectory;
         std::vector<Pos> map_points;
-        std::string tracking_status;
 
         float processing_delta_time;
     };
