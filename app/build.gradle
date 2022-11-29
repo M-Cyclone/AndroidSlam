@@ -16,8 +16,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                //cppFlags '-std=c++17 -O3 -ffast-math'
-                cppFlags '-std=c++17 -O2'
+                cppFlags '-std=c++17 -O3 -ffast-math'
+                //cppFlags '-std=c++17 -O2'
                 abiFilters 'arm64-v8a'
             }
         }

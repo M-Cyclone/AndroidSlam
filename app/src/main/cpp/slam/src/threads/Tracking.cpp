@@ -1275,7 +1275,7 @@ namespace ORB_SLAM3
         if (n == 0)
         {
             cout << "Empty IMU measurements vector!!!\n";
-            return;
+            //return;
         }
 
         auto pImuPreintegratedFromLastFrame = new IMU::Preintegrated(mLastFrame.mImuBias, mCurrentFrame.mImuCalib);
